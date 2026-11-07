@@ -1,0 +1,62 @@
+2026-11-07 14:58:32.921761: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-11-07 14:58:32.921822: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-11-07 14:58:32.923195: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+train (2801, 32, 32, 2) (2801,) class counts: [711 691 701 698]
+val (600, 32, 32, 2) (600,) class counts: [133 162 155 150]
+test (599, 32, 32, 2) (599,) class counts: [156 147 144 152]
+
+=== Training model A (hidden=16) ===
+Epoch 1/20
+44/44 - 1s - loss: 1.0391 - accuracy: 0.5537 - val_loss: 0.8557 - val_accuracy: 0.6233 - 1s/epoch - 24ms/step
+Epoch 2/20
+44/44 - 0s - loss: 0.6876 - accuracy: 0.6894 - val_loss: 0.7008 - val_accuracy: 0.6700 - 222ms/epoch - 5ms/step
+Epoch 3/20
+44/44 - 0s - loss: 0.5720 - accuracy: 0.7551 - val_loss: 0.6219 - val_accuracy: 0.7317 - 203ms/epoch - 5ms/step
+Epoch 4/20
+44/44 - 0s - loss: 0.5000 - accuracy: 0.7879 - val_loss: 0.5840 - val_accuracy: 0.7033 - 206ms/epoch - 5ms/step
+Epoch 5/20
+44/44 - 0s - loss: 0.4578 - accuracy: 0.8183 - val_loss: 0.5528 - val_accuracy: 0.7683 - 200ms/epoch - 5ms/step
+Epoch 6/20
+44/44 - 0s - loss: 0.4244 - accuracy: 0.8261 - val_loss: 0.5295 - val_accuracy: 0.7717 - 206ms/epoch - 5ms/step
+Epoch 7/20
+44/44 - 0s - loss: 0.4022 - accuracy: 0.8297 - val_loss: 0.5216 - val_accuracy: 0.7550 - 215ms/epoch - 5ms/step
+Epoch 8/20
+44/44 - 0s - loss: 0.3721 - accuracy: 0.8508 - val_loss: 0.4999 - val_accuracy: 0.7550 - 184ms/epoch - 4ms/step
+Epoch 9/20
+44/44 - 0s - loss: 0.3633 - accuracy: 0.8372 - val_loss: 0.4979 - val_accuracy: 0.7733 - 198ms/epoch - 4ms/step
+Epoch 10/20
+44/44 - 0s - loss: 0.3381 - accuracy: 0.8690 - val_loss: 0.5082 - val_accuracy: 0.7433 - 177ms/epoch - 4ms/step
+Epoch 11/20
+44/44 - 0s - loss: 0.3311 - accuracy: 0.8668 - val_loss: 0.4862 - val_accuracy: 0.7567 - 200ms/epoch - 5ms/step
+Epoch 12/20
+44/44 - 0s - loss: 0.3067 - accuracy: 0.8829 - val_loss: 0.4961 - val_accuracy: 0.7717 - 177ms/epoch - 4ms/step
+Epoch 13/20
+44/44 - 0s - loss: 0.2903 - accuracy: 0.8950 - val_loss: 0.4871 - val_accuracy: 0.7667 - 181ms/epoch - 4ms/step
+Epoch 14/20
+44/44 - 0s - loss: 0.2762 - accuracy: 0.9029 - val_loss: 0.4880 - val_accuracy: 0.7617 - 178ms/epoch - 4ms/step
+/home/rmata/Documents/git/wafer_riscv_tflm/ml/venv/lib64/python3.9/site-packages/tensorflow/lite/python/convert.py:953: UserWarning: Statistics for quantized inputs were expected, but not specified; continuing anyway.
+  warnings.warn(
+Summary on the non-converted ops:
+---------------------------------
+ * Accepted dialects: tfl, builtin, func
+ * Non-Converted Ops: 5, Total Ops 11, % non-converted = 45.45 %
+ * 5 ARITH ops
+
+- arith.constant:    5 occurrences  (f32: 4, i32: 1)
+
+
+
+  (f32: 2)
+  (f32: 1)
+fully_quantize: 0, inference_type: 6, input_inference_type: INT8, output_inference_type: INT8
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+Traceback (most recent call last):
+  File "/home/rmata/Documents/git/wafer_riscv_tflm/ml/train_and_quantize.py", line 279, in <module>
+    main()
+  File "/home/rmata/Documents/git/wafer_riscv_tflm/ml/train_and_quantize.py", line 245, in main
+    result_a = run_config(16, "A", splits)
+  File "/home/rmata/Documents/git/wafer_riscv_tflm/ml/train_and_quantize.py", line 223, in run_config
+    "val": eval_tflite(interp, *splits["val"], input_detail, output_detail),
+  File "/home/rmata/Documents/git/wafer_riscv_tflm/ml/train_and_quantize.py", line 185, in eval_tflite
+    scale, zp = input_detail["scale"], input_detail["zero_point"]
+KeyError: 'scale'

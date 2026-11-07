@@ -13,3 +13,12 @@ __pycache__/
 *.vcd
 *.fst
 *.wlf
+
+# Python environments at any directory depth
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Generated simulation databases
+*.zwdb

@@ -1,0 +1,29 @@
+{
+  "canvas_size": 32,
+  "n_samples": 4000,
+  "tensor_shape": [
+    4000,
+    32,
+    32,
+    2
+  ],
+  "value_range_observed": [
+    0.0,
+    1.0
+  ],
+  "unique_values_observed": [
+    0.0,
+    1.0
+  ],
+  "example_figures": [
+    "results/preprocessing_examples/sample_7_none.png",
+    "results/preprocessing_examples/sample_56_none.png",
+    "results/preprocessing_examples/sample_134_Scratch.png",
+    "results/preprocessing_examples/sample_599_Scratch.png",
+    "results/preprocessing_examples/sample_729_Center.png",
+    "results/preprocessing_examples/sample_5949_Center.png",
+    "results/preprocessing_examples/sample_8390_Edge-Ring.png",
+    "results/preprocessing_examples/sample_12624_Edge-Ring.png"
+  ]
+}
+Wrote: /home/rmata/Documents/git/wafer_riscv_tflm/data/processed/tensors.npz

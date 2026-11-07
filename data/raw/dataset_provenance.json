@@ -2,7 +2,7 @@
   "dataset": "WM-811K",
   "source_page": "https://www.kaggle.com/datasets/qingyi/wm811k-wafer-map",
   "download_endpoint": "https://www.kaggle.com/api/v1/datasets/download/qingyi/wm811k-wafer-map",
-  "retrieved_at_utc": "2026-11-07T20:09:35.310511+00:00",
+  "retrieved_at_utc": "2026-11-07T20:47:15.630072+00:00",
   "archive": {
     "name": "wm811k.zip",
     "bytes": 156686283,

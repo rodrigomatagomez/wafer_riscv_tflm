@@ -1,0 +1,2 @@
+tflite-micro commit: 4eaa491c1c8dedd9a3baf421968afd0d5b82f6aa (cloned 2026-11-07, pinned)
+4eaa491c1c8dedd9a3baf421968afd0d5b82f6aa 2026-11-06 18:35:02 +0000 Add Xtensa HiFi optimized MAXIMUM and MINIMUM kernels (#3965)

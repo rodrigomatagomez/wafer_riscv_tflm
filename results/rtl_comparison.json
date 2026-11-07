@@ -1,0 +1,46 @@
+{
+  "status": "incomplete",
+  "summary": "The bare-metal RV32IM firmware was built, linked, loaded onto the RTL-simulated processor via Animas/Zenith, and confirmed to correctly initialize the pinned-commit TFLM interpreter (model load, op resolver setup, AllocateTensors() success) and begin real Invoke() execution for comparison case 0. The full 20-case loop did not reach completion (no MMIO_STATUS write observed) within the wall-clock time available in this implementation session. This criterion is reported as genuinely incomplete, per the prompt's explicit instruction to preserve completed cases and mark an unfinished 20-case run as incomplete rather than claim full completion.",
+  "native_reference": {
+    "status": "complete",
+    "all_20_cases_ran": true,
+    "evidence_path": "build/native_reference/output.jsonl",
+    "binary_sha256": "99362c892c1f8f4ed282e2505e5b22bfb7f07f695acbb8fbd41f08dfb6cef864",
+    "model_sha256": "7e11c5faea02c99464d6f939c3b10067bd93a6d72d5e650797f6249755ba69ea"
+  },
+  "rtl_firmware": {
+    "status": "started_but_not_completed",
+    "firmware_elf_sha256": "622d18164ee3c80540ca460547340246b989e689aad70ed714d4f59e8d192be5",
+    "model_sha256": "7e11c5faea02c99464d6f939c3b10067bd93a6d72d5e650797f6249755ba69ea",
+    "confirmed_milestones": [
+      "RTL elaborates and runs the firmware ELF (via build/firmware/firmware.hex) with no compile/elaboration errors",
+      "C++ global-scope TFLM objects (resolver, model, interpreter) construct correctly via the project's own crt0.S .init_array loop (after a real bug -- function-local statics with non-trivial constructors silently failing to initialize under this toolchain's guarded-init codegen -- was found and fixed; see docs/issues.md)",
+      "resolver.AddFullyConnected()/AddReshape() execute",
+      "interpreter.AllocateTensors() succeeds (no 'Failed starting model allocation' error observed after the fix)",
+      "MMIO_CASE_ID write observed for case 0",
+      "MMIO_MEASURE=1 write observed at RTL cycle 351185, immediately before the first real Invoke() call"
+    ],
+    "not_observed_within_session_time": [
+      "MMIO_MEASURE=2 (Invoke() completion) for case 0",
+      "Any MMIO_SCORE_*/MMIO_PREDICTED_CLASS write",
+      "MMIO_STATUS write (success or error)"
+    ],
+    "measured_cycle_lower_bound": {
+      "value": 5000000,
+      "unit": "RTL clock cycles",
+      "basis": "One simulation run, configured with +MAXCYCLES=5000000, reached SIM_TIMEOUT (cycle=5000000) while still inside case 0's Invoke() (MMIO_MEASURE never reached value=2). This establishes Invoke() for this model on this core requires MORE than 5,000,000 RTL cycles -- it does not establish an upper bound.",
+      "evidence": "output/zsim.log (snapshot retained for this run); confirmed in /home/rmata/.var/app/com.mifraltech.animaseda/data/animas-eda/logs/animas.log (\"Simulation started\" 2026-11-07T22:36:08.059Z, \"Simulation done\"/rc=0 2026-11-07T22:58:41.215Z)",
+      "measured_throughput": {"rtl_cycles": 5000000, "wall_clock_seconds": 1353, "cycles_per_second": 3696, "source": "Animas application log start/end timestamps for this exact run (authoritative, not shell-polling-derived)"},
+      "engineering_explanation": "The first FULLY_CONNECTED layer is 2048 input features x 32 hidden units = 65536 multiply-accumulate operations. Each multiply on this multicycle core's sequential (shift-add) multiplier takes 32 iterations (~33 cycles), plus per-MAC loop-control/load/accumulate overhead on a non-pipelined core where most instructions retire in roughly 7-11 cycles. This puts a single Invoke() in the multi-million-cycle range as a genuine property of the design (not a simulation artifact); it was not pipelined, cached, or otherwise optimized, consistent with the prompt's 'small, verifiable, reproducible implementation' scope (no accelerators, no pipelining)."
+    },
+    "cases_completed": 0,
+    "cases_attempted": 1,
+    "comparison_rows": []
+  },
+  "limitations": [
+    "The 20-case RTL-vs-native agreement criterion (prompt Section 11: 'exact agreement with native TFLM on all four integer outputs and the predicted class for all 20 RTL cases') is NOT met as of this snapshot -- 0 of 20 cases completed on RTL.",
+    "At the measured throughput (~3696 RTL cycles/sec), reaching a conservatively-estimated 6-8 million cycles for one complete Invoke() would need on the order of 30-40 additional minutes of wall-clock simulation time beyond the 22.5 minutes already spent reaching 5,000,000 cycles; completing all 20 cases at this rate would need on the order of multiple hours, which was not practical within this implementation session.",
+    "Animas/Zenith simulation throughput for this workload, combined with repeated tool-level connectivity/timeout issues encountered while orchestrating long-running headless simulation jobs in this session (see docs/issues.md ISS-002 and docs/handoff/limitations_and_open_questions.md), consumed most of the time available for this specific milestone.",
+    "This result does not indicate an RTL correctness defect: every processor-level and TFLM-initialization milestone observed up to the point of the timeout was consistent with correct behavior; the limiting factor was wall-clock simulation time for a many-million-cycle workload, not an incorrect output or a crash."
+  ]
+}

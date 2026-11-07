@@ -1,0 +1,67 @@
+{
+  "seed": 2026,
+  "classes": [
+    "Center",
+    "Edge-Ring",
+    "Scratch",
+    "none"
+  ],
+  "per_class_cap": 1000,
+  "selection_report": {
+    "Center": {
+      "unique_available": 4289,
+      "selected": 1000
+    },
+    "Edge-Ring": {
+      "unique_available": 9674,
+      "selected": 1000
+    },
+    "Scratch": {
+      "unique_available": 1182,
+      "selected": 1000
+    },
+    "none": {
+      "unique_available": 144284,
+      "selected": 1000
+    }
+  },
+  "exact_duplicates_removed_within_class": 3169,
+  "total_selected": 4000,
+  "split_target_proportions": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15
+  },
+  "split_actual_proportions": {
+    "train": 0.70025,
+    "val": 0.15,
+    "test": 0.14975
+  },
+  "class_by_split_counts": {
+    "Center": {
+      "train": 711,
+      "val": 133,
+      "test": 156
+    },
+    "Edge-Ring": {
+      "train": 691,
+      "val": 162,
+      "test": 147
+    },
+    "Scratch": {
+      "train": 701,
+      "val": 155,
+      "test": 144
+    },
+    "none": {
+      "train": 698,
+      "val": 150,
+      "test": 152
+    }
+  },
+  "unique_lots_selected": 2807,
+  "lots_spanning_multiple_splits": 0,
+  "cross_split_duplicate_maps": 0,
+  "missing_class_split_combinations_before_repair": [],
+  "repairs_applied": []
+}

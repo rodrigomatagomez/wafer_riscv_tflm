@@ -1,0 +1,396 @@
+{
+  "seed": 2026,
+  "classes": [
+    "Center",
+    "Edge-Ring",
+    "Scratch",
+    "none"
+  ],
+  "quality_target_macro_f1": 0.85,
+  "configurations_tried": [
+    "A",
+    "B"
+  ],
+  "chosen_configuration": "B",
+  "selection_rule": "quantized validation macro-F1 only",
+  "results": {
+    "A": {
+      "tag": "A",
+      "hidden_units": 16,
+      "float_checkpoint": "models/model_A_float.keras",
+      "tflite_path": "models/model_A_int8.tflite",
+      "tflite_sha256": "8993a9e22bee65b4c789a68441bcd7f875fdbf24ac1414dd52b9fe9b6ecf20b0",
+      "representative_samples_used": 200,
+      "quantization": {
+        "input": {
+          "dtype": "<class 'numpy.int8'>",
+          "shape": [
+            1,
+            32,
+            32,
+            2
+          ],
+          "scale": 0.003921568859368563,
+          "zero_point": -128
+        },
+        "output": {
+          "dtype": "<class 'numpy.int8'>",
+          "shape": [
+            1,
+            4
+          ],
+          "scale": 0.09866362065076828,
+          "zero_point": -20
+        },
+        "operators": [
+          "RESHAPE",
+          "FULLY_CONNECTED",
+          "FULLY_CONNECTED",
+          "DELEGATE"
+        ]
+      },
+      "float_metrics": {
+        "val": {
+          "macro_f1": 0.760143610356572,
+          "per_class_f1": {
+            "Center": 0.8968253968253969,
+            "Edge-Ring": 0.978328173374613,
+            "Scratch": 0.6074498567335244,
+            "none": 0.5579710144927537
+          },
+          "accuracy": 0.7566666666666667,
+          "confusion_matrix": [
+            [
+              113,
+              1,
+              12,
+              7
+            ],
+            [
+              1,
+              158,
+              3,
+              0
+            ],
+            [
+              5,
+              2,
+              106,
+              42
+            ],
+            [
+              0,
+              0,
+              73,
+              77
+            ]
+          ],
+          "n": 600
+        },
+        "test": {
+          "macro_f1": 0.7579596957913234,
+          "per_class_f1": {
+            "Center": 0.9271523178807947,
+            "Edge-Ring": 0.9897610921501706,
+            "Scratch": 0.5850746268656717,
+            "none": 0.5298507462686567
+          },
+          "accuracy": 0.7579298831385642,
+          "confusion_matrix": [
+            [
+              140,
+              0,
+              11,
+              5
+            ],
+            [
+              0,
+              145,
+              2,
+              0
+            ],
+            [
+              6,
+              0,
+              98,
+              40
+            ],
+            [
+              0,
+              1,
+              80,
+              71
+            ]
+          ],
+          "n": 599
+        }
+      },
+      "int8_metrics": {
+        "val": {
+          "macro_f1": 0.7537662470651191,
+          "per_class_f1": {
+            "Center": 0.889763779527559,
+            "Edge-Ring": 0.978328173374613,
+            "Scratch": 0.6062322946175638,
+            "none": 0.5407407407407407
+          },
+          "accuracy": 0.7516666666666667,
+          "confusion_matrix": [
+            [
+              113,
+              1,
+              12,
+              7
+            ],
+            [
+              1,
+              158,
+              3,
+              0
+            ],
+            [
+              6,
+              2,
+              107,
+              40
+            ],
+            [
+              1,
+              0,
+              76,
+              73
+            ]
+          ],
+          "n": 600
+        },
+        "test": {
+          "macro_f1": 0.7530330557168811,
+          "per_class_f1": {
+            "Center": 0.9240924092409241,
+            "Edge-Ring": 0.9863945578231292,
+            "Scratch": 0.5882352941176471,
+            "none": 0.5134099616858238
+          },
+          "accuracy": 0.7545909849749582,
+          "confusion_matrix": [
+            [
+              140,
+              0,
+              11,
+              5
+            ],
+            [
+              0,
+              145,
+              2,
+              0
+            ],
+            [
+              6,
+              1,
+              100,
+              37
+            ],
+            [
+              1,
+              1,
+              83,
+              67
+            ]
+          ],
+          "n": 599
+        }
+      }
+    },
+    "B": {
+      "tag": "B",
+      "hidden_units": 32,
+      "float_checkpoint": "models/model_B_float.keras",
+      "tflite_path": "models/model_B_int8.tflite",
+      "tflite_sha256": "7e11c5faea02c99464d6f939c3b10067bd93a6d72d5e650797f6249755ba69ea",
+      "representative_samples_used": 200,
+      "quantization": {
+        "input": {
+          "dtype": "<class 'numpy.int8'>",
+          "shape": [
+            1,
+            32,
+            32,
+            2
+          ],
+          "scale": 0.003921568859368563,
+          "zero_point": -128
+        },
+        "output": {
+          "dtype": "<class 'numpy.int8'>",
+          "shape": [
+            1,
+            4
+          ],
+          "scale": 0.13082461059093475,
+          "zero_point": 27
+        },
+        "operators": [
+          "RESHAPE",
+          "FULLY_CONNECTED",
+          "FULLY_CONNECTED",
+          "DELEGATE"
+        ]
+      },
+      "float_metrics": {
+        "val": {
+          "macro_f1": 0.7664513032332616,
+          "per_class_f1": {
+            "Center": 0.9011857707509882,
+            "Edge-Ring": 0.9845201238390093,
+            "Scratch": 0.5794392523364486,
+            "none": 0.6006600660066007
+          },
+          "accuracy": 0.7616666666666667,
+          "confusion_matrix": [
+            [
+              114,
+              0,
+              13,
+              6
+            ],
+            [
+              0,
+              159,
+              1,
+              2
+            ],
+            [
+              6,
+              2,
+              93,
+              54
+            ],
+            [
+              0,
+              0,
+              59,
+              91
+            ]
+          ],
+          "n": 600
+        },
+        "test": {
+          "macro_f1": 0.7662248306059144,
+          "per_class_f1": {
+            "Center": 0.9271523178807947,
+            "Edge-Ring": 0.9897610921501706,
+            "Scratch": 0.564935064935065,
+            "none": 0.5830508474576271
+          },
+          "accuracy": 0.7646076794657763,
+          "confusion_matrix": [
+            [
+              140,
+              0,
+              10,
+              6
+            ],
+            [
+              0,
+              145,
+              2,
+              0
+            ],
+            [
+              6,
+              0,
+              87,
+              51
+            ],
+            [
+              0,
+              1,
+              65,
+              86
+            ]
+          ],
+          "n": 599
+        }
+      },
+      "int8_metrics": {
+        "val": {
+          "macro_f1": 0.7680560345627745,
+          "per_class_f1": {
+            "Center": 0.9011857707509882,
+            "Edge-Ring": 0.9845201238390093,
+            "Scratch": 0.5878787878787879,
+            "none": 0.5986394557823129
+          },
+          "accuracy": 0.7633333333333333,
+          "confusion_matrix": [
+            [
+              114,
+              0,
+              14,
+              5
+            ],
+            [
+              0,
+              159,
+              2,
+              1
+            ],
+            [
+              6,
+              2,
+              97,
+              50
+            ],
+            [
+              0,
+              0,
+              62,
+              88
+            ]
+          ],
+          "n": 600
+        },
+        "test": {
+          "macro_f1": 0.7709299728883321,
+          "per_class_f1": {
+            "Center": 0.9271523178807947,
+            "Edge-Ring": 0.9897610921501706,
+            "Scratch": 0.5893416927899686,
+            "none": 0.5774647887323944
+          },
+          "accuracy": 0.7696160267111853,
+          "confusion_matrix": [
+            [
+              140,
+              0,
+              10,
+              6
+            ],
+            [
+              0,
+              145,
+              2,
+              0
+            ],
+            [
+              6,
+              0,
+              94,
+              44
+            ],
+            [
+              0,
+              1,
+              69,
+              82
+            ]
+          ],
+          "n": 599
+        }
+      }
+    }
+  },
+  "final_test_macro_f1_int8": 0.7709299728883321,
+  "quality_target_met_on_test": false
+}
