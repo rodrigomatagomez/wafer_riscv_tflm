@@ -1,0 +1,61 @@
+{
+  "package_name": "wafer_riscv_tflm",
+  "prepared_at_utc": "2026-11-07T20:10:19.135590+00:00",
+  "prepared_by": "Codex assistant before Claude implementation run",
+  "requested_windows_path": "C:\\Users\\matag\\OneDrive\\Documentos\\git\\wafer_riscv_tflm",
+  "stage": "Prepared input package; processor implementation, training, and RTL execution have not been performed.",
+  "dataset_included": true,
+  "files": [
+    {
+      "path": "START_HERE.md",
+      "bytes": 3283,
+      "sha256": "be21d1abb5f6494e868e079edcda3d05cd837938dddf3510ad38dc034335fc01"
+    },
+    {
+      "path": "PREPARATION_RECORD.md",
+      "bytes": 1230,
+      "sha256": "f42fd8023488eb891801142b0173ba97f5a983bc61defb3a3f13a2c6a78c44db"
+    },
+    {
+      "path": "claude_implementation_prompt.txt",
+      "bytes": 28343,
+      "sha256": "1ab09f9aa254addabe3800df501228987a985c910ab739bc9642d7d97998b07a"
+    },
+    {
+      "path": "setup_guide.md",
+      "bytes": 4774,
+      "sha256": "8bd8d152cab1e4e8e35ba01e70ddaaf9412791903114536eb016f60383068412"
+    },
+    {
+      "path": "documentation_ai_prompt.txt",
+      "bytes": 5254,
+      "sha256": "58fc757c3b39f3f140b8137e9551ed9dbd99bd94aee4d2b47d268c242277a92d"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 253,
+      "sha256": "440e2fc174760d9e3fdee2c319f9377712592b965d9343df57db2f336dc4fd48"
+    },
+    {
+      "path": "scripts/download_dataset.py",
+      "bytes": 5850,
+      "sha256": "349dd69f32184948b75456b2ec3e81590b2013672b00f9fbd8e5741d1f477ae0"
+    },
+    {
+      "path": "data/raw/README.md",
+      "bytes": 770,
+      "sha256": "5bd4e5596da75a58d522239d80884a7483abb5587c33fea3ece6f8b6ed75196a"
+    },
+    {
+      "path": "data/raw/LSWMD.pkl",
+      "bytes": 2095505977,
+      "sha256": "1d04fccb3dd3176b276878b926b20fead7e077c5751e4d353ea9741a5e7b5c65"
+    },
+    {
+      "path": "data/raw/dataset_provenance.json",
+      "bytes": 891,
+      "sha256": "2e5e4058b0822d72343d064ad9cc32389b0c4ef4b9cc315b78a0baff960c68fd"
+    }
+  ],
+  "manifest_note": "This inventory excludes its own hash. Archive cache and Python bytecode are not handoff files."
+}

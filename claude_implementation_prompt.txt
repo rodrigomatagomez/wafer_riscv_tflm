@@ -1,0 +1,209 @@
+Build and execute a complete project consisting of a new RISC-V processor designed from scratch and wafer-map pattern classification using TensorFlow Lite Micro (TFLM). You have access to Animas tools and a Linux terminal. Use the actual available tools to create, compile, verify, and simulate SystemVerilog RTL. This is the single initial instruction: work autonomously through implementation, testing, and repair until you satisfy the acceptance criteria or document a genuine external blocker. The working deadline is today. Prioritize a demonstrably working end-to-end implementation.
+
+LANGUAGE AND TWO-STAGE WORKFLOW
+
+Use English for all project-authored text: your progress updates and final response, README files, source comments, identifiers where practical, test descriptions, plots, demo labels, records, and handoff instructions. Preserve canonical dataset labels, external source titles, and original machine-generated logs without rewriting their evidence.
+
+This execution is STAGE 1: implementation, experiments, verification, and continuous evidence capture. A separate AI session will perform STAGE 2: writing the formal documentation, paper, and presentation from the evidence you leave behind. Do not spend the implementation deadline drafting a polished paper or presentation. Instead, produce an accurate, organized documentation handoff package as specified below. Keep concise operational documentation needed to understand and reproduce the implementation.
+
+1. OBJECTIVE AND SCOPE
+
+The application receives an electrical-test wafer map and classifies one of four WM-811K patterns. It performs pattern classification; it does not identify the physical root cause of a defect or establish industrial deployment readiness.
+
+Write the processor core and integration RTL from scratch. You may consult specifications, documentation, and interface examples, and use external software and verification libraries. Do not copy, instantiate, or adapt an existing processor core as your implementation. Record references and dependencies.
+
+Train a TensorFlow model on the host computer, convert it into a quantized .tflite model, compile a C/C++ program using the actual TensorFlow Lite Micro library for your RISC-V processor, and execute that program as instructions on the RTL simulated in Animas. Neural-network inference must execute on the simulated processor. The testbench may load memory, observe outputs, and compare results; it must not substitute Python, DPI, host-side computation, or precomputed answers for processor inference.
+
+Do not add accelerators, custom instructions, pipelining, caches, an operating system, a camera, networking, or a training interface. Focus on a small, verifiable, reproducible implementation.
+
+2. WORKSPACE, ENVIRONMENT, AND ANIMAS
+
+Use a root directory named wafer_riscv_tflm inside the Linux working directory accessible to the project. If the working directory already has that name, use it directly. Record its resolved absolute path in README.md and the handoff. Inspect and preserve any existing work; do not delete or overwrite unrelated files.
+
+Organize the project as follows:
+
+docs/              operational specifications, discoveries, decisions, and development records
+docs/handoff/      evidence index and instructions for the later documentation AI
+rtl/               new synthesizable SystemVerilog core and system
+tb/                testbenches and independent checkers
+sw/                startup code, linker script, firmware, and TFLM platform integration
+ml/                data preparation, training, conversion, and evaluation
+data/raw/          original dataset file
+data/processed/    tensors and dataset split manifests
+models/            checkpoints, converted models, and quantization parameters
+third_party/       dependencies identified by version or commit
+scripts/           reproducible commands and adapters to available tools
+build/             generated files, executables, and memory images
+logs/              original command and tool output
+results/           metrics, comparisons, figures, and the evidence-backed demonstration
+
+Before implementation, read the help, instructions, and documentation exposed by Animas tools. Discover the real tool names, parameters, project formats, compilation and simulation procedures, verification features, signal observation, and result export mechanisms. Use every capability needed to complete the project. Do not invent tool names, commands, or successful outcomes. Save your discoveries and the exact interfaces used in docs/animas_capabilities.md, with documentation references where available.
+
+Check CPU, RAM, disk space, network access, Python, a host C++17 compiler, and RISC-V toolchains. You may install project-local dependencies and create an isolated Python environment, respecting the environment's authorization requirements. If a compiler is missing, prefer an official prebuilt toolchain after checking host architecture and target ABI. Avoid a full toolchain source build when a suitable local or prebuilt alternative exists.
+
+Verify that the selected toolchain compiles and links bare-metal C and C++17 for -march=rv32im -mabi=ilp32, including required runtime helper libraries. Disable compressed instructions and linker relaxation where applicable. Check multilib support rather than assuming a riscv64 toolchain cannot target RV32. Record versions, paths, and successful commands. Validate a minimal program first.
+
+Use Animas as the primary RTL compilation and simulation route. External tools may provide supporting checks and references; identify them accurately. If an essential Animas capability is unavailable, record the blocker and the work that does function. Do not describe an external simulation as an Animas execution.
+
+3. REAL DATA AND PROVENANCE
+
+Dataset: WM-811K, usually distributed as LSWMD.pkl.
+Kaggle source: https://www.kaggle.com/datasets/qingyi/wm811k-wafer-map
+Original repository to check for availability: http://mirlab.org/dataSet/public/
+
+First look in data/raw/. If the file is absent, attempt download using Kaggle's documented procedure or a verified download link from the original repository. Use any already configured credentials only through their normal mechanisms, without exposing secrets. Do not invent links or assume anonymous download access. Check format, integrity, size, and SHA-256, and record source and retrieval time. Only deserialize a file obtained from a trusted source. Resolve pandas/Python compatibility issues in an isolated environment and record the actual solution.
+
+If download requires unavailable authentication or manual acceptance, record the exact missing file and required destination data/raw/LSWMD.pkl. Continue processor implementation, verification, and software work that does not depend on the dataset. Do not replace real data with synthetic data to claim application completion. If real data remains unavailable, identify the affected requirements as incomplete.
+
+Inspect the actual file schema instead of assuming nested label formats or column spellings. Verify waferMap encodings: 0 = no die, 1 = passing die, 2 = defective die. Verify the class labels and the lot identifier in the actual data.
+
+Use only labeled samples from these categories, with this fixed output mapping:
+0 = Center
+1 = Edge-Ring
+2 = Scratch
+3 = none
+
+The none label does not guarantee an entirely healthy wafer. Exclude unknown or missing labels; do not convert them to none.
+
+Select up to 1000 unique maps per class using seed 2026 and a deterministic procedure. Do not duplicate samples to fill quotas. Split approximately 70/15/15 percent into training/validation/test, keeping each fabrication lot entirely within one split. Find a distribution containing all four classes in all three splits; record counts and deviations from the desired proportions. Check for shared lots and exact duplicate maps across splits. If these conditions cannot be met, document the reason before considering another partitioning method; do not silently switch to random image-level splitting.
+
+Save manifests containing original sample ID, lot ID, class, and split. Do not use lot IDs, labels, or sample IDs as model features. Reserve test data for a final evaluation, without tuning the model against test outcomes.
+
+4. PREPROCESSING AND MODEL
+
+Preprocessing runs on the host and must be reproducible. For each map, form two binary masks: channel 0 = waferMap > 0; channel 1 = waferMap == 2. Resize both to fit a 32x32 canvas, preserving aspect ratio using nearest-neighbor interpolation and centered zero padding. Define exact dimension rounding and padding conventions in code and documentation. Save examples of the original map and both processed channels to assess whether important patterns survive preprocessing.
+
+Model input: batch 1, shape 32x32x2, NHWC layout, flattened in C order. During training, channels contain float32 values of 0 or 1.
+
+Model A: Flatten -> Dense(16, activation=relu) -> Dense(4, no activation).
+Model B: the same structure with 32 hidden units.
+
+Train A first. Use Adam with learning_rate 0.001, batch_size 64, at most 20 epochs, SparseCategoricalCrossentropy(from_logits=True), seed 2026, and the checkpoint with the best validation loss. Apply early stopping with patience 3. Calculate macro-F1 and per-class metrics. If class imbalance warrants class weights, derive them only from training data and record them.
+
+Convert the best A checkpoint to a fully int8 model using up to 200 class-balanced representative samples drawn only from training data. Require int8 input and output and integer model operators; inspect and record tensors and operators. If quantized A has validation macro-F1 below 0.85, train and convert B under the same protocol. Choose between A and B using quantized validation performance only. Do not launch an open-ended architecture search. Record both configurations and results if both were tried.
+
+Quantize inputs using the converted model's actual scale and zero_point, explicitly defined rounding, and saturation to [-128,127]. Export exactly the same input bytes to the reference and the firmware. Save parameters, operator lists, model SHA-256, and metrics before and after quantization. Calibration must never use the test split.
+
+Output is four int8 scores. Prediction is argmax, with ties resolved in favor of the lowest index. Do not present these scores as calibrated probabilities or confidence percentages.
+
+Quality target: int8 model test macro-F1 >= 0.85. Also publish overall accuracy, per-class F1, confusion matrix, sample counts, and validation metrics. If the target is not reached, preserve the actual result, explain the limitation, and continue the functional demonstration. Do not change the threshold, labels, or test data to claim success.
+
+5. PROCESSOR AND SYSTEM
+
+Create new SystemVerilog RTL for a multicycle RV32IM core: little-endian, 32 registers of 32 bits, x0 always zero, and a 32-bit PC. Implement the base integer instructions and all eight M-extension instructions according to the official specification. Consult https://docs.riscv.org/reference/isa/ for semantics and corner cases. Do not claim full architectural conformance without adequate evidence.
+
+Include byte, halfword, and word loads/stores, correct sign extension, jumps, signed/unsigned branches, and 32-bit effective addresses. Instructions are four-byte aligned. Misaligned halfword/word accesses, illegal instructions, out-of-range memory accesses, and ECALL/EBREAK must cause an observable error halt with PC and instruction. FENCE may complete without additional effects in this simple sequential environment. Document this execution-environment policy; do not silently treat unknown instructions as NOPs.
+
+C/A/F/D extensions, interrupts, MMU, and an operating system are outside scope. Do not rely on CSRs for cycle counting. Implement the complete M extension, not only MUL. Test MULH/MULHSU/MULHU, signed/unsigned division and remainder, division by zero, and signed overflow according to the ISA. Datapath RTL must be synthesizable; identify simulation memory models and testbench code separately.
+
+Unified program/data memory: 1 MiB at 0x00000000..0x000FFFFF. Reset PC = 0x00000000, containing startup code. Initial stack pointer = 0x00100000, 16-byte aligned and growing downward. The linker must verify that code, constants, model, input tensors, bss, any reserved heap, and stack fit without overlap. Reserve an explicit 64 KiB stack region. If the system does not fit, report actual sizes and the blocker instead of silently increasing memory.
+
+Use an explicit memory request/response interface and wait for the response before retiring an instruction. Document signals and transactions. The testbench serves RAM with a documented fixed latency; processor tests must also exercise additional wait states. Do not make execution depend on an instantaneous response.
+
+MMIO is outside RAM, using aligned 32-bit writes:
+0x10000000: TX, low byte used for diagnostic characters.
+0x10000004: CASE_ID, index of the input being processed.
+0x10000008: SCORE_0, sign-extended int8 output as a 32-bit value.
+0x1000000C: SCORE_1, same representation.
+0x10000010: SCORE_2, same representation.
+0x10000014: SCORE_3, same representation.
+0x10000018: PREDICTED_CLASS, 0..3, indicating all scores for that case are ready.
+0x1000001C: MEASURE, write 1 immediately before Invoke() and 2 immediately after it; the testbench measures cycles between these events.
+0x10000020: STATUS, write 1 after all cases finish without execution errors, or 2 on a firmware/TFLM error.
+
+Capture these writes from actual processor transactions, validate their order, and export results. STATUS=1 means execution finished; the external checker decides whether the outputs are correct. Document the precise cycle-counting convention and measurement overhead. Report allocation/setup separately from Invoke() timing.
+
+6. PROCESSOR VERIFICATION
+
+Before TFLM, run directed tests for instruction families and corner cases: x0, negative immediates, sign extension, taken/untaken branches, JAL/JALR, shifts, signed/unsigned comparisons, write strobes, reset, memory wait states, and the complete M extension. Also execute small compiled C programs covering loops, functions, stack, and arrays.
+
+Compare retired-instruction traces against an available independent ISA reference, such as Spike or Sail, configured for the chosen architecture and execution environment. If unavailable within the deadline, implement a separate functional verification model from the specification, without reusing DUT logic, and record that limitation. Include at least 1000 retired instructions from fixed-seed generated programs in addition to directed tests. A matching classification is not a substitute for processor tests.
+
+Save tests, commands, logs, and outcomes. A timeout, failure to terminate, relevant unknown signal, or failed comparison is a failed test. Do not weaken tests to conceal a defect. Fix the problem and rerun affected checks. Record what each test establishes and what remains untested; avoid interpreting limited functional tests as formal certification.
+
+7. ACTUAL TFLM INTEGRATION
+
+Obtain tensorflow/tflite-micro from https://github.com/tensorflow/tflite-micro and pin the commit used. Read docs/new_platform_support.md and docs/memory_management.md. Current porting documentation specifies C++17; verify requirements against the pinned commit. Use reference kernels and register only operators actually present in the model. Do not replace TFLM with a manually rewritten classifier.
+
+Implement crt0, stack and bss/data initialization, linker script, logging, and required platform functions. Disable exceptions and RTTI where supported. Use toolchain runtime libraries for required arithmetic/memory helpers; leave no unresolved symbols or dependencies on host system calls. Correctly handle any required C++ initialization.
+
+First demonstrate startup and MMIO output from a minimal program. Then demonstrate a simple TFLM inference. Finally integrate the wafer model. Measure tensor-arena requirements and total memory use; .tflite file size is not runtime RAM consumption.
+
+Also build a native C++ TFLM reference with the same commit, kernels, and rounding/quantization options as the firmware. This is the exact-output oracle. Do not attribute runtime configuration differences to the processor.
+
+After freezing the model, select five test samples per category using a deterministic ID-based rule, without filtering by correctness or confidence. Save this manifest before RTL execution. These are the 20 comparison cases. Labels and expected outputs belong in the external checker; do not provide them to the inference firmware or DUT as answers. Firmware may embed the input tensors as constants alongside the model to simplify memory loading.
+
+Execute the actual ELF on the RTL in Animas and compare all four integer scores and argmax for every case with native TFLM. Preserve model misclassifications: they must reproduce too. Distinguish implementation agreement from accuracy against ground truth.
+
+Set explicit cycle and wall-clock limits, record simulation throughput, and preserve failures/timeouts. Time one case before launching all 20 and estimate the remaining execution time. Avoid dumping every signal across millions of cycles; use retirement traces and bounded diagnostic waveform windows. If all cases cannot finish before the deadline, preserve completed cases and mark the 20-case criterion incomplete. Do not claim real-time performance from cycle counts alone.
+
+8. CONTINUOUS DEVELOPMENT RECORDS
+
+Start the documentation records during environment discovery, not at the end. Update them after each meaningful discovery, design change, experiment, failure, or milestone. Keep entries concise; capture raw output once and reference it instead of repeatedly copying it. Record concrete engineering facts and brief decision rationales, not private internal reasoning.
+
+Maintain these English records:
+
+a. docs/development_log.jsonl: append-only chronological events. Each event contains event_id, timestamp_utc, stage, action, outcome, run_id if applicable, affected_files, evidence_paths, and next_action. Preserve failed attempts and explicitly mark subsequent resolutions. Use actual timestamps, not reconstructed estimates.
+
+b. docs/decisions.md: stable decision IDs, the engineering question, alternatives considered, selected option, short rationale, supporting evidence, consequences, and current status (active/superseded). Record departures from this prompt explicitly. A departure must not silently become the original requirement.
+
+c. docs/findings.md: actual Animas capabilities and constraints; environment/dependency discoveries; real dataset schema and class counts; preprocessing observations; model/operator/quantization findings; toolchain/ABI details; RTL integration details; and simulation behavior. Label statements as observed, inferred, or unverified. Include evidence references and reproducibility implications.
+
+d. docs/issues.md: issue IDs, symptoms, reproduction command/tool invocation, relevant log location, diagnosed cause or current hypothesis, attempted fixes, actual resolution, confirming rerun, and remaining limitations. Preserve useful failed approaches rather than erasing history.
+
+e. docs/experiments.jsonl: one record per actual training, conversion, verification suite, or simulation run. Include run_id, timestamps, purpose, exact command or real tool call with sanitized arguments, working directory, relevant versions, seed/configuration, input/model/source fingerprints, exit status, output paths, measured results, and limitations. Group a test suite under one run when appropriate. Record environment setup attempts in the development log; expensive runs must have experiment records.
+
+Save original tool/command outputs under logs/ with run IDs. Never put credentials in logs or handoff files. Keep a source/configuration snapshot or hash for each important run so later code changes do not make old results appear to validate new code. Do not fabricate logs or backfill missing measurements. Mark unavailable records honestly.
+
+For each meaningful failure and fix, retain enough evidence for a later author to explain the engineering problem and how the rerun confirmed the fix. Distinguish a planned feature, an implemented feature, an executed test, and a verified result.
+
+9. DEMONSTRATION AND IMPLEMENTATION DELIVERABLES
+
+Generate a local HTML demonstration that works without a server or network dependencies, or a clearly identified static visual report if that is more reliable. Show the original map, reduced input, ground-truth class, RTL prediction, four scores, agreement with reference, and Invoke() cycles for every simulated case. Populate it from actual captured RTL results, identified by hash, rather than presenting host predictions as hardware outputs. Keep model errors visible.
+
+Deliver:
+- README.md with absolute project path, requirements, actual reproduction steps, and implementation status.
+- New RTL, testbenches, startup code, linker script, firmware, and reproducible scripts.
+- Dataset provenance, hashes, selection/split manifests, preprocessing, and training protocol.
+- .tflite model, checkpoint, quantization parameters, and proof that reference and firmware use the same model bytes.
+- ELF, linker map, memory image, and disassembly.
+- results/cpu_verification.json identifying checks actually performed, results, and limitations.
+- results/ml_metrics.json with float/int8 metrics and confusion matrix.
+- results/rtl_comparison.json with expected/observed outputs, agreement, and cycles for all completed cases; identify missing cases.
+- results/memory_usage.json with program/data allocation, tensor arena, and reserved stack; distinguish reserved capacity from measured peak use.
+- results/demo.html or the identified visual alternative.
+- results/status_summary.md: a concise factual status, measured results, failures, and incomplete acceptance criteria. This is an implementation record, not the formal paper.
+- The continuous records and original logs specified in Section 8.
+- The documentation handoff package specified in Section 10.
+
+Provide documented reproduction scripts for data preparation, training, native reference, processor verification, full RTL simulation, and demonstration generation. If Animas uses tool calls instead of a CLI, record real arguments and reusable configurations; do not invent a CLI.
+
+10. HANDOFF TO THE SEPARATE DOCUMENTATION AI
+
+Create and maintain docs/handoff/ with the following files. These must contain project-specific facts and references, not empty templates or generic promises.
+
+README.md: handoff entry point. State the actual project root, final implementation state, authoritative result files, recommended reading order, and the separation between implementation evidence and later writing. Include the exact source/model/configuration associated with the final results and any stale results that must not be used.
+
+claims_evidence.csv: a table with claim_id, claim_text, status, evidence_path, evidence_locator, run_id, source_or_config_fingerprint, and limitations. Status must distinguish verified, measured, inferred, planned, failed, and not_tested. Give a precise locator such as JSON key, test ID, log line range, source symbol, or figure filename. A requested threshold is not a measured achievement. If a claim has no supporting evidence, say so.
+
+artifact_manifest.json: paths, roles, sizes, and SHA-256 values for final source snapshots, model, firmware ELF, dataset/split manifests, metrics, comparison outputs, and key logs. For mutable development records, state that their hashes represent the handoff snapshot. Do not recursively include this manifest's own hash. Avoid committing or duplicating the entire raw dataset solely for documentation; preserve its provenance and hash.
+
+references.md: external sources actually consulted, with URL, title if known, access date, relevant version/commit, topic supported, and any citation or license information established by the source. Distinguish external background from evidence produced by this project. Do not invent bibliographic fields or treat an unvisited link as a reviewed source.
+
+limitations_and_open_questions.md: all remaining blockers, unmet targets, untested behaviors, generalization limits, verification limits, preprocessing boundaries, simulator-specific assumptions, and information a future author must not infer. Explicitly distinguish measured cycles, simulator wall-clock time, and an unmeasured hardware clock rate. Record whether synthesis, timing closure, power, area, FPGA execution, or real hardware testing were actually performed.
+
+documentation_instructions.md: a self-contained, project-specific instruction for the next AI session. Tell it what was built, the actual paths to read in order, how to find the chronology/decisions/issues, how to connect claims with evidence, which results correspond to the final design, and which outputs remain incomplete. Request English writing. Specify that it must ask for the target venue/template/length when those are not provided, avoid inventing experimental results or citations, and label gaps instead of filling them with assumptions. Explain that a five-minute presentation is a possible later deliverable, not a presentation already produced. Include a proposed technical-document outline grounded in this implementation and a list of useful figures/tables supported by actual files.
+
+Include enough information for another AI to reconstruct the development without this chat: initial requirements, actual tools and environment, final architecture and interfaces, data protocol, selected model, quantization and TFLM port, verification methodology, experiments, failures and fixes, measured results, limitations, and reproduction steps. Keep the distinction between original plan and final implementation explicit. Do not claim novelty, industrial validation, formal ISA certification, hardware power savings, or repeatable single-prompt success beyond the available evidence.
+
+Before closing, check that handoff links and evidence paths resolve, referenced run IDs exist, and quantitative claims agree with the authoritative result files. If work is blocked or time expires, leave a truthful partial handoff identifying completed and incomplete work so a separate writer does not describe the plan as an achieved result.
+
+11. ACCEPTANCE AND AUTONOMOUS EXECUTION
+
+Track status for data availability, processor tests, trained/quantized model, linked firmware, RTL inference, 20/20 comparisons, measured metrics, demonstration, and complete documentation handoff.
+
+Functional success requires passing processor tests and exact agreement with native TFLM on all four integer outputs and the predicted class for all 20 RTL cases. Report the quality target of test macro-F1 >= 0.85 separately. A simulation that merely runs without output comparison does not verify inference. Report no synthesis, frequency, area, or power result unless actually obtained. The run log supports describing this particular autonomous attempt; a general reliability claim would require repeated independent attempts.
+
+Work by milestones and repair errors without requesting confirmation for decisions already specified. Within the first 20 minutes of work, check data access, toolchain viability, and a minimal Animas compilation/simulation, recording any blockers. Do not consume the entire day installing software without producing processor evidence. Do not stop after writing files: execute tools and collect actual results. If an external dependency is unobtainable, finish independent work and describe exactly what remains missing, with paths and commands, without claiming overall success.
+
+Finish with an English response containing the absolute project path, status of every acceptance criterion, paths to primary results, measured accuracy/macro-F1, RTL/reference matches, memory use, cycles, and limitations. Point explicitly to docs/handoff/README.md and docs/handoff/documentation_instructions.md for the separate documentation stage. Do not invent unknown metrics or substitute estimates for failed results.

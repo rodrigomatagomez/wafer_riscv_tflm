@@ -1,0 +1,20 @@
+{
+  "dataset": "WM-811K",
+  "source_page": "https://www.kaggle.com/datasets/qingyi/wm811k-wafer-map",
+  "download_endpoint": "https://www.kaggle.com/api/v1/datasets/download/qingyi/wm811k-wafer-map",
+  "retrieved_at_utc": "2026-11-07T20:09:35.310511+00:00",
+  "archive": {
+    "name": "wm811k.zip",
+    "bytes": 156686283,
+    "sha256": "0e4bd4316a110a04e475a88071f5e1c7fe4303b12ee53c851d2cae4d995a93e2"
+  },
+  "file": {
+    "path": "data/raw/LSWMD.pkl",
+    "bytes": 2095505977,
+    "sha256": "1d04fccb3dd3176b276878b926b20fead7e077c5751e4d353ea9741a5e7b5c65",
+    "archive_entry": "LSWMD.pkl",
+    "zip_crc32": "7864f531"
+  },
+  "validation": "ZIP member CRC and length checked; SHA-256 recorded locally; no independently published checksum compared.",
+  "processing": "Original pickle extracted only; not deserialized, selected, preprocessed, or used for training."
+}
