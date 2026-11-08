@@ -143,3 +143,33 @@ artifacts** (RTL/tb/sw sources, manifests, models, completed per-case results,
 development records, and the dataset itself) were all verified intact afterward, not
 merely assumed. The project can safely continue; whether the stalled/idle simulation
 needs to be relaunched is a separate decision from this cleanup pass.
+
+## 6. Final cleanup pass (2026-11-08, after the final run was accepted)
+
+By the time the final run (`full20_final_001`) completed and was accepted, storage
+was healthy (85 GiB free, 72% used on `/home`'s 300 GiB filesystem; no `.zwdb` file
+anywhere under the project tree, confirmed via `find . -name '*.zwdb'`), so this pass
+was deliberately minimal and conservative rather than another large sweep:
+
+- Removed `results/rtl_logs/full20_attempt_001_checkpoint.log` (0 bytes). This was
+  the placeholder log for the earlier `full20_attempt_001` run, which was
+  independently confirmed stalled with zero usable output and terminated (see
+  `docs/issues.md`, "ISS-006 (continued)"); the file held no information and no
+  process had it open (confirmed via `lsof`) at the time of removal.
+- Everything else under `results/rtl_logs/` was kept: the per-case logs backing the
+  historical 7/20 and 8/20 partial-match evidence
+  (`results/rtl_comparison_partial_per_case_runs.json`, explicitly preserved as
+  separate baseline evidence, not merged into the final result), the RAM_LITE
+  validation logs (`ramlite_val_*`, unique evidence for `docs/decisions.md` D-007),
+  the benchmark logs (`bench_*`), and the large TRACE=1 diagnostic dump from the
+  `case2_diag_001` stall investigation (`case2_diag_001_idle_at_cycle_5961876.log`,
+  44.5 MiB -- unique evidence for a documented issue, not a duplicate, so not
+  removed despite its size).
+- The final run's own evidence (`results/final_run_evidence/`, `results/rtl_logs/
+  full20_final_001_live.log`) was left in place. The sibling git checkout
+  `wafer_riscv_tflm_1` had the intended final deliverables (not every scratch/
+  historical file) copied into it as a separate, later step -- see
+  `docs/handoff/README.md`'s "Dev directory vs. git checkout" section for the
+  exact file list and what was deliberately left unsynced.
+- No git garbage collection, repacking, or history rewriting was performed. No
+  broad or wildcard deletion was used.

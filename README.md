@@ -55,10 +55,28 @@ python3 ml/model_to_c_array.py
 bash scripts/build_native_reference.sh
 ./build/native_reference/native_reference > build/native_reference/output.jsonl
 
-# 7. Bare-metal firmware, then run on RTL via Animas
+# 7. Bare-metal firmware, then run on RTL. The actual final run
+#    (full20_final_001, see "Final result" below) used a standalone
+#    invocation of the installed Zenith binary, bypassing the Animas MCP
+#    daemon entirely -- this avoids both an Animas-backend-level
+#    run_simulation wall-clock cap and a ZWDB waveform file being written
+#    even when the MCP tool's waveform_mode is requested "off" (neither
+#    problem is specific to this project; see docs/animas_capabilities.md
+#    and docs/storage_cleanup.md). Reproduce with:
 bash scripts/build_firmware.sh
-# load build/firmware/firmware.hex via Animas (+MEMFILE=..., waveform off,
-# tracing off) and capture MMIO_* markers from output/zsim.log
+P=<flatpak-portal-mounted path to this project root>   # NOT the host path;
+                                                        # see docs/handoff/README.md
+flatpak run --branch=1.0.2 --command=zenith com.mifraltech.animaseda \
+    $P/rtl/rv32im_pkg.sv $P/rtl/rv32im_alu.sv $P/rtl/rv32im_regfile.sv \
+    $P/rtl/rv32im_muldiv.sv $P/rtl/rv32im_core.sv $P/rtl/mmio.sv $P/rtl/soc_top.sv \
+    $P/tb/ram_model.sv $P/tb/ram_model_lite.sv $P/tb/soc_tb.sv \
+    -top soc_tb +define+RAM_LITE \
+    +MEMFILE=$P/build/firmware/configs/case_full/firmware.hex \
+    +MAXCYCLES=250000000 +TRACE=0 +RUNID=<new run id> +HEARTBEAT=500000 \
+    > results/rtl_logs/<run id>_live.log 2>&1 &
+# (no --zwdb argument at all; the Animas MCP run_simulation tool with
+# waveform_mode="off" remains available as an alternative but was not the
+# path used for the final accepted run)
 
 # 7b. Optional: build a firmware image restricted to a sub-range of the fixed
 #     20-case manifest (case IDs keep their original global meaning; no
@@ -79,6 +97,19 @@ python3 scripts/compare_results.py --rtl-runs 'results/rtl_runs/*.json' \
     --out results/rtl_comparison.json
 ```
 
+## Final result (2026-11-08)
+
+**All 20/20 RTL-vs-native comparisons match exactly.** One complete,
+from-cycle-0 RTL simulation (run ID `full20_final_001`, standalone Zenith
+invocation, no waveform capture) ran to completion ($finish exit code 0,
+142,937,769 simulated cycles, 01:35:52 wall-clock) with all 20 cases present
+exactly once. `scripts/check_final_run.py` (a strict, independently-written
+single-run acceptance checker) confirms exit code 0: every one of the 20
+cases' four integer scores and predicted class exactly match the native
+TFLM oracle. Full evidence: `results/final_run_evidence/`. The model's own
+quality limitation is unchanged and reported separately below -- RTL
+correctness and model quality are independent claims.
+
 ## Implementation status (see results/status_summary.md for full detail)
 
 | Area | Status |
@@ -89,43 +120,38 @@ python3 scripts/compare_results.py --rtl-runs 'results/rtl_runs/*.json' \
 | RV32IM core + system RTL | implemented, compiles/elaborates cleanly |
 | Processor verification | **passed**: 9/9 directed tests, 1100/1100 random-instruction match |
 | TFLM integration (pinned commit, native reference) | complete |
-| Bare-metal firmware (build + RTL boot + TFLM init) | **passed** through `AllocateTensors()` and the start of `Invoke()` |
-| 20-case RTL vs. native comparison | **incomplete**: 0/20 cases finished on RTL within session time (see below) |
+| Bare-metal firmware (build + RTL boot + TFLM init) | **passed**, all 20 `Invoke()` calls completed |
+| 20-case RTL vs. native comparison | **met**: 20/20 matched, run `full20_final_001`, strict checker exit code 0 |
 | Documentation handoff (`docs/handoff/`) | complete |
 
-The 20-case RTL comparison is the one unmet acceptance criterion. It is not a
-correctness failure: the firmware correctly initializes TFLM and begins real
-`Invoke()` execution on the RTL-simulated processor (confirmed at RTL cycle
-351185); a bounded probe run hit its 5,000,000-cycle safety limit still
-inside case 0's `Invoke()`, establishing that **at least 4,648,815 RTL
-cycles elapsed strictly within `Invoke()`** without it completing (not that
-`Invoke()` as a whole needs more than 5,000,000 cycles -- see
-`docs/issues.md` ISS-004's correction note), and the full 20-case run did
-not complete in the wall-clock time available. See
-`docs/handoff/limitations_and_open_questions.md` for the complete account,
-including real Animas/Zenith tool-connectivity issues encountered while
-orchestrating long-running simulation jobs.
+The 20-case RTL comparison was, for most of this project's history, the one
+unmet acceptance criterion -- not due to a correctness failure but due to
+Animas tool-connectivity, waveform-storage, and wall-clock-cap problems
+encountered while orchestrating a long-running simulation (see
+`docs/handoff/limitations_and_open_questions.md` for that history and
+`results/status_summary.md`'s "Finalization session" section for how each
+was fixed). It is now met; see "Final result" above.
 
-### This continuation's additions (not yet validated on real RTL)
+### This continuation's additions: now validated on real RTL
 
-A later continuation session (2026-11-07/08) added, but could not yet
-exercise against real Animas RTL output because `mcp__animas__*` tool calls
-were returning `MCP error -32602: Invalid request parameters` throughout
-(see `docs/issues.md` ISS-002 recurrence #3 -- a client/session-handshake
-issue, confirmed NOT fixed by an Animas application restart that happened
-independently of this agent):
+A later continuation session (2026-11-07/08) added infrastructure that a
+still-later finalization session (2026-11-08) validated against real RTL
+output and used in the final accepted run:
 
 - `tb/ram_model_lite.sv`: a lightweight alternative RAM testbench model
   (O(1) pending-response tracking vs. the original's O(64) shift register),
   selectable via `+define+RAM_LITE`, derived from the verified
   single-outstanding-request property of `rtl/rv32im_core.sv`. See
-  `docs/decisions.md` D-007. **Not yet validated against the original** --
-  treat as unverified until a real comparison run is recorded.
+  `docs/decisions.md` D-007. **Validated**: exact RETIRE-trace match against
+  the original RAM model under default and injected-backpressure/randomized-
+  latency timing (9/9 directed tests); used (confirmed via the run's own
+  `SIM_BANNER` showing `ram=lite`) in the final accepted run.
 - `CASE_START`/`CASE_COUNT` compile-time firmware range selection (see
   Reproduction step 7b) and the real `scripts/run_rtl_test.py` /
   `scripts/compare_results.py` checker scripts (see Reproduction step 8 and
-  `docs/decisions.md` D-008), self-tested against synthetic logs only so
-  far.
+  `docs/decisions.md` D-008) -- both exercised against real final-run data,
+  not just synthetic logs; `scripts/check_final_run.py` (a new, stricter
+  single-run acceptance checker) is the authoritative final-run verdict.
 - `tb/soc_tb.sv`: added a `SIM_BANNER` startup line, a low-frequency
   `HEARTBEAT` progress marker, and an always-on retired-instruction counter
   independent of `+TRACE=`, without changing default simulation behavior.

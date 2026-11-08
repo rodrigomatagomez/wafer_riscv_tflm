@@ -63,3 +63,22 @@ __pycache__/
 /data/raw/*.zip
 
 *.log.snapshot
+
+# Local environments and generated artifacts
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+/build/
+/output/
+*.zwdb
+*.vcd
+*.fst
+*.wlf
+
+# Large raw data and historical logs
+/data/raw/*.pkl
+/data/raw/*.zip
+*.log
+*.log.snapshot

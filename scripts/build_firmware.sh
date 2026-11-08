@@ -61,14 +61,19 @@ C_SRCS=("$TFLM/third_party/kissfft/kiss_fft.c" "$ROOT/sw/platform_rv32/syscalls.
 
 echo "Compiling ${#CC_SRCS[@]} shared .cc + ${#C_SRCS[@]} shared .c files in parallel (nproc=$(nproc))..."
 : > "$BUILD/build.log"
+# Object reuse is mtime-based, not existence-based: an object is only skipped
+# if it is newer than its own source file. This prevents silently retaining
+# a stale object after its source changes (previously only existence was
+# checked, which could not detect a modified source with an already-present
+# object of the same name).
 printf '%s\n' "${CC_SRCS[@]}" | xargs -P "$(nproc)" -I{} bash -c '
   src="$1"; obj="'"$OBJDIR"'/$(echo "$src" | tr "/" "_").o"
-  [ -f "$obj" ] && exit 0
+  [ -f "$obj" ] && [ "$obj" -nt "$src" ] && exit 0
   riscv64-unknown-elf-g++ '"${CXXFLAGS[*]}"' -c "$src" -o "$obj" 2>> "'"$BUILD"'/build.log"
 ' _ {}
 printf '%s\n' "${C_SRCS[@]}" | xargs -P "$(nproc)" -I{} bash -c '
   src="$1"; obj="'"$OBJDIR"'/$(echo "$src" | tr "/" "_").o"
-  [ -f "$obj" ] && exit 0
+  [ -f "$obj" ] && [ "$obj" -nt "$src" ] && exit 0
   riscv64-unknown-elf-gcc '"${CFLAGS[*]}"' -c "$src" -o "$obj" 2>> "'"$BUILD"'/build.log"
 ' _ {}
 
@@ -90,7 +95,10 @@ riscv64-unknown-elf-g++ "${CXXFLAGS[@]}" "${MAIN_DEFINES[@]}" -c "$MAIN_SRC" -o 
     2>> "$BUILD/build.log" || { tail -80 "$BUILD/build.log"; exit 1; }
 
 CRT0_OBJ="$BUILD/crt0.o"
-[ -f "$CRT0_OBJ" ] || riscv64-unknown-elf-gcc -march=rv32im -mabi=ilp32 -c "$ROOT/sw/startup/crt0.S" -o "$CRT0_OBJ"
+CRT0_SRC="$ROOT/sw/startup/crt0.S"
+if [ ! -f "$CRT0_OBJ" ] || [ "$CRT0_SRC" -nt "$CRT0_OBJ" ]; then
+  riscv64-unknown-elf-gcc -march=rv32im -mabi=ilp32 -c "$CRT0_SRC" -o "$CRT0_OBJ"
+fi
 
 LIBGCC_DIR="$(riscv64-unknown-elf-gcc -march=rv32im -mabi=ilp32 -print-libgcc-file-name | xargs dirname)"
 

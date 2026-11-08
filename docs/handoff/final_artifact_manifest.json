@@ -1,0 +1,187 @@
+{
+  "note": "Final-run artifact manifest for run full20_final_001, generated 2026-11-08 during finalization, AFTER the run completed and was accepted (scripts/check_final_run.py exit code 0). This is a separate document from docs/handoff/artifact_manifest.json, which is an earlier, now-historical preparation-package inventory taken while the RTL run was still in progress -- that file is NOT repurposed as evidence for this final result. All paths are relative to the project root (/home/rmata/Documents/git/wafer_riscv_tflm). All sizes/hashes were computed directly against the files on disk at the time this manifest was written, not copied from any earlier record.",
+  "run_id": "full20_final_001",
+  "generated_at_utc": "2026-11-08T21:05:00Z",
+  "artifacts": [
+    {
+      "path": "results/final_run_evidence/README.md",
+      "role": "evidence directory index",
+      "bytes": 3405,
+      "sha256": "914892941b9d369d5653d36ffa77d30d9e6329f90802d969dd32d941c16f9f08"
+    },
+    {
+      "path": "results/final_run_evidence/full20_final_001_raw_log.txt.gz",
+      "role": "gzip of the complete, unmodified simulation stdout/stderr capture",
+      "bytes": 5613,
+      "sha256": "868787715e685983a74f77c719fde5d39275a27dfc08f48446b66c26272e688c"
+    },
+    {
+      "path": "results/final_run_evidence/full20_final_001_run_record.json",
+      "role": "structured per-case parse of the raw log (scripts/run_rtl_test.py output)",
+      "bytes": 9592,
+      "sha256": "68b8eb2e938f6fa4e288de2ea5e376654e9c57f2f0eba644c69b4ddd203ba76a"
+    },
+    {
+      "path": "results/final_run_evidence/full20_final_001_check_report.json",
+      "role": "strict single-run acceptance verdict (scripts/check_final_run.py output); accepted=true, exit_code=0",
+      "bytes": 13926,
+      "sha256": "9288ce0954d3ed9a75733ca70d17bc73807056fbcf45ab895be8637211660723"
+    },
+    {
+      "path": "results/final_run_evidence/full20_final_001_fingerprints.json",
+      "role": "model/firmware/manifest hashes, launch method, banner, timing, final markers",
+      "bytes": 1606,
+      "sha256": "3807df14c10b15c40255909b15a3a3abd81a9882090580a9e2e3dd781d13e6c1"
+    },
+    {
+      "path": "results/final_run_evidence/full20_final_001_firmware_config.json",
+      "role": "build record for the exact firmware simulated",
+      "bytes": 430,
+      "sha256": "05d08f46c587c47a6d0d7dd19995370695639bde62a60226a546f33ddbebce0f"
+    },
+    {
+      "path": "results/final_run_evidence/full20_final_001_firmware.elf",
+      "role": "linked firmware binary actually simulated",
+      "bytes": 1205788,
+      "sha256": "622d18164ee3c80540ca460547340246b989e689aad70ed714d4f59e8d192be5"
+    },
+    {
+      "path": "results/final_run_evidence/full20_final_001_firmware.hex",
+      "role": "Verilog $readmemh hex image actually loaded by the testbench",
+      "bytes": 1992024,
+      "sha256": "8d3e03088fa25e6ff1baf28788a431846002e3470020efa796297b7995196583"
+    },
+    {
+      "path": "results/final_run_evidence/full20_final_001_firmware.map",
+      "role": "linker map",
+      "bytes": 1074435,
+      "sha256": "38cd70d9279f8dc21c8f1024b3a3cf959a01d49805f9d1883469039fc2153803"
+    },
+    {
+      "path": "results/final_run_evidence/full20_final_001_firmware.size",
+      "role": "text/data/bss size report",
+      "bytes": 178,
+      "sha256": "f2f1510160a1515ecbb3816f0d2ff177690c82cbb0d31ebd534de6e811052f28"
+    },
+    {
+      "path": "results/final_run_evidence/full20_final_001_firmware.dis",
+      "role": "full disassembly",
+      "bytes": 10395968,
+      "sha256": "e1dbe9bf4fc1d69d81e344aabea381aaa88294293f3760d2ae755f02f45b3d66"
+    },
+    {
+      "path": "results/final_run_evidence/native_reference_output.jsonl",
+      "role": "native TFLM oracle per-case output used for this comparison",
+      "bytes": 1315,
+      "sha256": "1472c4df9df11857f5563ebc0f59c67730e56897d4675e7a22499744c480ae8e"
+    },
+    {
+      "path": "results/final_run_evidence/native_reference_provenance.json",
+      "role": "native oracle build/provenance record",
+      "bytes": 1143,
+      "sha256": "16b0fb394316b37bdd8d2c3c29377b109dabaeb5462835ae8cf9b3ad2211d9bc"
+    },
+    {
+      "path": "results/rtl_comparison.json",
+      "role": "authoritative 20/20 comparison result, generated from full20_final_001 alone",
+      "bytes": 12821,
+      "sha256": "e6f329f4ed240c833001cbd099e602eaac3ea41d152f289676ff3af4fb3b56e1"
+    },
+    {
+      "path": "results/status_summary.md",
+      "role": "factual implementation record, updated with the FINAL RESULT section",
+      "bytes": 16178,
+      "sha256": "8151edc4eca0288bfc41b734be9b71ddb911059817592b903ff9593fe3ceae7d"
+    },
+    {
+      "path": "results/demo.html",
+      "role": "demonstration page showing final RTL outputs for all 20 cases, including misclassifications",
+      "bytes": 265170,
+      "sha256": "a17d23d304f8ac16234f6c4c505879186c494716def5d96e3af990e83533c67d"
+    },
+    {
+      "path": "README.md",
+      "role": "project entry point, updated with the final result and real reproduction command",
+      "bytes": 8625,
+      "sha256": "080e2ab80b3f8fe6e7c43517ffd31c7d5391104d0eb6c68203bf29964ed1a84b"
+    },
+    {
+      "path": "docs/decisions.md",
+      "role": "design-decision log, includes D-009/D-010 for the finalization fixes",
+      "bytes": 25661,
+      "sha256": "a456c8020162ed6ff6133ca39b713f7a665bc76e8dc64603d87f068a261eca54"
+    },
+    {
+      "path": "docs/issues.md",
+      "role": "bug/issue log, includes ISS-008/ISS-009 for the finalization fixes",
+      "bytes": 36246,
+      "sha256": "85d8594a4debdedc9dac60536a288a9dd74f325ed81ea042ff61d80f057ea4a4"
+    },
+    {
+      "path": "docs/development_log.jsonl",
+      "role": "chronological event log, includes E042/E043 for the finalization and final run",
+      "bytes": 33587,
+      "sha256": "aad000589aff94d4664423f154394a6dc77034f1f16693d65de5cd1ff2944acd"
+    },
+    {
+      "path": "docs/experiments.jsonl",
+      "role": "per-run experiment log, includes the full20_final_001 entry",
+      "bytes": 17389,
+      "sha256": "37c9cf03c26836779f782b10d37d078baeadebab4620a3c234f729ac6a77544e"
+    },
+    {
+      "path": "docs/handoff/README.md",
+      "role": "handoff entry point, updated with the FINAL RESULT section",
+      "bytes": 7974,
+      "sha256": "846007269e82cb006b098f0cb5c636ecf74ac99e07f9318750bfc9f66d1e7c1b"
+    },
+    {
+      "path": "docs/handoff/claims_evidence.csv",
+      "role": "claim-to-evidence table, includes new claim C023",
+      "bytes": 9277,
+      "sha256": "c7515087924dbe8456a015802ab5b1b2c820308746f2e102457f1749046d3de4"
+    },
+    {
+      "path": "docs/handoff/limitations_and_open_questions.md",
+      "role": "limitations record, updated with the finalization outcome",
+      "bytes": 13479,
+      "sha256": "92d15e7d98f6e15d68c0809946c80cd93b7d1bcdd5f72b7a459ed78c4160922c"
+    },
+    {
+      "path": "docs/handoff/documentation_instructions.md",
+      "role": "instructions for the next AI session, updated with the final result",
+      "bytes": 7961,
+      "sha256": "69ff78f4fd6ad11abcd51830a86b48e872cd65343ee8af488ddc132507165e5c"
+    },
+    {
+      "path": "scripts/check_final_run.py",
+      "role": "strict single-run acceptance checker used to accept this result",
+      "bytes": 15406,
+      "sha256": "fed7c23c7205a32b0958c6ae719bfbc6042fe16bde6f44a4dd38dc59b9807b1a"
+    },
+    {
+      "path": "scripts/compare_results.py",
+      "role": "aggregate checker, fixed exit-code behavior this session",
+      "bytes": 11278,
+      "sha256": "292f199e4c0e36c463d99cb6636edb1974ad45b0aeb19f90105327f461e9de96"
+    },
+    {
+      "path": "scripts/run_rtl_test.py",
+      "role": "log-to-run-record parser, used to produce the final run record",
+      "bytes": 12167,
+      "sha256": "70279acc79da62acfd9704e0ded85469f55377d1fc5b7d383f5aeaa5b19de5f0"
+    },
+    {
+      "path": "scripts/build_firmware.sh",
+      "role": "firmware build script, fixed to mtime-aware object reuse this session",
+      "bytes": 6874,
+      "sha256": "05e6dcf82926ce0ddbeb71373087e97c0e8a0c6888f9be2eb353e97106f3ffe3"
+    },
+    {
+      "path": "build/firmware/configs/case_full/firmware_config.json",
+      "role": "canonical (non-copied) location of the same firmware build config; identical content to the copy in results/final_run_evidence/",
+      "bytes": 430,
+      "sha256": "05d08f46c587c47a6d0d7dd19995370695639bde62a60226a546f33ddbebce0f"
+    }
+  ]
+}

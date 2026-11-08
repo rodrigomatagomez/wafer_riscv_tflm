@@ -21,7 +21,13 @@ x86 reference oracle and (b) bare-metal RV32IM firmware that runs on the
 RTL-simulated processor through Animas/Zenith. Check
 docs/handoff/limitations_and_open_questions.md for whether the full
 20-case RTL-vs-native comparison finished by the time implementation work
-ended -- do not assume it did.
+ended -- do not assume it did. (As of the 2026-11-08 finalization, it did:
+all 20 cases matched the native oracle exactly in run `full20_final_001`,
+verified by `scripts/check_final_run.py` exit code 0 -- see
+`results/final_run_evidence/`. Still read the limitations file yourself
+rather than taking this parenthetical as a substitute for checking the
+evidence; it also tells you about the model's own unmet quality target,
+which this RTL result does not change.)
 
 ## Reading order
 

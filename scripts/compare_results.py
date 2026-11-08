@@ -211,8 +211,15 @@ def main():
                  "output agreement. Agreement (MATCH) requires an exact match of all four scores and "
                  "the predicted class against results/native_reference/output.jsonl for that case_id."),
     }
-    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.out).write_text(json.dumps(out, indent=2) + "\n")
+    # Atomic write: build the full JSON in memory, write to a sibling temp file,
+    # then rename -- a quota/disk failure mid-write cannot leave a truncated
+    # results/rtl_comparison.json in place (see docs/storage_cleanup.md for the
+    # incident that motivated this).
+    out_path = Path(args.out)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = out_path.with_suffix(out_path.suffix + ".tmp")
+    tmp_path.write_text(json.dumps(out, indent=2) + "\n")
+    tmp_path.replace(out_path)
     print(f"Wrote {args.out}")
     print(f"  matched={matched_count} mismatched={mismatched_count} "
           f"incomplete={incomplete_count} not_run={not_run_count} "
@@ -220,6 +227,30 @@ def main():
     if provenance_conflicts:
         print(f"  WARNING: {len(provenance_conflicts)} run file(s) rejected for provenance problems "
               f"(see provenance.rejected_runs_provenance_conflicts in output)", file=sys.stderr)
+
+    # Exit code reflects the actual acceptance verdict -- this script must not
+    # exit 0 merely because it finished writing a report. Per
+    # claude_implementation_prompt.txt Section 8 / this continuation's explicit
+    # correction: a caller (e.g. a CI-style gate) must be able to trust the
+    # exit code alone.
+    if provenance_conflicts:
+        print("EXIT 3: one or more contributing run files were rejected for provenance problems",
+              file=sys.stderr)
+        sys.exit(3)
+    if duplicate_conflicts:
+        print("EXIT 3: duplicate/conflicting results for the same case_id across runs",
+              file=sys.stderr)
+        sys.exit(3)
+    if mismatched_count:
+        print(f"EXIT 1: {mismatched_count} case(s) mismatched against the native oracle",
+              file=sys.stderr)
+        sys.exit(1)
+    if matched_count != n_cases:
+        print(f"EXIT 2: incomplete -- {matched_count}/{n_cases} matched, "
+              f"{incomplete_count} incomplete, {not_run_count} not run", file=sys.stderr)
+        sys.exit(2)
+    print(f"EXIT 0: all {n_cases}/{n_cases} cases matched")
+    sys.exit(0)
 
 
 if __name__ == "__main__":

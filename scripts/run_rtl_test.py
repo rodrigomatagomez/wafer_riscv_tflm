@@ -24,6 +24,17 @@ import re
 import sys
 from pathlib import Path
 
+
+def atomic_write_json(path, obj):
+    """Write JSON via a sibling temp file + rename so a mid-write failure
+    (e.g. disk quota exhaustion, see docs/storage_cleanup.md) cannot leave a
+    truncated file in place of a previously-valid one."""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(obj, indent=2) + "\n")
+    tmp.replace(path)
+
 RE_BANNER = re.compile(
     r"^SIM_BANNER run_id=(\S+) memfile=(\S+) trace=(\d+) maxcycles=(\d+) "
     r"ram=(\S+) fixedlat=(\d+) readywait=(\d+) randwait=(\d+) heartbeat=(\d+)")
@@ -276,8 +287,7 @@ def main():
         "parsed": parsed,
     }
     out_path = Path(args.out)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(record, indent=2) + "\n")
+    atomic_write_json(out_path, record)
     print(f"Wrote {out_path}")
     print(f"  outcome: {parsed['outcome']}")
     print(f"  cases parsed: {len(parsed['cases'])}")

@@ -1,0 +1,9 @@
+{
+  "config_tag": "case_full",
+  "case_start": 0,
+  "case_count_requested": "null",
+  "elf_path": "/home/rmata/Documents/git/wafer_riscv_tflm/build/firmware/configs/case_full/firmware.elf",
+  "elf_sha256": "622d18164ee3c80540ca460547340246b989e689aad70ed714d4f59e8d192be5",
+  "hex_path": "/home/rmata/Documents/git/wafer_riscv_tflm/build/firmware/configs/case_full/firmware.hex",
+  "build_timestamp_utc": "2026-11-08T19:13:02Z"
+}

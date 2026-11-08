@@ -1,13 +1,17 @@
 {
   "schema": "compare_results.py output, see scripts/compare_results.py",
   "generated_by": "scripts/compare_results.py",
+  "final_run_id": "full20_final_001",
+  "final_run_strict_checker_report": "results/final_run_evidence/full20_final_001_check_report.json",
+  "final_run_strict_checker_exit_code": 0,
+  "note_historical_evidence": "This file reflects ONLY the single final run full20_final_001 (20/20 matched). Earlier historical partial evidence (7/20 and 8/20 matched across multiple per-case runs, and a prior 0/20 stalled attempt) is preserved separately and must not be confused with this final result -- see results/rtl_comparison_partial_per_case_runs.json and docs/development_log.jsonl for that history.",
   "n_cases": 20,
-  "status": "incomplete",
+  "status": "complete_all_match",
   "summary_counts": {
-    "matched": 7,
+    "matched": 20,
     "mismatched": 0,
     "incomplete": 0,
-    "not_run": 13,
+    "not_run": 0,
     "duplicate_conflicts": 0
   },
   "provenance": {
@@ -38,11 +42,11 @@
       "rtl_predicted_class": 2,
       "confirmed_by_runs": [
         {
-          "run_id": "case0_attempt_001",
-          "run_file": "results/rtl_logs/case0_attempt_001.run.json"
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
         }
       ],
-      "invoke_elapsed_cycles": 7031518,
+      "invoke_elapsed_cycles": 7031511,
       "status": "MATCH"
     },
     {
@@ -65,8 +69,8 @@
       "rtl_predicted_class": 0,
       "confirmed_by_runs": [
         {
-          "run_id": "cases1_19_attempt_001_checkpoint",
-          "run_file": "results/rtl_logs/cases1_19_attempt_001_checkpoint.run.json"
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
         }
       ],
       "invoke_elapsed_cycles": 7031497,
@@ -92,8 +96,8 @@
       "rtl_predicted_class": 0,
       "confirmed_by_runs": [
         {
-          "run_id": "case2_attempt_003",
-          "run_file": "results/rtl_logs/case2_attempt_003.run.json"
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
         }
       ],
       "invoke_elapsed_cycles": 7031504,
@@ -119,11 +123,11 @@
       "rtl_predicted_class": 0,
       "confirmed_by_runs": [
         {
-          "run_id": "case3_attempt_001",
-          "run_file": "results/rtl_logs/case3_attempt_001.run.json"
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
         }
       ],
-      "invoke_elapsed_cycles": 7031511,
+      "invoke_elapsed_cycles": 7031504,
       "status": "MATCH"
     },
     {
@@ -146,11 +150,11 @@
       "rtl_predicted_class": 0,
       "confirmed_by_runs": [
         {
-          "run_id": "case4_attempt_001",
-          "run_file": "results/rtl_logs/case4_attempt_001.run.json"
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
         }
       ],
-      "invoke_elapsed_cycles": 7031511,
+      "invoke_elapsed_cycles": 7031497,
       "status": "MATCH"
     },
     {
@@ -173,11 +177,11 @@
       "rtl_predicted_class": 1,
       "confirmed_by_runs": [
         {
-          "run_id": "case5_attempt_001",
-          "run_file": "results/rtl_logs/case5_attempt_001.run.json"
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
         }
       ],
-      "invoke_elapsed_cycles": 7031518,
+      "invoke_elapsed_cycles": 7031511,
       "status": "MATCH"
     },
     {
@@ -200,11 +204,11 @@
       "rtl_predicted_class": 1,
       "confirmed_by_runs": [
         {
-          "run_id": "case6_attempt_001",
-          "run_file": "results/rtl_logs/case6_attempt_001.run.json"
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
         }
       ],
-      "invoke_elapsed_cycles": 7031518,
+      "invoke_elapsed_cycles": 7031511,
       "status": "MATCH"
     },
     {
@@ -218,7 +222,21 @@
         35
       ],
       "native_predicted_class": 1,
-      "status": "NOT_RUN"
+      "rtl_scores": [
+        -6,
+        106,
+        32,
+        35
+      ],
+      "rtl_predicted_class": 1,
+      "confirmed_by_runs": [
+        {
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031476,
+      "status": "MATCH"
     },
     {
       "case_id": 8,
@@ -231,7 +249,21 @@
         27
       ],
       "native_predicted_class": 1,
-      "status": "NOT_RUN"
+      "rtl_scores": [
+        1,
+        103,
+        27,
+        27
+      ],
+      "rtl_predicted_class": 1,
+      "confirmed_by_runs": [
+        {
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031483,
+      "status": "MATCH"
     },
     {
       "case_id": 9,
@@ -244,7 +276,21 @@
         41
       ],
       "native_predicted_class": 1,
-      "status": "NOT_RUN"
+      "rtl_scores": [
+        -10,
+        110,
+        24,
+        41
+      ],
+      "rtl_predicted_class": 1,
+      "confirmed_by_runs": [
+        {
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031469,
+      "status": "MATCH"
     },
     {
       "case_id": 10,
@@ -257,7 +303,21 @@
         51
       ],
       "native_predicted_class": 2,
-      "status": "NOT_RUN"
+      "rtl_scores": [
+        29,
+        22,
+        58,
+        51
+      ],
+      "rtl_predicted_class": 2,
+      "confirmed_by_runs": [
+        {
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
     },
     {
       "case_id": 11,
@@ -270,7 +330,21 @@
         40
       ],
       "native_predicted_class": 0,
-      "status": "NOT_RUN"
+      "rtl_scores": [
+        66,
+        -16,
+        45,
+        40
+      ],
+      "rtl_predicted_class": 0,
+      "confirmed_by_runs": [
+        {
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
     },
     {
       "case_id": 12,
@@ -283,7 +357,21 @@
         58
       ],
       "native_predicted_class": 2,
-      "status": "NOT_RUN"
+      "rtl_scores": [
+        23,
+        16,
+        60,
+        58
+      ],
+      "rtl_predicted_class": 2,
+      "confirmed_by_runs": [
+        {
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031504,
+      "status": "MATCH"
     },
     {
       "case_id": 13,
@@ -296,7 +384,21 @@
         40
       ],
       "native_predicted_class": 2,
-      "status": "NOT_RUN"
+      "rtl_scores": [
+        11,
+        46,
+        51,
+        40
+      ],
+      "rtl_predicted_class": 2,
+      "confirmed_by_runs": [
+        {
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031497,
+      "status": "MATCH"
     },
     {
       "case_id": 14,
@@ -309,7 +411,21 @@
         37
       ],
       "native_predicted_class": 2,
-      "status": "NOT_RUN"
+      "rtl_scores": [
+        30,
+        24,
+        48,
+        37
+      ],
+      "rtl_predicted_class": 2,
+      "confirmed_by_runs": [
+        {
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
     },
     {
       "case_id": 15,
@@ -322,7 +438,21 @@
         43
       ],
       "native_predicted_class": 2,
-      "status": "NOT_RUN"
+      "rtl_scores": [
+        39,
+        11,
+        49,
+        43
+      ],
+      "rtl_predicted_class": 2,
+      "confirmed_by_runs": [
+        {
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
     },
     {
       "case_id": 16,
@@ -335,7 +465,21 @@
         49
       ],
       "native_predicted_class": 2,
-      "status": "NOT_RUN"
+      "rtl_scores": [
+        41,
+        10,
+        49,
+        49
+      ],
+      "rtl_predicted_class": 2,
+      "confirmed_by_runs": [
+        {
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
     },
     {
       "case_id": 17,
@@ -348,7 +492,21 @@
         65
       ],
       "native_predicted_class": 3,
-      "status": "NOT_RUN"
+      "rtl_scores": [
+        10,
+        36,
+        47,
+        65
+      ],
+      "rtl_predicted_class": 3,
+      "confirmed_by_runs": [
+        {
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
     },
     {
       "case_id": 18,
@@ -361,7 +519,21 @@
         63
       ],
       "native_predicted_class": 3,
-      "status": "NOT_RUN"
+      "rtl_scores": [
+        19,
+        31,
+        43,
+        63
+      ],
+      "rtl_predicted_class": 3,
+      "confirmed_by_runs": [
+        {
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
     },
     {
       "case_id": 19,
@@ -374,7 +546,21 @@
         65
       ],
       "native_predicted_class": 3,
-      "status": "NOT_RUN"
+      "rtl_scores": [
+        41,
+        -9,
+        63,
+        65
+      ],
+      "rtl_predicted_class": 3,
+      "confirmed_by_runs": [
+        {
+          "run_id": "full20_final_001",
+          "run_file": "results/final_run_evidence/full20_final_001_run_record.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
     }
   ],
   "note": "A contributing run's own MMIO_STATUS=1 means that run's firmware finished its configured case range without an execution error; it does not by itself establish output agreement. Agreement (MATCH) requires an exact match of all four scores and the predicted class against results/native_reference/output.jsonl for that case_id."

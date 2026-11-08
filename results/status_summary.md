@@ -6,6 +6,40 @@ This is a factual implementation record (prompt Section 9), not the formal
 paper. It states measured results, failures, and incomplete acceptance
 criteria plainly.
 
+## FINAL RESULT (2026-11-08): all 20/20 RTL-vs-native cases match
+
+A later finalization pass (same model, same frozen 20 fixed comparison
+cases, same firmware source, no retraining and no easier inputs) launched
+one new, complete, from-cycle-0 RTL simulation, run ID `full20_final_001`,
+via a standalone Zenith invocation that bypasses the Animas MCP daemon
+entirely (removing both the earlier wall-clock cap and the waveform-storage
+problem described below). **The run completed on its own
+(`$finish exit code 0` at simulated cycle 142,937,769, wall-clock 01:35:52)
+with all 20 cases present exactly once, and a strict, independently-written
+acceptance checker (`scripts/check_final_run.py`) confirms an exact match
+of all four integer scores and the predicted class, for every one of the 20
+cases, against the native TFLM oracle** (`exit_code 0`,
+`"ACCEPTED: ALL 20/20 CASES MATCH"`). Complete evidence is in
+`results/final_run_evidence/` (see its `README.md`); the authoritative
+`results/rtl_comparison.json` now reflects this run alone, not merged with
+any earlier historical partial evidence (preserved separately in
+`results/rtl_comparison_partial_per_case_runs.json`).
+
+This supersedes every "incomplete"/"not met"/"0 of 20"/"blocked on Animas
+access" statement below, which describes the state at an earlier point in
+the same project before the launch/storage/checker problems described in
+those sections were fixed. The rest of this document is left intact as the
+real historical record of how that state was reached and resolved; readers
+wanting only the final number should stop at this section.
+
+**The classifier's own quality limitation is unchanged by this RTL result**
+and is reported separately: quantized test macro-F1 = 0.7709 (below the
+0.85 target). On these 20 fixed cases the classifier itself is correct on
+16/20 and wrong on 4 (case_id 0, 11, 15, 16) -- the RTL reproduces the
+native oracle's output exactly even where that output is a
+misclassification. Successful RTL verification does not change this
+pre-existing ML result.
+
 ## Acceptance criteria (prompt Section 11)
 
 | # | Criterion | Status | Evidence |
@@ -14,10 +48,10 @@ criteria plainly.
 | 2 | Processor tests passing | **met** | `results/cpu_verification.json`: 9/9 directed tests pass; 1100/1100 random instructions exact-match an independent reference model |
 | 3 | Trained/quantized model | met (produced; quality target not met) | `results/ml_metrics.json` |
 | 4 | Linked firmware | met | `build/firmware/firmware.elf`, fits 1 MiB RAM budget with 64 KiB stack reserved (`results/memory_usage.json`) |
-| 5 | RTL inference (real TFLM Invoke() on RTL) | **partially met** | firmware correctly reaches `AllocateTensors()` success and begins `Invoke()` on RTL (MMIO_MEASURE=1 at cycle 351185); full `Invoke()` completion not observed within session time |
-| 6 | 20/20 RTL vs. native comparisons | **not met** | `results/rtl_comparison.json`: 0/20 cases completed on RTL |
+| 5 | RTL inference (real TFLM Invoke() on RTL) | **met** | all 20 cases' `Invoke()` completed on RTL in run `full20_final_001`; see `results/final_run_evidence/` |
+| 6 | 20/20 RTL vs. native comparisons | **met** | `results/rtl_comparison.json`: 20/20 matched, strict checker exit code 0 |
 | 7 | Measured ML metrics | met | `results/ml_metrics.json` |
-| 8 | Demonstration | met (with explicit RTL-incomplete labeling) | `results/demo.html` |
+| 8 | Demonstration | met (final RTL outputs, including misclassifications) | `results/demo.html` |
 | 9 | Complete documentation handoff | met | `docs/handoff/` |
 
 ## Measured results
@@ -170,6 +204,56 @@ acceptance-criteria row in the table above, pending real RTL access:
   validation, a bounded throughput benchmark, completing case 0's
   `Invoke()`, and the remaining 19-case sweep) remains blocked on this
   external connectivity issue as of this writing.**
+
+## Finalization session (2026-11-08): Animas access restored, run completed
+
+A later finalization session resolved the blockers described in the
+continuation section above and obtained the final result stated at the top
+of this document:
+
+- **Animas MCP connectivity was restored** (no longer `-32602`); `run_simulation`
+  tool calls worked again. However, two further problems were found and
+  fixed before a trustworthy full run was possible:
+  - `waveform_mode: "off"` was found **not reliably sufficient** to prevent
+    a large ZWDB waveform file from being generated (an 8.1 GiB stale file
+    from an earlier run was found and removed after confirming via
+    `/proc/*/fd` that no process had it open -- see `docs/storage_cleanup.md`).
+    Fixed by discovering and validating a standalone invocation of the same
+    installed Zenith binary (`flatpak run --branch=1.0.2 --command=zenith
+    com.mifraltech.animaseda ...`, no `--zwdb` argument at all), confirmed
+    via pilot runs to produce zero waveform output and functionally
+    identical results (3 regression tests matching previously-recorded
+    cycle counts exactly).
+  - A reported "wall-clock cap (30 min)" was tracked down to an
+    Animas-backend-level `timeout_seconds` on the `run_simulation` tool
+    call, not a Zenith simulator limit (confirmed via the installed
+    binary's own `--help`: Zenith has no wall-clock-seconds flag). The same
+    standalone invocation above also removes this limit entirely, since a
+    backgrounded host process has no such cap.
+  - `scripts/compare_results.py` was found to always exit 0 regardless of
+    actual match count (a reporting bug, not a simulation bug) -- fixed to
+    exit non-zero on any incomplete/mismatched/provenance-conflicting
+    result, and a new, much stricter single-run acceptance checker,
+    `scripts/check_final_run.py`, was written and validated against
+    synthetic good/malformed logs before being trusted on real data.
+  - `scripts/build_firmware.sh`'s object-reuse check was existence-only
+    (could silently keep a stale object after a source change); fixed to
+    be mtime-aware. One full clean rebuild from an empty `build/firmware/`
+    confirmed a byte-identical ELF hash to every prior build
+    (`622d1816...`), establishing reproducibility rather than assuming it.
+- With these fixed, **one new, complete, unlimited-wall-clock run**
+  (`full20_final_001`) was launched from cycle 0 against the exact same
+  frozen firmware/model/20-case manifest, using the validated lightweight
+  RAM model (`ram=lite` confirmed in the run's own `SIM_BANNER`) and
+  `TRACE=0`. It completed in 142,937,769 simulated cycles / 01:35:52
+  wall-clock, with all 20 cases present exactly once and an exact match
+  against the native oracle for every case (`scripts/check_final_run.py`
+  exit code 0). Full evidence: `results/final_run_evidence/`.
+- The 8/20 (and earlier 7/20) historical partial-match evidence from
+  per-case runs made during the still-blocked period is preserved
+  separately in `results/rtl_comparison_partial_per_case_runs.json` and was
+  **not** merged into this final 20/20 result -- the final result comes
+  entirely from the single `full20_final_001` run.
 
 ## Entry points for the next (documentation) stage
 

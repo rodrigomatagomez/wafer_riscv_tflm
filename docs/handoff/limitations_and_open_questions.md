@@ -13,7 +13,24 @@ later writer should check before asserting anything was "achieved."
   change, no label change, no test-set substitution, no open-ended
   architecture search beyond the prompt's explicit A-then-B protocol.
 
-## As-of-handoff status of the 20-case RTL vs. native comparison
+## Update (2026-11-08 finalization): the 20-case comparison is now complete
+
+This section originally described an as-of-handoff in-progress state and
+explicitly instructed a later reader to check `results/rtl_comparison.json`
+for the actual outcome rather than assume completion either way. That
+check has now been done: a later finalization session fixed the
+waveform/wall-clock/checker problems described below and obtained a
+genuine final result. **Run `full20_final_001` completed all 20 cases
+(142,937,769 simulated cycles, 01:35:52 wall-clock, `$finish` exit code 0),
+and `scripts/check_final_run.py` confirms an exact match of all four
+scores and the predicted class for every case against the native oracle
+(checker exit code 0).** See `results/final_run_evidence/` for complete
+evidence and `docs/decisions.md` D-009/D-010 for how the blocking problems
+were resolved. The 20-case RTL-vs-native criterion is **met**, not
+incomplete. The rest of this section is left intact below as the accurate
+historical record of the state at the time of the original handoff.
+
+## As-of-ORIGINAL-handoff status of the 20-case RTL vs. native comparison (historical; see update above)
 
 - The **native x86 TFLM reference oracle** (build/native_reference/) ran
   all 20 cases successfully (build/native_reference/output.jsonl has 20
@@ -31,7 +48,7 @@ later writer should check before asserting anything was "achieved."
   the actual final outcome; if those files are absent or still show an
   in-progress state, the 20-case criterion must be reported as incomplete,
   with however many cases DID complete reported honestly (not rounded up
-  to 20/20).
+  to 20/20). **(Resolved, see the update above: all 20 completed and matched.)**
 - Each `Invoke()` call on the RTL is genuinely expensive: the first
   layer's FULLY_CONNECTED op (2048 input features x 32 hidden units =
   65536 multiply-accumulate operations) alone requires roughly that many

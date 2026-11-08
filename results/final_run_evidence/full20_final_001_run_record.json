@@ -1,0 +1,373 @@
+{
+  "run_id": "full20_final_001",
+  "invocation": "standalone: flatpak run --branch=1.0.2 --command=zenith com.mifraltech.animaseda <portal-path rtl/*.sv tb/*.sv> -top soc_tb +define+RAM_LITE +MEMFILE=<portal-path>/build/firmware/configs/case_full/firmware.hex +MAXCYCLES=250000000 +TRACE=0 +RUNID=full20_final_001 +HEARTBEAT=500000 (no --zwdb; bypasses Animas MCP daemon entirely for unlimited wall-clock and zero waveform generation)",
+  "started_at_utc": "2026-11-08T19:18:33Z",
+  "finished_at_utc": "2026-11-08T20:54:27Z",
+  "log_path": "results/rtl_logs/full20_final_001_live.log",
+  "log_sha256": "e3c2e4d83755d5ea1286abf704110af0e5780100f5f6715adf3c5a8d7270793e",
+  "firmware_elf_sha256": "622d18164ee3c80540ca460547340246b989e689aad70ed714d4f59e8d192be5",
+  "firmware_config": {
+    "config_tag": "case_full",
+    "case_start": 0,
+    "case_count_requested": "null",
+    "elf_path": "/home/rmata/Documents/git/wafer_riscv_tflm/build/firmware/configs/case_full/firmware.elf",
+    "elf_sha256": "622d18164ee3c80540ca460547340246b989e689aad70ed714d4f59e8d192be5",
+    "hex_path": "/home/rmata/Documents/git/wafer_riscv_tflm/build/firmware/configs/case_full/firmware.hex",
+    "build_timestamp_utc": "2026-11-08T19:13:02Z"
+  },
+  "model_sha256": "7e11c5faea02c99464d6f939c3b10067bd93a6d72d5e650797f6249755ba69ea",
+  "parsed": {
+    "banner": {
+      "run_id": "full20_final_001",
+      "memfile": "/run/flatpak/doc/d6f0a558/wafer_riscv_tflm/build/firmware/configs/case_full/firmware.hex",
+      "trace": 0,
+      "maxcycles": 250000000,
+      "ram": "lite",
+      "fixedlat": 2,
+      "readywait": 0,
+      "randwait": 0,
+      "heartbeat": 500000
+    },
+    "outcome": "completed_status_ok",
+    "status_marker": {
+      "cycle": 142937769,
+      "value": 1
+    },
+    "sim_timeout_cycle": null,
+    "err_halt": null,
+    "retire_trace": {
+      "line_count": 0,
+      "first_cycle": null,
+      "last_cycle": null
+    },
+    "heartbeat_count": 285,
+    "last_heartbeat": {
+      "cycle": 142500000,
+      "pc": "00050158",
+      "retired": 12384223,
+      "case_id": 19
+    },
+    "mmio_tx_bytes": [
+      {
+        "cycle": 77897,
+        "byte": 49
+      },
+      {
+        "cycle": 78617,
+        "byte": 51
+      },
+      {
+        "cycle": 79313,
+        "byte": 52
+      },
+      {
+        "cycle": 79336,
+        "byte": 54
+      }
+    ],
+    "mmio_tx_ascii": "1346",
+    "cases": [
+      {
+        "case_id": 0,
+        "invoke_start_cycle": 351185,
+        "invoke_end_cycle": 7382696,
+        "invoke_elapsed_cycles": 7031511,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 2,
+        "scores": [
+          47,
+          28,
+          50,
+          14
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 1,
+        "invoke_start_cycle": 7485645,
+        "invoke_end_cycle": 14517142,
+        "invoke_elapsed_cycles": 7031497,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 0,
+        "scores": [
+          79,
+          -17,
+          44,
+          4
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 2,
+        "invoke_start_cycle": 14620077,
+        "invoke_end_cycle": 21651581,
+        "invoke_elapsed_cycles": 7031504,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 0,
+        "scores": [
+          82,
+          -23,
+          33,
+          19
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 3,
+        "invoke_start_cycle": 21754516,
+        "invoke_end_cycle": 28786020,
+        "invoke_elapsed_cycles": 7031504,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 0,
+        "scores": [
+          91,
+          -34,
+          32,
+          19
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 4,
+        "invoke_start_cycle": 28888955,
+        "invoke_end_cycle": 35920452,
+        "invoke_elapsed_cycles": 7031497,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 0,
+        "scores": [
+          46,
+          19,
+          34,
+          27
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 5,
+        "invoke_start_cycle": 36023387,
+        "invoke_end_cycle": 43054898,
+        "invoke_elapsed_cycles": 7031511,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 1,
+        "scores": [
+          5,
+          86,
+          34,
+          31
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 6,
+        "invoke_start_cycle": 43157847,
+        "invoke_end_cycle": 50189358,
+        "invoke_elapsed_cycles": 7031511,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 1,
+        "scores": [
+          10,
+          79,
+          32,
+          34
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 7,
+        "invoke_start_cycle": 50292307,
+        "invoke_end_cycle": 57323783,
+        "invoke_elapsed_cycles": 7031476,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 1,
+        "scores": [
+          -6,
+          106,
+          32,
+          35
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 8,
+        "invoke_start_cycle": 57426732,
+        "invoke_end_cycle": 64458215,
+        "invoke_elapsed_cycles": 7031483,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 1,
+        "scores": [
+          1,
+          103,
+          27,
+          27
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 9,
+        "invoke_start_cycle": 64561164,
+        "invoke_end_cycle": 71592633,
+        "invoke_elapsed_cycles": 7031469,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 1,
+        "scores": [
+          -10,
+          110,
+          24,
+          41
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 10,
+        "invoke_start_cycle": 71695582,
+        "invoke_end_cycle": 78727093,
+        "invoke_elapsed_cycles": 7031511,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 2,
+        "scores": [
+          29,
+          22,
+          58,
+          51
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 11,
+        "invoke_start_cycle": 78830042,
+        "invoke_end_cycle": 85861553,
+        "invoke_elapsed_cycles": 7031511,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 0,
+        "scores": [
+          66,
+          -16,
+          45,
+          40
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 12,
+        "invoke_start_cycle": 85964488,
+        "invoke_end_cycle": 92995992,
+        "invoke_elapsed_cycles": 7031504,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 2,
+        "scores": [
+          23,
+          16,
+          60,
+          58
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 13,
+        "invoke_start_cycle": 93098941,
+        "invoke_end_cycle": 100130438,
+        "invoke_elapsed_cycles": 7031497,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 2,
+        "scores": [
+          11,
+          46,
+          51,
+          40
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 14,
+        "invoke_start_cycle": 100233401,
+        "invoke_end_cycle": 107264912,
+        "invoke_elapsed_cycles": 7031511,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 2,
+        "scores": [
+          30,
+          24,
+          48,
+          37
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 15,
+        "invoke_start_cycle": 107367861,
+        "invoke_end_cycle": 114399372,
+        "invoke_elapsed_cycles": 7031511,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 2,
+        "scores": [
+          39,
+          11,
+          49,
+          43
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 16,
+        "invoke_start_cycle": 114502321,
+        "invoke_end_cycle": 121533832,
+        "invoke_elapsed_cycles": 7031511,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 2,
+        "scores": [
+          41,
+          10,
+          49,
+          49
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 17,
+        "invoke_start_cycle": 121636781,
+        "invoke_end_cycle": 128668292,
+        "invoke_elapsed_cycles": 7031511,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 3,
+        "scores": [
+          10,
+          36,
+          47,
+          65
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 18,
+        "invoke_start_cycle": 128771269,
+        "invoke_end_cycle": 135802780,
+        "invoke_elapsed_cycles": 7031511,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 3,
+        "scores": [
+          19,
+          31,
+          43,
+          63
+        ],
+        "status": "completed"
+      },
+      {
+        "case_id": 19,
+        "invoke_start_cycle": 135905757,
+        "invoke_end_cycle": 142937268,
+        "invoke_elapsed_cycles": 7031511,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 3,
+        "scores": [
+          41,
+          -9,
+          63,
+          65
+        ],
+        "status": "completed"
+      }
+    ],
+    "log_end_cycle_estimate": 142937268
+  }
+}

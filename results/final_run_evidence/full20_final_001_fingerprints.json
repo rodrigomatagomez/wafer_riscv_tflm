@@ -1,0 +1,23 @@
+{
+  "run_id": "full20_final_001",
+  "model_sha256": "7e11c5faea02c99464d6f939c3b10067bd93a6d72d5e650797f6249755ba69ea",
+  "model_path": "models/model_B_int8.tflite",
+  "tflm_commit": "4eaa491c1c8dedd9a3baf421968afd0d5b82f6aa",
+  "comparison_manifest_sha256": "7daab1d1bd4bc503f14d1b7a68c3dc6bfca0a82f3205628708060fc76a6c6411",
+  "comparison_manifest_n_cases": 20,
+  "firmware_elf_sha256": "622d18164ee3c80540ca460547340246b989e689aad70ed714d4f59e8d192be5",
+  "raw_log_sha256": "e3c2e4d83755d5ea1286abf704110af0e5780100f5f6715adf3c5a8d7270793e",
+  "case_range": "0-19 (full manifest, no CASE_START/CASE_COUNT override)",
+  "launch_method": "standalone flatpak zenith invocation (bypasses Animas MCP daemon; no --zwdb)",
+  "sim_banner": "run_id=full20_final_001 trace=0 maxcycles=250000000 ram=lite fixedlat=2 readywait=0 randwait=0 heartbeat=500000",
+  "started_at_utc": "2026-11-08T19:18:33Z",
+  "finished_at_utc": "2026-11-08T20:54:27Z",
+  "wall_clock_seconds_measured": 5754,
+  "wall_clock_as_reported_by_zenith": "01:35:52",
+  "final_cycle": 142937769,
+  "final_status_marker": "MMIO_STATUS cycle=142937769 value=1",
+  "sim_finish_marker": "[sim] $finish at time 1429377725 (exit code 0)",
+  "strict_checker_exit_code": 0,
+  "strict_checker_verdict": "ACCEPTED: ALL 20/20 CASES MATCH (exact scores + predicted class)",
+  "classifier_accuracy_on_these_20_fixed_cases": "16/20 (4 misclassifications: case_id 0, 11, 15, 16 -- RTL exactly reproduces the native oracle's output for these too, including its errors; this is the pre-existing ML quality limitation (test macro-F1=0.7709), not an RTL defect)"
+}
