@@ -3,10 +3,34 @@
 // same 20 deterministic comparison cases as sw/app/main_native.cc, and
 // reports results over the MMIO register file (prompt Section 5) so the
 // testbench can capture them from genuine processor transactions.
+//
+// CASE_START / CASE_COUNT (compile-time, e.g. -DCASE_START=0 -DCASE_COUNT=1):
+// restrict this firmware image to a sub-range of the fixed 20-case
+// manifest, so a single RTL invocation (currently several minutes of
+// wall-clock simulation time per Invoke(), see docs/issues.md ISS-004) can
+// complete one case, or a few, at a time instead of requiring all 20 to
+// finish in one run. MMIO_CASE_ID always carries the case's ORIGINAL
+// global index (0..19) from results/comparison_manifest.json -- it is
+// never re-based to a local 0-based index -- so a partial run's results
+// remain directly comparable to build/native_reference/output.jsonl by
+// case_id. Defaults (no -D flags) reproduce the original full-20-case
+// behavior exactly.
+#ifndef CASE_START
+#define CASE_START 0
+#endif
+#ifndef CASE_COUNT
+#define CASE_COUNT N_COMPARISON_CASES
+#endif
+
 #include <cstring>
 
 #include "wafer_common.h"
 #include "../startup/mmio.h"
+
+static_assert(CASE_START >= 0, "CASE_START must be >= 0");
+static_assert(CASE_COUNT >= 1, "CASE_COUNT must be >= 1");
+static_assert(CASE_START + CASE_COUNT <= N_COMPARISON_CASES,
+              "CASE_START + CASE_COUNT exceeds N_COMPARISON_CASES -- out of range");
 
 // File-scope (true global) objects: constructed unconditionally via
 // crt0.S's .init_array loop. An earlier draft declared these as
@@ -46,7 +70,10 @@ int main() {
   TfLiteTensor* input = interpreter.input(0);
   TfLiteTensor* output = interpreter.output(0);
 
-  for (int i = 0; i < N_COMPARISON_CASES; i++) {
+  // i is the GLOBAL case index (0..N_COMPARISON_CASES-1) throughout --
+  // CASE_START only moves where this loop begins, it never re-bases the
+  // numbering written to MMIO_CASE_ID or used to index comparison_inputs.
+  for (int i = CASE_START; i < CASE_START + CASE_COUNT; i++) {
     MMIO_CASE_ID = static_cast<uint32_t>(i);
     memcpy(input->data.int8, comparison_inputs[i], INPUT_BYTES_PER_CASE);
 

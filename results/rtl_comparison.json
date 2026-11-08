@@ -1,46 +1,381 @@
 {
+  "schema": "compare_results.py output, see scripts/compare_results.py",
+  "generated_by": "scripts/compare_results.py",
+  "n_cases": 20,
   "status": "incomplete",
-  "summary": "The bare-metal RV32IM firmware was built, linked, loaded onto the RTL-simulated processor via Animas/Zenith, and confirmed to correctly initialize the pinned-commit TFLM interpreter (model load, op resolver setup, AllocateTensors() success) and begin real Invoke() execution for comparison case 0. The full 20-case loop did not reach completion (no MMIO_STATUS write observed) within the wall-clock time available in this implementation session. This criterion is reported as genuinely incomplete, per the prompt's explicit instruction to preserve completed cases and mark an unfinished 20-case run as incomplete rather than claim full completion.",
-  "native_reference": {
-    "status": "complete",
-    "all_20_cases_ran": true,
-    "evidence_path": "build/native_reference/output.jsonl",
-    "binary_sha256": "99362c892c1f8f4ed282e2505e5b22bfb7f07f695acbb8fbd41f08dfb6cef864",
-    "model_sha256": "7e11c5faea02c99464d6f939c3b10067bd93a6d72d5e650797f6249755ba69ea"
+  "summary_counts": {
+    "matched": 7,
+    "mismatched": 0,
+    "incomplete": 0,
+    "not_run": 13,
+    "duplicate_conflicts": 0
   },
-  "rtl_firmware": {
-    "status": "started_but_not_completed",
-    "firmware_elf_sha256": "622d18164ee3c80540ca460547340246b989e689aad70ed714d4f59e8d192be5",
-    "model_sha256": "7e11c5faea02c99464d6f939c3b10067bd93a6d72d5e650797f6249755ba69ea",
-    "confirmed_milestones": [
-      "RTL elaborates and runs the firmware ELF (via build/firmware/firmware.hex) with no compile/elaboration errors",
-      "C++ global-scope TFLM objects (resolver, model, interpreter) construct correctly via the project's own crt0.S .init_array loop (after a real bug -- function-local statics with non-trivial constructors silently failing to initialize under this toolchain's guarded-init codegen -- was found and fixed; see docs/issues.md)",
-      "resolver.AddFullyConnected()/AddReshape() execute",
-      "interpreter.AllocateTensors() succeeds (no 'Failed starting model allocation' error observed after the fix)",
-      "MMIO_CASE_ID write observed for case 0",
-      "MMIO_MEASURE=1 write observed at RTL cycle 351185, immediately before the first real Invoke() call"
-    ],
-    "not_observed_within_session_time": [
-      "MMIO_MEASURE=2 (Invoke() completion) for case 0",
-      "Any MMIO_SCORE_*/MMIO_PREDICTED_CLASS write",
-      "MMIO_STATUS write (success or error)"
-    ],
-    "measured_cycle_lower_bound": {
-      "value": 5000000,
-      "unit": "RTL clock cycles",
-      "basis": "One simulation run, configured with +MAXCYCLES=5000000, reached SIM_TIMEOUT (cycle=5000000) while still inside case 0's Invoke() (MMIO_MEASURE never reached value=2). This establishes Invoke() for this model on this core requires MORE than 5,000,000 RTL cycles -- it does not establish an upper bound.",
-      "evidence": "output/zsim.log (snapshot retained for this run); confirmed in /home/rmata/.var/app/com.mifraltech.animaseda/data/animas-eda/logs/animas.log (\"Simulation started\" 2026-11-07T22:36:08.059Z, \"Simulation done\"/rc=0 2026-11-07T22:58:41.215Z)",
-      "measured_throughput": {"rtl_cycles": 5000000, "wall_clock_seconds": 1353, "cycles_per_second": 3696, "source": "Animas application log start/end timestamps for this exact run (authoritative, not shell-polling-derived)"},
-      "engineering_explanation": "The first FULLY_CONNECTED layer is 2048 input features x 32 hidden units = 65536 multiply-accumulate operations. Each multiply on this multicycle core's sequential (shift-add) multiplier takes 32 iterations (~33 cycles), plus per-MAC loop-control/load/accumulate overhead on a non-pipelined core where most instructions retire in roughly 7-11 cycles. This puts a single Invoke() in the multi-million-cycle range as a genuine property of the design (not a simulation artifact); it was not pipelined, cached, or otherwise optimized, consistent with the prompt's 'small, verifiable, reproducible implementation' scope (no accelerators, no pipelining)."
+  "provenance": {
+    "expected_model_sha256": "7e11c5faea02c99464d6f939c3b10067bd93a6d72d5e650797f6249755ba69ea",
+    "native_output_path": "results/native_reference/output.jsonl",
+    "manifest_path": "results/comparison_manifest.json",
+    "rejected_runs_provenance_conflicts": []
+  },
+  "duplicate_conflicts": [],
+  "rows": [
+    {
+      "case_id": 0,
+      "sample_id": 84586,
+      "class_name": "Center",
+      "native_scores": [
+        47,
+        28,
+        50,
+        14
+      ],
+      "native_predicted_class": 2,
+      "rtl_scores": [
+        47,
+        28,
+        50,
+        14
+      ],
+      "rtl_predicted_class": 2,
+      "confirmed_by_runs": [
+        {
+          "run_id": "case0_attempt_001",
+          "run_file": "results/rtl_logs/case0_attempt_001.run.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031518,
+      "status": "MATCH"
     },
-    "cases_completed": 0,
-    "cases_attempted": 1,
-    "comparison_rows": []
-  },
-  "limitations": [
-    "The 20-case RTL-vs-native agreement criterion (prompt Section 11: 'exact agreement with native TFLM on all four integer outputs and the predicted class for all 20 RTL cases') is NOT met as of this snapshot -- 0 of 20 cases completed on RTL.",
-    "At the measured throughput (~3696 RTL cycles/sec), reaching a conservatively-estimated 6-8 million cycles for one complete Invoke() would need on the order of 30-40 additional minutes of wall-clock simulation time beyond the 22.5 minutes already spent reaching 5,000,000 cycles; completing all 20 cases at this rate would need on the order of multiple hours, which was not practical within this implementation session.",
-    "Animas/Zenith simulation throughput for this workload, combined with repeated tool-level connectivity/timeout issues encountered while orchestrating long-running headless simulation jobs in this session (see docs/issues.md ISS-002 and docs/handoff/limitations_and_open_questions.md), consumed most of the time available for this specific milestone.",
-    "This result does not indicate an RTL correctness defect: every processor-level and TFLM-initialization milestone observed up to the point of the timeout was consistent with correct behavior; the limiting factor was wall-clock simulation time for a many-million-cycle workload, not an incorrect output or a crash."
-  ]
+    {
+      "case_id": 1,
+      "sample_id": 85578,
+      "class_name": "Center",
+      "native_scores": [
+        79,
+        -17,
+        44,
+        4
+      ],
+      "native_predicted_class": 0,
+      "rtl_scores": [
+        79,
+        -17,
+        44,
+        4
+      ],
+      "rtl_predicted_class": 0,
+      "confirmed_by_runs": [
+        {
+          "run_id": "cases1_19_attempt_001_checkpoint",
+          "run_file": "results/rtl_logs/cases1_19_attempt_001_checkpoint.run.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031497,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 2,
+      "sample_id": 86381,
+      "class_name": "Center",
+      "native_scores": [
+        82,
+        -23,
+        33,
+        19
+      ],
+      "native_predicted_class": 0,
+      "rtl_scores": [
+        82,
+        -23,
+        33,
+        19
+      ],
+      "rtl_predicted_class": 0,
+      "confirmed_by_runs": [
+        {
+          "run_id": "case2_attempt_003",
+          "run_file": "results/rtl_logs/case2_attempt_003.run.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031504,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 3,
+      "sample_id": 86452,
+      "class_name": "Center",
+      "native_scores": [
+        91,
+        -34,
+        32,
+        19
+      ],
+      "native_predicted_class": 0,
+      "rtl_scores": [
+        91,
+        -34,
+        32,
+        19
+      ],
+      "rtl_predicted_class": 0,
+      "confirmed_by_runs": [
+        {
+          "run_id": "case3_attempt_001",
+          "run_file": "results/rtl_logs/case3_attempt_001.run.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 4,
+      "sample_id": 95994,
+      "class_name": "Center",
+      "native_scores": [
+        46,
+        19,
+        34,
+        27
+      ],
+      "native_predicted_class": 0,
+      "rtl_scores": [
+        46,
+        19,
+        34,
+        27
+      ],
+      "rtl_predicted_class": 0,
+      "confirmed_by_runs": [
+        {
+          "run_id": "case4_attempt_001",
+          "run_file": "results/rtl_logs/case4_attempt_001.run.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 5,
+      "sample_id": 14145,
+      "class_name": "Edge-Ring",
+      "native_scores": [
+        5,
+        86,
+        34,
+        31
+      ],
+      "native_predicted_class": 1,
+      "rtl_scores": [
+        5,
+        86,
+        34,
+        31
+      ],
+      "rtl_predicted_class": 1,
+      "confirmed_by_runs": [
+        {
+          "run_id": "case5_attempt_001",
+          "run_file": "results/rtl_logs/case5_attempt_001.run.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031518,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 6,
+      "sample_id": 14147,
+      "class_name": "Edge-Ring",
+      "native_scores": [
+        10,
+        79,
+        32,
+        34
+      ],
+      "native_predicted_class": 1,
+      "rtl_scores": [
+        10,
+        79,
+        32,
+        34
+      ],
+      "rtl_predicted_class": 1,
+      "confirmed_by_runs": [
+        {
+          "run_id": "case6_attempt_001",
+          "run_file": "results/rtl_logs/case6_attempt_001.run.json"
+        }
+      ],
+      "invoke_elapsed_cycles": 7031518,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 7,
+      "sample_id": 20644,
+      "class_name": "Edge-Ring",
+      "native_scores": [
+        -6,
+        106,
+        32,
+        35
+      ],
+      "native_predicted_class": 1,
+      "status": "NOT_RUN"
+    },
+    {
+      "case_id": 8,
+      "sample_id": 20651,
+      "class_name": "Edge-Ring",
+      "native_scores": [
+        1,
+        103,
+        27,
+        27
+      ],
+      "native_predicted_class": 1,
+      "status": "NOT_RUN"
+    },
+    {
+      "case_id": 9,
+      "sample_id": 20659,
+      "class_name": "Edge-Ring",
+      "native_scores": [
+        -10,
+        110,
+        24,
+        41
+      ],
+      "native_predicted_class": 1,
+      "status": "NOT_RUN"
+    },
+    {
+      "case_id": 10,
+      "sample_id": 3038,
+      "class_name": "Scratch",
+      "native_scores": [
+        29,
+        22,
+        58,
+        51
+      ],
+      "native_predicted_class": 2,
+      "status": "NOT_RUN"
+    },
+    {
+      "case_id": 11,
+      "sample_id": 3940,
+      "class_name": "Scratch",
+      "native_scores": [
+        66,
+        -16,
+        45,
+        40
+      ],
+      "native_predicted_class": 0,
+      "status": "NOT_RUN"
+    },
+    {
+      "case_id": 12,
+      "sample_id": 6854,
+      "class_name": "Scratch",
+      "native_scores": [
+        23,
+        16,
+        60,
+        58
+      ],
+      "native_predicted_class": 2,
+      "status": "NOT_RUN"
+    },
+    {
+      "case_id": 13,
+      "sample_id": 22456,
+      "class_name": "Scratch",
+      "native_scores": [
+        11,
+        46,
+        51,
+        40
+      ],
+      "native_predicted_class": 2,
+      "status": "NOT_RUN"
+    },
+    {
+      "case_id": 14,
+      "sample_id": 25265,
+      "class_name": "Scratch",
+      "native_scores": [
+        30,
+        24,
+        48,
+        37
+      ],
+      "native_predicted_class": 2,
+      "status": "NOT_RUN"
+    },
+    {
+      "case_id": 15,
+      "sample_id": 56,
+      "class_name": "none",
+      "native_scores": [
+        39,
+        11,
+        49,
+        43
+      ],
+      "native_predicted_class": 2,
+      "status": "NOT_RUN"
+    },
+    {
+      "case_id": 16,
+      "sample_id": 2276,
+      "class_name": "none",
+      "native_scores": [
+        41,
+        10,
+        49,
+        49
+      ],
+      "native_predicted_class": 2,
+      "status": "NOT_RUN"
+    },
+    {
+      "case_id": 17,
+      "sample_id": 3576,
+      "class_name": "none",
+      "native_scores": [
+        10,
+        36,
+        47,
+        65
+      ],
+      "native_predicted_class": 3,
+      "status": "NOT_RUN"
+    },
+    {
+      "case_id": 18,
+      "sample_id": 6274,
+      "class_name": "none",
+      "native_scores": [
+        19,
+        31,
+        43,
+        63
+      ],
+      "native_predicted_class": 3,
+      "status": "NOT_RUN"
+    },
+    {
+      "case_id": 19,
+      "sample_id": 6282,
+      "class_name": "none",
+      "native_scores": [
+        41,
+        -9,
+        63,
+        65
+      ],
+      "native_predicted_class": 3,
+      "status": "NOT_RUN"
+    }
+  ],
+  "note": "A contributing run's own MMIO_STATUS=1 means that run's firmware finished its configured case range without an execution error; it does not by itself establish output agreement. Agreement (MATCH) requires an exact match of all four scores and the predicted class against results/native_reference/output.jsonl for that case_id."
 }

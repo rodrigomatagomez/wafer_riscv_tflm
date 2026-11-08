@@ -1,0 +1,96 @@
+{
+  "apf_version": "1",
+  "project": {
+    "name": "test",
+    "description": "",
+    "created": "2026-11-07T05:15:05.791997+00:00",
+    "modified": "2026-11-07T22:45:28.029303+00:00",
+    "id": "9c52d0cd-fe6e-4d80-84cb-ab38f3374f6f"
+  },
+  "sources": [
+    {
+      "path": "rtl/sanity_counter.sv",
+      "role": "rtl",
+      "library": "work"
+    },
+    {
+      "path": "tb/sanity_counter_tb.sv",
+      "role": "simulation",
+      "library": "work"
+    },
+    {
+      "path": "rtl/rv32im_pkg.sv",
+      "role": "rtl",
+      "library": "work"
+    },
+    {
+      "path": "rtl/rv32im_alu.sv",
+      "role": "rtl",
+      "library": "work"
+    },
+    {
+      "path": "rtl/rv32im_regfile.sv",
+      "role": "rtl",
+      "library": "work"
+    },
+    {
+      "path": "rtl/rv32im_muldiv.sv",
+      "role": "rtl",
+      "library": "work"
+    },
+    {
+      "path": "rtl/rv32im_core.sv",
+      "role": "rtl",
+      "library": "work"
+    },
+    {
+      "path": "rtl/mmio.sv",
+      "role": "rtl",
+      "library": "work"
+    },
+    {
+      "path": "rtl/soc_top.sv",
+      "role": "rtl",
+      "library": "work"
+    },
+    {
+      "path": "tb/ram_model.sv",
+      "role": "simulation",
+      "library": "work"
+    },
+    {
+      "path": "tb/soc_tb.sv",
+      "role": "simulation",
+      "library": "work"
+    }
+  ],
+  "folders": [],
+  "settings": {
+    "top_module": "soc_top",
+    "sim_top": "tb/soc_tb.sv",
+    "target_device": "",
+    "sim_tool": "zenith",
+    "synth_tool": "yosys",
+    "elab_mode": "manual_top",
+    "active_file_list": "",
+    "auto_rtl_top": "counter",
+    "auto_sim_top": "counter_tb.sv",
+    "auto_discover_status": "ok",
+    "auto_discover_candidates": [],
+    "sim_cflags": [
+      {
+        "flag": "+MEMFILE=build/firmware/firmware.hex",
+        "active": true
+      },
+      {
+        "flag": "+MAXCYCLES=100000000",
+        "active": true
+      }
+    ],
+    "waveform_mode": "off"
+  },
+  "ui_state": {
+    "active_vcd": null,
+    "waveform_tabs": []
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "independent_reference": {
+    "tool": "scripts/isa_reference_model.py",
+    "reason": "Spike (preinstalled at /edatools/opensrc/spike/1.1.1-dev) cannot run on this host: missing libboost_regex.so.1.66.0 / libboost_system.so.1.66.0 with no compatible build anywhere on the system. See docs/issues.md ISS-001 and docs/decisions.md D-002.",
+    "scope": "register-register and register-immediate ALU ops (OP, OP-IMM) and the complete M extension (MUL/MULH/MULHSU/MULHU/DIV/DIVU/REM/REMU), written directly from the RISC-V ISA spec without reading rtl/rv32im_core.sv or any other DUT source.",
+    "not_covered_by_reference_model": "loads/stores, branches, JAL/JALR, LUI/AUIPC, FENCE, ECALL/EBREAK, error-halt policy -- these are instead covered by directed tests with hand-computed expected results/outcomes (see directed_tests below)."
+  },
+  "directed_tests": [
+    {
+      "id": "test_001_basic_alu",
+      "source": "tb/directed/test_001_basic_alu.S",
+      "covers": "x0 hardwiring, negative-immediate sign extension, ADD/SUB, SLT/SLTU (signed vs unsigned), SLL/SRL/SRA shifts, XOR/OR/AND, untaken and taken branches, JAL/JALR with return-address check",
+      "result": "PASS",
+      "evidence": "logs/ (zsim.log via Animas run); MMIO_TX byte=1 then ERR_HALT cause=7 (EBREAK, the intentional clean-stop convention)",
+      "bug_found_and_fixed": "RTL bug: ALU SRA used an erroneous `logic'(...)` cast that truncated the signed shift result to 1 bit before zero-extending back to 32 bits (bare `logic` defaults to 1-bit width in SystemVerilog). Found on first run of this test (SRAI(0x80000000,31) produced 1 instead of 0xFFFFFFFF). Fixed in rtl/rv32im_alu.sv; confirmed by rerun. See docs/issues.md."
+    },
+    {
+      "id": "test_002_loads_stores",
+      "source": "tb/directed/test_002_loads_stores.S",
+      "covers": "SB/LB/LBU, SH/LH/LHU sign vs zero extension, SW/LW round-trip, byte- and halfword-level write-strobe isolation (adjacent bytes within a word must not be disturbed)",
+      "result": "PASS",
+      "evidence": "MMIO_TX byte=1 then ERR_HALT cause=7"
+    },
+    {
+      "id": "test_002_loads_stores_wait_states",
+      "source": "tb/directed/test_002_loads_stores.S (rerun with +READYWAIT=3 +RANDWAIT=5 +FIXEDLAT=4)",
+      "covers": "non-instantaneous memory: req_ready backpressure plus randomized extra response latency, exercising the core's wait-on-ready and wait-on-response paths explicitly (prompt Section 5: 'Do not make execution depend on an instantaneous response')",
+      "result": "PASS",
+      "evidence": "Identical pass outcome under altered timing; fetch-of-first-instruction moved from cycle 7 (default +FIXEDLAT=2) to cycle 16, confirming the altered latency was actually exercised, not just accepted as a no-op flag."
+    },
+    {
+      "id": "test_003_muldiv",
+      "source": "tb/directed/test_003_muldiv.S",
+      "covers": "MUL, MULH (signed x signed), MULHSU (signed x unsigned), MULHU (unsigned x unsigned), DIV/REM signed, DIVU/REMU unsigned, division by zero (both signed and unsigned), signed overflow (INT_MIN / -1)",
+      "result": "PASS",
+      "evidence": "MMIO_TX byte=1 then ERR_HALT cause=7"
+    },
+    {
+      "id": "test_004_err_illegal",
+      "source": "tb/directed/test_004_err_illegal.S",
+      "covers": "illegal instruction (raw word 0xFFFFFFFF, opcode 1111111 is not a legal RV32I/M major opcode)",
+      "expected_cause": 4,
+      "result": "PASS (cause=4 observed)"
+    },
+    {
+      "id": "test_005_err_misaligned_load",
+      "source": "tb/directed/test_005_err_misaligned_load.S",
+      "covers": "LW from a non-4-byte-aligned address",
+      "expected_cause": 2,
+      "result": "PASS (cause=2 observed)"
+    },
+    {
+      "id": "test_006_err_misaligned_store",
+      "source": "tb/directed/test_006_err_misaligned_store.S",
+      "covers": "SH to an odd (non-2-byte-aligned) address",
+      "expected_cause": 3,
+      "result": "PASS (cause=3 observed)"
+    },
+    {
+      "id": "test_007_err_ecall",
+      "source": "tb/directed/test_007_err_ecall.S",
+      "covers": "ECALL",
+      "expected_cause": 6,
+      "result": "PASS (cause=6 observed)"
+    },
+    {
+      "id": "test_008_err_misaligned_pc",
+      "source": "tb/directed/test_008_err_misaligned_pc.S",
+      "covers": "JALR to a target whose LSB-cleared address is still not 4-byte aligned",
+      "expected_cause": 1,
+      "result": "PASS (cause=1 observed)"
+    },
+    {
+      "id": "test_009_c_program",
+      "source": "tb/directed/test_009_c_program.c",
+      "covers": "a compiled C program: recursion/stack (fib(15) via recursive calls), arrays (sum + bubble sort of an 8-element array), loops, functions",
+      "result": "PASS",
+      "evidence": "MMIO_TX byte=1 then ERR_HALT cause=7; ran 110987 cycles on RTL"
+    }
+  ],
+  "random_instruction_comparison": {
+    "generator": "scripts/gen_random_program.py",
+    "seed": 2026,
+    "n_instructions": 1100,
+    "scope": "register-only ALU + M-extension instruction stream (no loads/stores/branches, so the program is inherently memory-safe and needs no startup code)",
+    "rtl_retired_count": 1100,
+    "reference_count": 1100,
+    "mismatch_count": 0,
+    "result": "PASS -- exact match (pc, instr, rd_we, rd_addr, rd_wdata) for all 1100 retired instructions against scripts/isa_reference_model.py",
+    "evidence": "results/random_instruction_comparison.json; build/random_program/ (generated program, reference trace); output/zsim.log (RTL retirement trace) at the time of this run"
+  },
+  "reset_behavior": "Exercised implicitly by every test listed above (each run starts from reset with pc=0 and all registers cleared to 0 by rv32im_regfile's synchronous reset); not tested as a standalone mid-program reset pulse.",
+  "not_tested": [
+    "Mid-execution reset (asserting rst while the core is mid-instruction) -- only power-on/start-of-simulation reset was exercised.",
+    "Exhaustive coverage of every immediate value / register combination for every instruction (the random-instruction test samples a large but non-exhaustive space).",
+    "Formal verification / model checking of any kind -- all evidence here is simulation-based."
+  ],
+  "limitations": "The independent reference (scripts/isa_reference_model.py) is a second, independently-authored implementation of the ISA, not an externally-maintained, widely-trusted reference such as Spike or Sail (see docs/decisions.md D-002). Directed-test expected values for loads/stores/branches/jumps/errors were computed by hand from the RISC-V ISA specification, not cross-checked against a second automated model."
+}

@@ -1,0 +1,62 @@
+{
+  "captured_at_utc": "2026-11-08T18:45:31.257288+00:00",
+  "project_root": "/home/rmata/Documents/git/wafer_riscv_tflm_1",
+  "note": "Status snapshot, not proof that the simulation completed.",
+  "artifacts": [
+    {
+      "source": "output/zsim.log",
+      "present": true,
+      "source_bytes": 0,
+      "source_mtime_ns": 1794137286754667192,
+      "capture": "Full file as read.",
+      "snapshot_file": "output__zsim.log.txt",
+      "captured_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_changed_during_capture": false
+    },
+    {
+      "source": "build/native_reference/output.jsonl",
+      "present": true,
+      "source_bytes": 1315,
+      "source_mtime_ns": 1794089522046096169,
+      "capture": "Full file as read.",
+      "snapshot_file": "build__native_reference__output.jsonl",
+      "captured_bytes": 1315,
+      "sha256": "1472c4df9df11857f5563ebc0f59c67730e56897d4675e7a22499744c480ae8e",
+      "source_changed_during_capture": false
+    },
+    {
+      "source": "build/firmware/firmware.size",
+      "present": true,
+      "source_bytes": 178,
+      "source_mtime_ns": 1794102177904500024,
+      "capture": "Full file as read.",
+      "snapshot_file": "build__firmware__firmware.size",
+      "captured_bytes": 178,
+      "sha256": "f2f1510160a1515ecbb3816f0d2ff177690c82cbb0d31ebd534de6e811052f28",
+      "source_changed_during_capture": false
+    },
+    {
+      "source": "build/firmware/firmware.map",
+      "present": true,
+      "source_bytes": 1074435,
+      "source_mtime_ns": 1794102177727484108,
+      "capture": "Full file as read.",
+      "snapshot_file": "build__firmware__firmware.map",
+      "captured_bytes": 1074435,
+      "sha256": "38cd70d9279f8dc21c8f1024b3a3cf959a01d49805f9d1883469039fc2153803",
+      "source_changed_during_capture": false
+    },
+    {
+      "source": "build/firmware/configs/case_7_1/firmware.elf",
+      "present": true,
+      "source_bytes": 1205724,
+      "source_mtime_ns": 1794124584097547526,
+      "capture": "Full file as read.",
+      "snapshot_file": "build__firmware__configs__case_7_1__firmware.elf",
+      "captured_bytes": 1205724,
+      "sha256": "c2b974f0bb23b2c9c44369fe8f6b61b04a481635fed1625d8c0c0851b81da656",
+      "source_changed_during_capture": false
+    }
+  ]
+}

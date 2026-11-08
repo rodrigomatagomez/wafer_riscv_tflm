@@ -1,0 +1,13 @@
+{
+  "description": "Durable copy of the native (host x86) TFLM oracle's per-case output, recovered from the ignored build/ tree per claude_implementation_prompt.txt Section 7 / this continuation's Section 6 instruction not to rely on build/ alone for durable evidence.",
+  "source_path_at_copy_time": "build/native_reference/output.jsonl",
+  "copied_at_utc": "2026-11-08T01:46:15Z",
+  "native_reference_binary_sha256": "99362c892c1f8f4ed282e2505e5b22bfb7f07f695acbb8fbd41f08dfb6cef864",
+  "model_sha256": "7e11c5faea02c99464d6f939c3b10067bd93a6d72d5e650797f6249755ba69ea",
+  "output_jsonl_sha256": "1472c4df9df11857f5563ebc0f59c67730e56897d4675e7a22499744c480ae8e",
+  "tflm_commit": "4eaa491c1c8dedd9a3baf421968afd0d5b82f6aa",
+  "n_cases": 20,
+  "build_script": "scripts/build_native_reference.sh",
+  "source_files": ["sw/app/main_native.cc", "sw/generated/wafer_model_data.cc"],
+  "note": "binary_sha256 and model_sha256 here were independently re-verified at copy time against the values already recorded in results/rtl_comparison.json and found to match exactly -- the native oracle output has not changed since that record was written."
+}

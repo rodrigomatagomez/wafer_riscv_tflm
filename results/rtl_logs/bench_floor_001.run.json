@@ -1,0 +1,47 @@
+{
+  "run_id": "bench_floor_001",
+  "invocation": "mcp__animas__run_simulation(project_id=9c52d0cd-fe6e-4d80-84cb-ab38f3374f6f) with sim_cflags=[+MEMFILE=build/firmware/firmware.hex, +MAXCYCLES=10, +TRACE=0, +RUNID=bench_floor_001, +HEARTBEAT=0], waveform_mode=off, defines=[]. Purpose: measure compile+elaborate+startup wall-clock floor (10 cycles is execution-negligible) to isolate it from bench_200k_001's throughput figure. Log reconstructed from the tool call's own output_tail (same caveat as bench_200k_001).",
+  "started_at_utc": "2026-11-08T02:01:28.191Z",
+  "finished_at_utc": "2026-11-08T02:01:28.430Z",
+  "log_path": "results/rtl_logs/bench_floor_001.log",
+  "log_sha256": "b340270b24199f8e337ca248e0e92b81f9b66bd6ba6c98df95b1c6517f6f5089",
+  "firmware_elf_sha256": "622d18164ee3c80540ca460547340246b989e689aad70ed714d4f59e8d192be5",
+  "firmware_config": {
+    "config_tag": "case_full",
+    "case_start": 0,
+    "case_count_requested": "null",
+    "elf_path": "/home/rmata/Documents/git/wafer_riscv_tflm/build/firmware/configs/case_full/firmware.elf",
+    "elf_sha256": "622d18164ee3c80540ca460547340246b989e689aad70ed714d4f59e8d192be5",
+    "hex_path": "/home/rmata/Documents/git/wafer_riscv_tflm/build/firmware/configs/case_full/firmware.hex",
+    "build_timestamp_utc": "2026-11-08T01:42:57Z"
+  },
+  "model_sha256": "7e11c5faea02c99464d6f939c3b10067bd93a6d72d5e650797f6249755ba69ea",
+  "parsed": {
+    "banner": {
+      "run_id": "bench_floor_001",
+      "memfile": "build/firmware/firmware.hex",
+      "trace": 0,
+      "maxcycles": 10,
+      "ram": "full",
+      "fixedlat": 2,
+      "readywait": 0,
+      "randwait": 0,
+      "heartbeat": 0
+    },
+    "outcome": "sim_timeout",
+    "status_marker": null,
+    "sim_timeout_cycle": 10,
+    "err_halt": null,
+    "retire_trace": {
+      "line_count": 0,
+      "first_cycle": null,
+      "last_cycle": null
+    },
+    "heartbeat_count": 0,
+    "last_heartbeat": null,
+    "mmio_tx_bytes": [],
+    "mmio_tx_ascii": "",
+    "cases": [],
+    "log_end_cycle_estimate": 10
+  }
+}

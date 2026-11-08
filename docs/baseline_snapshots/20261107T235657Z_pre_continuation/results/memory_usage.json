@@ -1,0 +1,37 @@
+{
+  "ram_region": {
+    "base": "0x00000000",
+    "size_bytes": 1048576,
+    "note": "1 MiB unified program/data memory per prompt Section 5"
+  },
+  "reserved_stack_bytes": 65536,
+  "firmware_elf": "build/firmware/firmware.elf",
+  "firmware_size_breakdown_bytes": {
+    "text": 884853,
+    "data": 468,
+    "bss": 9620,
+    "total_text_data_bss": 894941,
+    "source": "riscv64-unknown-elf-size build/firmware/firmware.elf (results/../build/firmware/firmware.size)"
+  },
+  "tensor_arena": {
+    "reserved_capacity_bytes": 8192,
+    "measured_peak_use_bytes_native_reference": 5216,
+    "measured_peak_use_bytes_rv32_firmware": "not separately instrumented; firmware uses the same compile-time kTensorArenaSize=8192 constant and the same model, so the native-reference measurement (via MicroInterpreter::arena_used_bytes()) is the best available measurement of actual peak tensor-arena use for this exact model/op-resolver configuration",
+    "note": "Reserved capacity (8192 bytes, sw/app/wafer_common.h kTensorArenaSize) is distinct from measured peak use (5216 bytes, printed by sw/app/main_native.cc at startup). The firmware reserves the same 8192-byte static array but was not separately instrumented to print its own arena_used_bytes() over MMIO; the identical model/resolver/arena-size configuration makes the native figure a reliable proxy, not an independently RTL-measured figure."
+  },
+  "memory_budget_check": {
+    "text_data_bss_bytes": 894941,
+    "stack_reserved_bytes": 65536,
+    "available_before_stack_bytes": 983040,
+    "headroom_bytes": 88099,
+    "fits": true,
+    "note": "headroom_bytes = available_before_stack_bytes - text_data_bss_bytes; verified at link time via the ASSERT in sw/startup/link.ld (link succeeds only if code+rodata+data+bss leave room before the reserved 64 KiB stack region)."
+  },
+  "heap_usage": {
+    "note": "newlib malloc/_sbrk is linked in (TFLM/libstdc++ require it) but this model's interpreter/allocator/op-resolver objects are all static/global (no dynamic heap allocation in the measured inference path); heap use was not separately instrumented and is expected to be minimal to zero for this model."
+  },
+  ".tflite_file_size_is_not_runtime_ram": {
+    "model_b_int8_tflite_bytes": 67880,
+    "note": "Per prompt Section 7: the .tflite file size (67880 bytes, stored as a read-only C array in .text/.rodata, already counted in the firmware text size above) is NOT the same as tensor-arena RAM consumption (8192 bytes reserved, 5216 bytes measured peak use)."
+  }
+}

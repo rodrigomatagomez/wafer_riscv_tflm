@@ -4,7 +4,7 @@
     "name": "test",
     "description": "",
     "created": "2026-11-07T05:15:05.791997+00:00",
-    "modified": "2026-11-07T22:45:28.029303+00:00",
+    "modified": "2026-11-08T08:24:07.471036+00:00",
     "id": "9c52d0cd-fe6e-4d80-84cb-ab38f3374f6f"
   },
   "sources": [
@@ -62,6 +62,11 @@
       "path": "tb/soc_tb.sv",
       "role": "simulation",
       "library": "work"
+    },
+    {
+      "path": "tb/ram_model_lite.sv",
+      "role": "simulation",
+      "library": "work"
     }
   ],
   "folders": [],
@@ -79,15 +84,32 @@
     "auto_discover_candidates": [],
     "sim_cflags": [
       {
-        "flag": "+MEMFILE=build/firmware/firmware.hex",
+        "flag": "+MEMFILE=build/firmware/configs/case_full/firmware.hex",
         "active": true
       },
       {
-        "flag": "+MAXCYCLES=100000000",
+        "flag": "+MAXCYCLES=250000000",
+        "active": true
+      },
+      {
+        "flag": "+TRACE=0",
+        "active": true
+      },
+      {
+        "flag": "+RUNID=full20_attempt_001",
+        "active": true
+      },
+      {
+        "flag": "+HEARTBEAT=500000",
+        "active": true
+      },
+      {
+        "flag": "+define+RAM_LITE",
         "active": true
       }
     ],
-    "waveform_mode": "off"
+    "waveform_mode": "off",
+    "sim_defines": []
   },
   "ui_state": {
     "active_vcd": null,

@@ -1,0 +1,88 @@
+{
+  "run_id": "case2_attempt_003",
+  "invocation": "mcp__animas__run_simulation(project_id=9c52d0cd-fe6e-4d80-84cb-ab38f3374f6f), sim_cflags=[+MEMFILE=build/firmware/configs/case_2_1/firmware.hex, +MAXCYCLES=15000000, +TRACE=0, +RUNID=case2_attempt_003, +HEARTBEAT=500000, +define+RAM_LITE (confirmed active this time: ram=lite in banner)], waveform_mode=off (note: an 8GB+ ZWDB was nonetheless found on disk afterward -- see docs/issues.md ISS-007). Fresh run from reset (not a resume of any earlier stalled/killed attempt) after two prior case-2 attempts were found genuinely idle via /proc CPU-time measurement and terminated via the verified narrow-targeting procedure with explicit user authorization.",
+  "started_at_utc": "2026-11-08T05:26:59.628Z",
+  "finished_at_utc": null,
+  "log_path": "results/rtl_logs/case2_attempt_003_full.log",
+  "log_sha256": "1a592168d4917b4ae35ceb575154d1b3cc9f127d44ed48828b52bed259c6482c",
+  "firmware_elf_sha256": "a48448d658de6da813e87dd6c4251f6d883a5484b8b5a36d56119e8b6ea6e90b",
+  "firmware_config": {
+    "config_tag": "case_2_1",
+    "case_start": 2,
+    "case_count_requested": "1",
+    "elf_path": "/home/rmata/Documents/git/wafer_riscv_tflm/build/firmware/configs/case_2_1/firmware.elf",
+    "elf_sha256": "a48448d658de6da813e87dd6c4251f6d883a5484b8b5a36d56119e8b6ea6e90b",
+    "hex_path": "/home/rmata/Documents/git/wafer_riscv_tflm/build/firmware/configs/case_2_1/firmware.hex",
+    "build_timestamp_utc": "2026-11-08T03:59:17Z"
+  },
+  "model_sha256": "7e11c5faea02c99464d6f939c3b10067bd93a6d72d5e650797f6249755ba69ea",
+  "parsed": {
+    "banner": {
+      "run_id": "case2_attempt_003",
+      "memfile": "build/firmware/configs/case_2_1/firmware.hex",
+      "trace": 0,
+      "maxcycles": 15000000,
+      "ram": "lite",
+      "fixedlat": 2,
+      "readywait": 0,
+      "randwait": 0,
+      "heartbeat": 500000
+    },
+    "outcome": "completed_status_ok",
+    "status_marker": {
+      "cycle": 7383008,
+      "value": 1
+    },
+    "sim_timeout_cycle": null,
+    "err_halt": null,
+    "retire_trace": {
+      "line_count": 0,
+      "first_cycle": null,
+      "last_cycle": null
+    },
+    "heartbeat_count": 14,
+    "last_heartbeat": {
+      "cycle": 7000000,
+      "pc": "00050120",
+      "retired": 615269,
+      "case_id": 2
+    },
+    "mmio_tx_bytes": [
+      {
+        "cycle": 77897,
+        "byte": 49
+      },
+      {
+        "cycle": 78617,
+        "byte": 51
+      },
+      {
+        "cycle": 79313,
+        "byte": 52
+      },
+      {
+        "cycle": 79336,
+        "byte": 54
+      }
+    ],
+    "mmio_tx_ascii": "1346",
+    "cases": [
+      {
+        "case_id": 2,
+        "invoke_start_cycle": 351059,
+        "invoke_end_cycle": 7382563,
+        "invoke_elapsed_cycles": 7031504,
+        "invoke_elapsed_cycles_lower_bound": null,
+        "predicted_class": 0,
+        "scores": [
+          82,
+          -23,
+          33,
+          19
+        ],
+        "status": "completed"
+      }
+    ],
+    "log_end_cycle_estimate": 7382563
+  }
+}

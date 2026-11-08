@@ -70,16 +70,22 @@ criteria plainly.
   correctly runs on RTL through model initialization and the start of
   `Invoke()` for case 0 (MMIO_MEASURE=1 observed at RTL cycle 351185). A
   bounded run (`+MAXCYCLES=5000000`) reached that cycle limit still inside
-  case 0's `Invoke()` — establishing that a single `Invoke()` of this
-  model on this non-pipelined multicycle core requires well over
-  5,000,000 RTL cycles (the first FULLY_CONNECTED layer alone is 65,536
-  multiply-accumulate operations, each needing a ~33-cycle sequential
-  multiply). The full 20-case firmware loop did not reach a `MMIO_STATUS`
-  write within the wall-clock time available in this session. **0 of 20
-  cases are confirmed to agree with the native reference.** This is the
-  one unmet acceptance criterion; see `docs/handoff/limitations_and_open_questions.md`
-  for the full account, including real Animas/Zenith tool-connectivity
-  behavior encountered while orchestrating long-running simulation jobs.
+  case 0's `Invoke()` — establishing that **at least 5,000,000 - 351,185 =
+  4,648,815 RTL cycles elapsed inside `Invoke()` without it completing**
+  (the first FULLY_CONNECTED layer alone is 65,536 multiply-accumulate
+  operations, each needing a ~33-cycle sequential multiply on this
+  non-pipelined core). This is a corrected figure: an earlier version of
+  this document stated Invoke() "requires well over 5,000,000 RTL
+  cycles", which conflated the 351,185 pre-Invoke setup cycles with time
+  spent inside Invoke() itself — see `docs/issues.md` ISS-004's
+  correction note. No upper bound on Invoke()'s true total length is
+  established by this run. The full 20-case firmware loop did not reach a
+  `MMIO_STATUS` write within the wall-clock time available in this
+  session. **0 of 20 cases are confirmed to agree with the native
+  reference.** This is the one unmet acceptance criterion; see
+  `docs/handoff/limitations_and_open_questions.md` for the full account,
+  including real Animas/Zenith tool-connectivity behavior encountered
+  while orchestrating long-running simulation jobs.
 
 ## Failures and fixes (both preserved with evidence; see docs/issues.md)
 
@@ -120,6 +126,50 @@ criteria plainly.
   autonomous attempt.
 - Processor verification used a from-scratch Python reference model, not
   Spike or Sail (Spike present but non-functional on this host).
+
+## Continuation session (2026-11-07/08): infrastructure added, blocked on Animas access
+
+A later continuation picked up this exact state (verified against the files
+above, not re-derived) and made progress that does not change any
+acceptance-criteria row in the table above, pending real RTL access:
+
+- Added compile-time `CASE_START`/`CASE_COUNT` range selection to
+  `sw/app/main_firmware.cc` (default unchanged: all 20 cases; range
+  validated via `static_assert`; global case-ID numbering preserved; no
+  ground truth embedded) and matching support in `scripts/build_firmware.sh`
+  (per-config ELF under `build/firmware/configs/<tag>/`, shared TFLM object
+  cache reused across configs, `firmware_config.json` provenance record per
+  build). Confirmed the default config's ELF is byte-identical
+  (sha256 `622d1816...`) to the previously recorded build.
+- Implemented the real `scripts/run_rtl_test.py` (log-to-run-record parser)
+  and `scripts/compare_results.py` (aggregate checker) that earlier source
+  comments referenced without either existing. Self-tested against
+  synthetic logs (match, not-run, duplicate-conflict, provenance-conflict
+  cases) -- see `docs/decisions.md` D-008 and `docs/experiments.jsonl`
+  RUN-checker-scripts-validation-001.
+- Authored `tb/ram_model_lite.sv` (a lightweight RAM testbench model) and
+  wired compile-time selection into `tb/soc_tb.sv`, plus a `SIM_BANNER`,
+  `HEARTBEAT`, and trace-independent retired-instruction counter -- see
+  `docs/decisions.md` D-007. **Not yet validated against the original RAM
+  model or against real RTL output.**
+- Copied the native TFLM oracle's per-case output to a durable
+  `results/native_reference/` directory (previously only under the ignored
+  `build/` tree), with independently re-verified SHA-256 provenance.
+- Corrected an overclaim in this file and in `docs/issues.md`/
+  `results/rtl_comparison.json`/`docs/handoff/README.md`: the bounded probe
+  established **at least 4,648,815 RTL cycles elapsed strictly within
+  `Invoke()`** without completing (measured from `MMIO_MEASURE=1` at cycle
+  351185 to `SIM_TIMEOUT` at cycle 5,000,000), not that `Invoke()` as a
+  whole "requires more than 5,000,000 cycles."
+- `mcp__animas__*` tool calls (`list_projects`, `get_zenith_help`) returned
+  `MCP error -32602: Invalid request parameters` throughout this
+  continuation, even after the Animas application was independently
+  restarted (by an action outside this agent's control) -- see
+  `docs/issues.md` ISS-002 recurrence #3. No further Animas restart was
+  attempted. **All work requiring real RTL simulation (ram_model_lite
+  validation, a bounded throughput benchmark, completing case 0's
+  `Invoke()`, and the remaining 19-case sweep) remains blocked on this
+  external connectivity issue as of this writing.**
 
 ## Entry points for the next (documentation) stage
 

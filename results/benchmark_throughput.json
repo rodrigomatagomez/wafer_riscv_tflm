@@ -1,0 +1,54 @@
+{
+  "description": "Short bounded-cycle RTL throughput benchmark, per claude_implementation_prompt.txt / this continuation's Section 4 (\"Start with a short bounded benchmark (~200,000 cycles), measure actual throughput, save wall-clock timing, distinguish simulation time from compilation/startup\").",
+  "ram_model": "full (tb/ram_model.sv, the original -- tb/ram_model_lite.sv was NOT used for this benchmark; defines=[] during both runs below)",
+  "firmware": "build/firmware/configs/case_full/firmware.elf (sha256 622d18164ee3c80540ca460547340246b989e689aad70ed714d4f59e8d192be5), unchanged logic from the previously recorded firmware (only the inert CASE_START/CASE_COUNT feature was added, defaulting to the full 20-case loop)",
+  "runs": [
+    {
+      "run_id": "bench_floor_001",
+      "purpose": "Measure the compile+elaborate+startup wall-clock floor in isolation (10 RTL cycles is execution-negligible; this subprocess-based Zenith invocation recompiles/re-elaborates all sources on every run_simulation call, confirmed by the full compiler-warning preamble reappearing identically on every run)",
+      "maxcycles": 10,
+      "animas_log_simulation_started_utc": "2026-11-08T02:01:28.191Z",
+      "animas_log_simulation_done_utc": "2026-11-08T02:01:28.430Z",
+      "wall_clock_seconds": 0.239,
+      "run_record": "results/rtl_logs/bench_floor_001.run.json",
+      "raw_log": "results/rtl_logs/bench_floor_001.log"
+    },
+    {
+      "run_id": "bench_200k_001",
+      "purpose": "Short bounded benchmark covering the firmware's early execution (TFLM init through roughly the middle of pre-Invoke() setup -- MMIO_TX markers '1','3','4','6' all observed, confirming correct init; HEARTBEAT at 50k/100k/150k/200k cycles shows PC and retired-instruction count advancing monotonically, i.e. genuine progress, not a hang)",
+      "maxcycles": 200000,
+      "animas_log_simulation_started_utc": "2026-11-08T01:59:55.849Z",
+      "animas_log_simulation_done_utc": "2026-11-08T02:00:22.963Z",
+      "wall_clock_seconds": 27.114,
+      "run_record": "results/rtl_logs/bench_200k_001.run.json",
+      "raw_log": "results/rtl_logs/bench_200k_001.log"
+    }
+  ],
+  "computed_throughput": {
+    "method": "incremental: (bench_200k_001.wall_clock_seconds - bench_floor_001.wall_clock_seconds) / (200000 - 10), isolating compile/elaborate/startup overhead from actual per-cycle simulation cost",
+    "incremental_cycles": 199990,
+    "incremental_wall_clock_seconds": 26.875,
+    "cycles_per_second": 7441.5
+  },
+  "comparison_to_previously_recorded_throughput": {
+    "previously_recorded_value": {"cycles_per_second": 3696, "source": "the earlier 5,000,000-cycle probe run, RUN-firmware-rtl-001, see docs/issues.md ISS-004"},
+    "this_measurement": {"cycles_per_second": 7441.5},
+    "caveat": "These two measurements are NOT a controlled before/after comparison of the same code path -- this benchmark's 200,000 cycles cover only the firmware's early TFLM-initialization code (before Invoke() even starts at cycle 351185), whereas the earlier 5,000,000-cycle run's throughput reflects a mix of that same early code PLUS a large amount of actual Invoke()/MUL-heavy execution. The ~2x difference may reflect genuinely different simulator cost per RTL cycle depending on instruction/signal-activity mix (e.g. the sequential multiply/divide unit toggling more combinational logic per cycle during Invoke()), or may reflect other host-load variation between the two sessions; this was not isolated further. Both figures are reported as independently measured and should not be averaged or treated as interchangeable.",
+    "implication": "No single 'cycles per second' figure should be used to project the total wall-clock time for completing Invoke() or the full 20-case run; any such projection must be treated as a rough estimate, not a measured figure."
+  },
+  "generated_utc": "2026-11-08T02:05:00Z",
+  "ram_model_lite_speedup_measurement": {
+    "description": "Section 5's explicit before/after speedup requirement, measured once Animas MCP connectivity was restored and tb/ram_model_lite.sv was validated (see docs/decisions.md D-007). Same firmware (build/firmware/firmware.hex), same 200,000-cycle bound, same +HEARTBEAT=50000, trace=0, waveform off, in each pair.",
+    "ram_model_lite_runs": [
+      {"run_id": "bench_200k_lite_001", "mode": "headless", "zenith_internal_seconds": 20, "source": "that run's own stderr line: \"[zenith] simulated for 00:00:20  exit 0\""},
+      {"run_id": "bench_200k_lite_002", "mode": "headless", "zenith_internal_seconds": 20, "source": "same as above"}
+    ],
+    "ram_model_full_runs": [
+      {"run_id": "bench_200k_full_002 (first sample)", "mode": "ui_remote_control", "animas_log_seconds": 28.832, "source": "animas.log Simulation started 2026-11-08T02:28:52.501Z -> done 02:29:21.333Z"},
+      {"run_id": "bench_200k_full_002 (second sample)", "mode": "ui_remote_control", "animas_log_seconds": 28.655, "source": "animas.log Simulation started 2026-11-08T02:30:02.282Z -> done 02:30:30.937Z"}
+    ],
+    "observed_speedup": "~30% wall-clock reduction (~1.43x): ~20s (lite) vs ~28.7s (full) for the same 200,000-cycle firmware segment, consistent across 2 samples per model",
+    "caveat": "The two models' measurements come from different timing sources (Zenith's own internal timer for headless runs vs. the Animas daemon's start/done log timestamps for ui_remote_control runs) because run_simulation's execution mode was not caller-controlled and differed between calls. This is a real, reproducible difference, not a single isolated-variable measurement -- reported as an approximate ~30% improvement, not a precise figure.",
+    "functional_correctness_evidence": "See docs/decisions.md D-007: random-program RETIRE trace exact match (default and injected-backpressure+randomized-latency timing) and full 9-directed-test regression, all under tb/ram_model_lite.sv, before this speedup number was relied on for anything."
+  }
+}

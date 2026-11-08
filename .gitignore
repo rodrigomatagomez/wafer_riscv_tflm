@@ -22,3 +22,44 @@ __pycache__/
 
 # Generated simulation databases
 *.zwdb
+
+# Python environments and caches
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+
+# Generated simulation and build files
+/build/
+/output/
+*.zwdb
+*.vcd
+*.fst
+*.wlf
+
+# Large raw datasets
+/data/raw/*.pkl
+/data/raw/*.zip
+
+# Python environments and caches
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+
+# Generated build and simulation artifacts
+/build/
+/output/
+*.zwdb
+*.vcd
+*.fst
+*.wlf
+/results/**/*.log
+
+# Large original datasets
+/data/raw/*.pkl
+/data/raw/*.zip
+
+*.log.snapshot

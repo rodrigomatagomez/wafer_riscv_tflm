@@ -88,6 +88,30 @@ bridge was initially broken, then resolved externally by the user).
   attempting restart…" followed by an `ERROR:` with no useful log — simply
   re-invoking `run_simulation` succeeded immediately after. Treat this as a
   retry-once condition, not a hard failure.
+- **`run_simulation`'s actual execution mode (`ui_remote_control` vs.
+  `headless`) is not caller-controlled and was observed to vary between
+  consecutive calls with identical arguments**, apparently depending on
+  whether the Animas desktop UI happened to be running/responsive at the
+  moment of the call. This matters beyond just the `output_tail`-staleness
+  caveat above: **`--seed <N>` (not a `+`-prefixed plusarg) was observed to
+  be silently dropped in `ui_remote_control` mode** (consistent with the
+  documented cflag allow-list above, which does not include `--seed`),
+  while it was correctly passed through verbatim in `headless` mode (visible
+  in that response's own `command` field). Two runs intended to share a
+  fixed seed therefore do NOT reliably share one unless both are confirmed
+  `headless` (check the `mode` field in each `run_simulation` response) —
+  see `docs/decisions.md` D-007 for a concrete case where this produced a
+  spurious-looking divergence between two otherwise-identical simulations.
+- **`set_sim_options`'s structured `defines` parameter was also observed to
+  be unreliable in roughly the same way**, in at least one case failing to
+  take effect for a `headless`-mode run despite being correctly echoed back
+  in the tool's own response. The reliable alternative found: pass
+  `+define+NAME` as a plain string inside `cflags` (which IS in the
+  documented `+`-prefixed allow-list) instead of using the dedicated
+  `defines` parameter, and always confirm the intended define actually took
+  effect by checking the resulting simulation log's own banner/behavior
+  (e.g. this project's `tb/soc_tb.sv` prints `ram=lite` vs `ram=full`) rather
+  than trusting either input mechanism blindly.
 
 ## Reading results
 
@@ -129,3 +153,90 @@ docs/issues.md ISS-002 for the full trace, including one caught self-check
 bug in the throwaway testbench (an arithmetic mistake in the author's own
 expected value, not a simulator or DUT defect) that was found and fixed
 using exactly this loop.
+
+## Wall-clock limits: no Zenith-level flag exists; `run_simulation`'s `timeout_seconds` is backend-only
+
+Investigated directly via `flatpak run --branch=1.0.2 --command=zenith com.mifraltech.animaseda --help`
+(the exact binary/version the running daemons use) to settle, with authoritative evidence, which
+setting controls which limit:
+
+- **Zenith itself has no wall-clock-seconds option at all.** Its only time/iteration-bounding flags
+  are `--end <time>` (a *simulated*-time end point, not wall-clock; unused by this project, which
+  relies on `$finish` via our own `+MAXCYCLES=` testbench plusarg instead), `--max-delta <n>`
+  (zero-delay loop guard per simulated-time step, default 50000), and `--max-handoffs <n>` (delta-cycle
+  cap across all simulated-time steps, default 10,000,000) -- neither of the latter two is a per-real-second
+  limiter; they guard against non-terminating combinational/zero-delay loops, not normal clocked advancement.
+- **`mcp__animas__run_simulation`'s `timeout_seconds` parameter (default 1800) is therefore the only
+  documented, per-run-configurable wall-clock-affecting setting in this whole stack** -- it is purely an
+  Animas-backend-level orchestration value, with no Zenith-side counterpart. Passing a larger value
+  (e.g. `7200`) is the correct, supported way to ask for a longer wall-clock allowance for one job.
+- **This is a different thing from the harness's own MCP tool-call idle timeout** (observed to abort
+  silently at 300s with "sent no response or progress for 300s"). That 300s figure is this agent
+  session's own client-side limit on how long it will wait for *any* tool response; it has no bearing
+  on whether the underlying Animas/Zenith job keeps running, and is not configurable from inside this
+  project. A `run_simulation` call can (and routinely does) hit this 300s client-side abort while the
+  actual simulation keeps computing for much longer server-side -- always verify via `animas.log`
+  (`"Simulation started"` with no matching `"done"`) and direct process/log inspection, never assume
+  a client-side abort means the job stopped, and never assume it means the job *kept* going either --
+  check.
+- **Observed twice in this project: a job that was confirmed via `get_last_sim_result`/`animas.log` to
+  still be `finished: false`, after measurably real CPU consumption for over an hour, later went
+  genuinely idle (zero `/proc/<pid>/stat` CPU-time delta across multiple separate measurements, single
+  sleeping thread, no terminal marker ever written) with no logged cause.** No Zenith-level or
+  Animas-level mechanism was found that explains this (no wall-clock flag exists to have triggered it;
+  `get_sim_diagnostics` showed zero errors/fatals). The practical lesson: `finished: false` plus zero
+  CPU-time delta across two or more independent measurements a few seconds apart is the correct signal
+  to treat a job as stopped-with-unknown-cause, not a single log-silence observation alone (which can
+  reflect buffering) and not sustained CPU usage alone (which was observed to persist for a time after
+  the job had, in at least one case, already gone idle by the time it was actually re-checked). Both
+  stalled/idle jobs in this project were resolved the same way: narrowly-targeted `SIGTERM` to the
+  freshly-re-verified daemon PID (never a cached one), after confirming via `/proc/<pid>/cwd` and parent
+  process identity that it belonged exclusively to this project's Animas backend instance, not any other
+  user's or project's job on the (observed to be shared, multi-user) host. A subsequent `run_simulation`
+  call then transparently respawned a fresh daemon and completed the retried case successfully.
+
+## `waveform_mode: "off"` does not reliably prevent ZWDB generation
+
+Observed directly: two separate runs launched with `set_sim_options(waveform_mode="off")` (confirmed via
+`get_project_info` to actually be `"off"` at launch time) each nonetheless produced a full-size ZWDB file
+in `output/` -- one reached **5.5 GB** (for a run that was later found idle and terminated) and another
+reached **2.7 GB** (for a run that completed normally and produced a correct, verified result). Neither
+was a small/placeholder file. This is a real capability gap, not a one-off: `waveform_mode="off"` should
+not be relied upon as a hard guarantee against large waveform output for a long functional run (per
+claude_implementation_prompt.txt Section 7's explicit "avoid dumping every signal across millions of
+cycles" guidance) -- it reduces risk but does not eliminate it. **Practical mitigation adopted**: treat
+`output/*.zwdb` as disposable, regenerable scratch output; delete completed/abandoned runs' ZWDB files
+promptly after extracting the needed text-log evidence into a durable `results/` location, rather than
+assuming "off" means no cleanup is ever needed. This project's home-directory quota was exhausted once
+by the accumulation of several such files (one single-digit-GB file left over from a terminated run, plus
+smaller ones from earlier sessions), which in turn caused a `docs/` text file to be silently truncated
+mid-write (`cat: write error: Disk quota exceeded`) -- recovered by hand once the stale `.zwdb` files were
+identified (via `ls -la --time-style=full-iso`, cross-checked against each run's own timeline) and removed.
+  to treat a job as stopped-with-unknown-cause, not a single log-silence observation alone (
+## `run_simulation` calls can queue with significant delay; a fast "success" response can be a cached prior result, not fresh work
+
+Observed directly across cases 3 and 4 of the 20-case sweep: after a case finished, the *next*
+`run_simulation` call for the following case would sometimes hit the harness's 300s client-side idle
+timeout with **no corresponding `"Simulation started"` entry in `animas.log`** -- not because the
+call was dropped, but because the backend was still processing the *previous* case's delayed internal
+"done" bookkeeping (observed gap: the backend logged a case's own `"Simulation done"` event roughly
+**15 minutes after** that case's actual RTL simulation had already finished and its result was fully
+readable in `output/zsim.log`). A retry issued during this window can itself get silently queued rather
+than rejected or immediately dispatched.
+
+**Consequence observed once**: a `run_simulation` call returned a full, successful-looking response
+(`elapsed_s: 12.5`, complete `output_tail` showing a finished case with correct scores) far too quickly
+to be a genuine fresh ~10-minute RTL run -- this was the backend reporting an **already-completed result
+from an earlier, nominally-"timed-out" call**, not confirmation that *this* call freshly ran anything.
+Shortly afterward, a **second, genuinely new run of the same case silently started** (visible via a new
+`SIM_BANNER` with the same `run_id` overwriting `output/zsim.log`), apparently a delayed dispatch of one
+of the earlier calls that really had just been queued, not dropped.
+
+**Practical consequence for this project**: a case's result must be captured from the tool call's own
+returned `output_tail` text at the moment a genuinely-complete response is received (reconstructing the
+log file from that captured text if necessary), rather than assumed to still be safely readable from the
+shared `output/zsim.log` moments later -- a subsequent queued dispatch can overwrite it before a `cp`
+completes. When a redundant duplicate dispatch of an already-verified case is detected in progress, the
+safest response is to let it drain to completion (it reproduces the same deterministic result and does
+not corrupt anything) rather than attempting to cancel it or immediately launching further work on top,
+which would only compound the backlog.

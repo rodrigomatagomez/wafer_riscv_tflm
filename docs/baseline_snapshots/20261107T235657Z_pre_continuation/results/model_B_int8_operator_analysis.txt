@@ -1,0 +1,43 @@
+=== models/model_B_int8.tflite ===
+
+Your TFLite model has '1' subgraph(s). In the subgraph description below,
+T# represents the Tensor numbers. For example, in Subgraph#0, the RESHAPE op takes
+tensor #0 and tensor #1 as input and produces tensor #6 as output.
+
+Subgraph#0 main(T#0) -> [T#8]
+  Op#0 RESHAPE(T#0, T#1[-1, 2048]) -> [T#6]
+  Op#1 FULLY_CONNECTED(T#6, T#5, T#4[-790, -1003, -92, -855, 0, ...]) -> [T#7]
+  Op#2 FULLY_CONNECTED(T#7, T#3, T#2[-65, 49, 61, -24]) -> [T#8]
+
+Tensors of Subgraph#0
+  T#0(serving_default_wafer_input:0) shape_signature:[-1, 32, 32, 2], type:INT8
+  T#1(model_1/flatten_1/Const) shape:[2], type:INT32 RO 8 bytes, buffer: 2, data:[-1, 2048]
+  T#2(model_1/logits/BiasAdd/ReadVariableOp) shape:[4], type:INT32 RO 16 bytes, buffer: 3, data:[-65, 49, 61, -24]
+  T#3(model_1/logits/MatMul) shape:[4, 32], type:INT8 RO 128 bytes, buffer: 4, data:[=, ., 9, a, ., ...]
+  T#4(model_1/dense_32/BiasAdd/ReadVariableOp) shape:[32], type:INT32 RO 128 bytes, buffer: 5, data:[-790, -1003, -92, -855, 0, ...]
+  T#5(model_1/dense_32/MatMul) shape:[32, 2048], type:INT8 RO 65536 bytes, buffer: 6, data:[., ., ., ., ., ...]
+  T#6(model_1/flatten_1/Reshape) shape_signature:[-1, 2048], type:INT8
+  T#7(model_1/dense_32/MatMul;model_1/dense_32/Relu;model_1/dense_32/BiasAdd) shape_signature:[-1, 32], type:INT8
+  T#8(StatefulPartitionedCall:0) shape_signature:[-1, 4], type:INT8
+
+---------------------------------------------------------------
+Your TFLite model has '1' signature_def(s).
+
+Signature#0 key: 'serving_default'
+- Subgraph: Subgraph#0
+- Inputs: 
+    'wafer_input' : T#0
+- Outputs: 
+    'logits' : T#8
+
+---------------------------------------------------------------
+              Model size:      67880 bytes
+    Non-data buffer size:       1960 bytes (02.89 %)
+  Total data buffer size:      65920 bytes (97.11 %)
+    (Zero value buffers):          0 bytes (00.00 %)
+
+* Buffers of TFLite model are mostly used for constant tensors.
+  And zero value buffers are buffers filled with zeros.
+  Non-data buffers area are used to store operators, subgraphs and etc.
+  You can find more details from https://github.com/tensorflow/tensorflow/blob/master/tensorflow/lite/schema/schema.fbs
+

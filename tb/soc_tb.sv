@@ -1,7 +1,10 @@
-// Top-level testbench: instantiates soc_top (synthesizable system) plus the
-// testbench-only ram_model, drives clock/reset, and prints structured,
-// line-oriented markers that scripts/run_rtl_test.py parses:
+// Top-level testbench: instantiates soc_top (synthesizable system) plus a
+// testbench-only RAM model, drives clock/reset, and prints structured,
+// line-oriented markers that scripts/run_rtl_test.py and
+// scripts/compare_results.py parse:
 //
+//   SIM_BANNER run_id=<s> memfile=<s> trace=<0|1> maxcycles=<n> ram=<lite|full> fixedlat=<n> readywait=<n> randwait=<n>
+//   HEARTBEAT cycle=<n> pc=<hex8> retired=<n> case_id=<n>
 //   RETIRE cycle=<n> pc=<hex8> instr=<hex8>
 //   ERR_HALT cycle=<n> cause=<n> pc=<hex8> instr=<hex8>
 //   MMIO_TX cycle=<n> byte=<dec>
@@ -16,8 +19,15 @@
 // intentional, documented clean-stop mechanism (there is no OS exit
 // syscall in this environment per prompt Section 5 policy). EBREAK always
 // produces an ERR_HALT/cause=EBREAK marker; for these tests that is the
-// *expected* outcome, and scripts/run_rtl_test.py checks the preceding
-// MMIO_TX byte, not the absence of a halt.
+// *expected* outcome, and the checker scripts check the preceding MMIO_TX
+// byte, not the absence of a halt.
+//
+// RAM model selection: defaults to tb/ram_model.sv (the original,
+// validated-first model). Compile with +define+RAM_LITE to instead use
+// tb/ram_model_lite.sv (same interface/timing, verified cheaper per-cycle
+// cost for this core's single-outstanding-request property -- see
+// docs/decisions.md D-007). Both are registered in the project so either
+// can be selected without editing this file.
 import rv32im_pkg::*;
 
 module soc_tb;
@@ -37,10 +47,38 @@ module soc_tb;
   int trace_enable;
   initial if (!$value$plusargs("TRACE=%d", trace_enable)) trace_enable = 0;
 
+  // Low-frequency progress heartbeat for long functional runs (default
+  // every 500,000 cycles; +HEARTBEAT=0 disables it).
+  int heartbeat_period;
+  initial if (!$value$plusargs("HEARTBEAT=%d", heartbeat_period)) heartbeat_period = 500_000;
+
+  // Free-form run identifier, printed in the startup banner only -- purely
+  // for correlating a log/results file with the command that produced it.
+  string run_id;
+  initial if (!$value$plusargs("RUNID=%s", run_id)) run_id = "unspecified";
+
+  string memfile_banner;
+  initial if (!$value$plusargs("MEMFILE=%s", memfile_banner)) memfile_banner = "(none)";
+
+  int fixed_lat_banner, ready_wait_banner, rand_wait_banner;
+  initial if (!$value$plusargs("FIXEDLAT=%d", fixed_lat_banner)) fixed_lat_banner = 2;
+  initial if (!$value$plusargs("READYWAIT=%d", ready_wait_banner)) ready_wait_banner = 0;
+  initial if (!$value$plusargs("RANDWAIT=%d", rand_wait_banner)) rand_wait_banner = 0;
+
   longint unsigned cycle_count;
   always_ff @(posedge clk) begin
     if (rst) cycle_count <= 0;
     else cycle_count <= cycle_count + 1;
+  end
+
+  initial begin
+`ifdef RAM_LITE
+    $display("SIM_BANNER run_id=%s memfile=%s trace=%0d maxcycles=%0d ram=lite fixedlat=%0d readywait=%0d randwait=%0d heartbeat=%0d",
+              run_id, memfile_banner, trace_enable, max_cycles, fixed_lat_banner, ready_wait_banner, rand_wait_banner, heartbeat_period);
+`else
+    $display("SIM_BANNER run_id=%s memfile=%s trace=%0d maxcycles=%0d ram=full fixedlat=%0d readywait=%0d randwait=%0d heartbeat=%0d",
+              run_id, memfile_banner, trace_enable, max_cycles, fixed_lat_banner, ready_wait_banner, rand_wait_banner, heartbeat_period);
+`endif
   end
 
   // ---- DUT + memory model ----
@@ -92,7 +130,11 @@ module soc_tb;
       .mmio_status_reg(mmio_status_reg), .mmio_status_write_pulse(mmio_status_write_pulse)
   );
 
+`ifdef RAM_LITE
+  ram_model_lite u_ram (
+`else
   ram_model u_ram (
+`endif
       .clk(clk), .rst(rst),
       .req_valid(ram_req_valid), .req_addr(ram_req_addr),
       .req_we(ram_req_we), .req_wstrb(ram_req_wstrb), .req_wdata(ram_req_wdata),
@@ -108,10 +150,23 @@ module soc_tb;
   end
 
   // ---- observation ----
+  longint unsigned retired_count;
+  always_ff @(posedge clk) begin
+    if (rst) retired_count <= 0;
+    else if (retire_valid) retired_count <= retired_count + 1;
+  end
+
   always_ff @(posedge clk) begin
     if (!rst && retire_valid && trace_enable) begin
       $display("RETIRE cycle=%0d pc=%08x instr=%08x rd_we=%0d rd_addr=%0d rd_wdata=%08x",
                 cycle_count, retire_pc, retire_instr, retire_reg_we, retire_rd_addr, retire_rd_wdata);
+    end
+  end
+
+  always_ff @(posedge clk) begin
+    if (!rst && heartbeat_period > 0 && cycle_count > 0 && (cycle_count % heartbeat_period == 0)) begin
+      $display("HEARTBEAT cycle=%0d pc=%08x retired=%0d case_id=%0d",
+                cycle_count, retire_pc, retired_count, mmio_case_id_reg);
     end
   end
 

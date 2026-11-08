@@ -106,6 +106,87 @@ later writer should check before asserting anything was "achieved."
   itself evidence that RTL and native outputs agreed. Agreement is a
   separate, explicit comparison (results/rtl_comparison.json).
 
+## Evidence-strength caveats (binding; apply to this file, results/*, and any later document)
+
+These statements were made explicit during a 2026-11-07/08 continuation
+session, after auditing this project's records for places where a
+measurement could be over-read. Each was checked against the current
+`docs/` and `results/` content; none of this project's current claims were
+found to directly contradict them, but they are recorded verbatim here as
+binding constraints on how the existing evidence may be characterized going
+forward (including by the separate documentation-writing AI this handoff is
+for):
+
+- **Unfinished inference does not prove absence of an RTL defect.** The
+  "this is not a defect, just a slow non-pipelined multiplier" explanation
+  in `docs/issues.md` ISS-004 is an engineering inference from the observed
+  instruction mix and cycle budget, not a proof. It remains possible that a
+  latent RTL defect exists that has simply not yet been exercised by a
+  completed `Invoke()`. Only an actual completed, matching inference (or a
+  completed, mismatching one that triggers real debugging) upgrades this
+  from "consistent with correct behavior" to "verified."
+- **The local-static initialization workaround does not by itself prove a
+  compiler bug.** ISS-003's fix (moving TFLM objects to file scope) is
+  confirmed to resolve the observed symptom, but the exact defect inside
+  the guarded-local-static codegen path was never isolated (no guard-check
+  assembly was inspected). Do not describe ISS-003 as "a GCC/toolchain
+  bug" in later documents; describe only what was observed (symptom) and
+  what fixed it (global-scope workaround), as `docs/issues.md` already
+  does.
+- **Native-host arena usage is not an independently measured RV32 arena
+  footprint.** `results/memory_usage.json`'s `arena_used_bytes=5216` comes
+  from the native x86 reference binary's `MicroInterpreter::arena_used_bytes()`,
+  not from any RV32/RTL-side instrumentation (the firmware was never
+  instrumented to report its own `arena_used_bytes()` over MMIO). It is a
+  reliable proxy because the model, op resolver, and arena size are
+  byte-for-byte identical between the native and RV32 builds, but it must
+  continue to be labeled as a native-side measurement, not an RTL
+  measurement, in any later document.
+- **Reported timing is not independently verified timing unless the
+  original supporting log is preserved.** The ~3,696 RTL-cycles/sec
+  throughput figure in `results/rtl_comparison.json` is traceable to
+  `animas.log`'s own `"Simulation started"`/`"Simulation done"` timestamps
+  (preserved; see `docs/issues.md` ISS-004) and to the retained
+  `output/zsim.log` snapshot for that exact run (see
+  `docs/baseline_snapshots/20261107T235657Z_pre_continuation/`). Any new
+  timing figure produced in a later continuation must likewise cite a
+  preserved log/timestamp pair, not a recalled or recomputed estimate, to
+  be reported as "measured" rather than "estimated."
+- **Model quality remains below target even if hardware verification
+  succeeds.** The unmet quantized test macro-F1 target (0.7709 vs. the
+  0.85 target; see "Unmet targets" above) is an independent acceptance
+  criterion from RTL/native output agreement. Completing all 20
+  RTL-vs-native comparisons with exact agreement (a hardware-correctness
+  result) must never be described, in this document or any later one, as
+  also having met or superseded the separate, still-unmet ML quality
+  target.
+
+## Line-ending policy
+
+- **Policy (established 2026-11-07/08 continuation)**: all text files
+  authored or edited by this project (`.sv`, `.cc`, `.h`, `.py`, `.sh`,
+  `.md`, `.json`, `.jsonl`) use **LF** line endings, no exceptions. This
+  was checked directly (`cat -A` / `file`) on representative files from
+  each category in this continuation (`scripts/build_firmware.sh`,
+  `tb/soc_tb.sv`, `sw/app/main_firmware.cc`) and all were already LF; no
+  CRLF files were found in the current working tree as of this check.
+- **Why this needed stating explicitly**: an earlier preparation step (see
+  `PREPARATION_RECORD.md` / the original handoff package) noted that some
+  text-file SHA-256 hashes inside the originally-reviewed Windows-prepared
+  ZIP archive only matched the expected values after CRLF-to-LF
+  normalization. That is a text line-ending conversion, not evidence of
+  binary model/data corruption -- the two must not be conflated in any
+  later document. No corrupted binary artifact was ever actually found;
+  the apparent hash mismatches were fully explained by the normalization
+  step.
+- **Going forward**: any new file this project adds should be authored
+  with LF endings (the default for every tool used in this session —
+  heredocs, the Write/Edit tools, and this host's text editors). If a
+  future contributor's tooling introduces CRLF endings, normalize to LF
+  before computing or comparing any SHA-256 fingerprint against this
+  project's recorded hashes, and record that normalization step explicitly
+  rather than silently re-hashing.
+
 ## Not performed / explicitly out of scope
 
 - No synthesis, timing closure, FPGA bitstream generation, or power/area
