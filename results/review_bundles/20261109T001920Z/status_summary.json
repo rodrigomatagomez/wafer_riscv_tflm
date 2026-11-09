@@ -1,0 +1,57 @@
+{
+  "bundle_generated_at_utc": "2026-11-09T00:19:20Z",
+  "frozen_experiment": {
+    "run_id": "full20_final_001",
+    "model": "model_B_int8.tflite",
+    "model_sha256": "7e11c5faea02c99464d6f939c3b10067bd93a6d72d5e650797f6249755ba69ea",
+    "firmware_elf_sha256": "622d18164ee3c80540ca460547340246b989e689aad70ed714d4f59e8d192be5",
+    "tflm_commit": "4eaa491c1c8dedd9a3baf421968afd0d5b82f6aa",
+    "checker_replay_exit_code": 0,
+    "checker_replay_verdict": "ACCEPTED: ALL 20/20 CASES MATCH (exact scores + predicted class)",
+    "rtl_vs_native_agreement": "20/20 -- all four integer scores and the predicted class are bit-for-bit identical between the RTL-simulated processor and the native TFLM oracle for every one of the 20 fixed comparison cases",
+    "classifier_quality_on_these_20_fixed_cases": "16/20 correct (misclassified: case_id 0, 11, 15, 16)",
+    "classifier_quality_on_full_test_split": {
+      "n": 599,
+      "accuracy": 0.7696160267111853,
+      "macro_f1": 0.7709299728883321,
+      "quality_target_macro_f1": 0.85,
+      "quality_target_met": false
+    },
+    "critical_distinction": "20/20 RTL-vs-native agreement is NOT classifier accuracy. The processor exactly reproduces the model's output -- including the model's own mistakes. Classifier quality (16/20 on these fixed cases; 76.96% accuracy / 0.77093 macro-F1 on the full 599-sample test split, below the unmet 0.85 target) is a separate, independently measured claim."
+  },
+  "later_host_side_addition": {
+    "name": "apps/results_chat/ -- local-LLM chat + chart explainer",
+    "actual_execution_locations": {
+      "classifier_under_discussion": "ran on the RTL-simulated RV32IM RISC-V processor (Animas/Zenith), during the frozen full20_final_001 experiment",
+      "chat_application_and_local_llm": "run on the host Linux server, as a separate, later, read-only process -- never inside the simulation, never able to modify evidence or control a simulation"
+    },
+    "local_llm": {
+      "runtime": "llama.cpp v0.9.0 (commit cd959bae99ff4bed22bef2604f45241c09bbb8c8), CPU-only",
+      "model": "Qwen2.5-1.5B-Instruct-GGUF, Q4_K_M quantization, Apache-2.0",
+      "model_sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+      "full_provenance": "model_provenance/MODEL_PROVENANCE.json (this bundle)"
+    },
+    "test_results": {
+      "passed": 217,
+      "failed": 0,
+      "skipped": 0,
+      "note": "full breakdown in test_results/summary.json; local LLM server was running during this run, so all live-LLM tests executed for real"
+    },
+    "conversation_transcript": "conversation_transcript/transcript.md (6 real HTTP turns: greeting, open-ended Spanish question via the real local LLM, a contextual follow-up, a case query, chart generation, an unavailable-measurement refusal)",
+    "publication_figures": [
+      "confusion_matrix_model_B_int8",
+      "f1_by_class_model_B_int8",
+      "model_A_vs_B_comparison",
+      "invoke_cycles_final_run",
+      "case_16_scores"
+    ]
+  },
+  "remaining_limitations": [
+    "Classifier quality target (macro-F1 >= 0.85) was not met (measured 0.77093).",
+    "Only one accepted end-to-end RTL run (full20_final_001) exists; no repeated-run reliability claim is made.",
+    "Processor verification used a from-scratch Python ISA reference model, not Spike/Sail (Spike installed but non-functional on this host).",
+    "No synthesis, timing closure, FPGA/silicon result -- RTL simulation only; simulated cycle counts are not physical-chip latency.",
+    "The chat app's local LLM (1.5B parameters) occasionally exhibits small-model generation artifacts (e.g. a minor word substitution observed in the Spanish transcript captured in this bundle) -- citations/evidence remain the authoritative source, not the LLM's prose.",
+    "Knowledge-base retrieval is TF-IDF-based, not semantic/embedding-based; coverage is verified by test but not exhaustive for arbitrary phrasing."
+  ]
+}

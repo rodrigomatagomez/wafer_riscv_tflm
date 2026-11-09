@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>wafer_riscv_tflm -- results explainer (full20_final_001)</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>wafer_riscv_tflm: verified-results explainer</h1>
+  <div id="mode-banner" class="mode-banner">Loading mode...</div>
+</header>
+
+<main>
+  <section id="dashboard" aria-label="Dashboard">
+    <h2>Dashboard</h2>
+    <div id="dashboard-cards" class="cards">Loading evidence...</div>
+
+    <h3>Per-case results (final run <code id="run-id-inline">full20_final_001</code>)</h3>
+    <div class="table-wrap">
+      <table id="cases-table">
+        <thead>
+          <tr>
+            <th>Case</th><th>Sample</th><th>Ground truth</th>
+            <th>Native pred.</th><th>RTL pred.</th><th>RTL vs native</th>
+            <th>Classifier correct?</th><th>Tie?</th><th>Invoke cycles</th>
+          </tr>
+        </thead>
+        <tbody id="cases-tbody"><tr><td colspan="9">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="chat" aria-label="Chat">
+    <h2>Ask about these results / Preguntas sobre estos resultados</h2>
+    <p class="hint">Ask open-ended questions about the project (architecture, methodology, limitations), or
+       request a chart (e.g. "plot F1 by class", "grafica la matriz normalizada"). English and Spanish.</p>
+    <div id="chat-log" aria-live="polite"></div>
+    <div id="suggested" class="chips"></div>
+    <form id="chat-form">
+      <select id="lang-select" title="Language / Idioma">
+        <option value="auto">Auto</option>
+        <option value="en">EN</option>
+        <option value="es">ES</option>
+      </select>
+      <input id="chat-input" type="text" autocomplete="off"
+             placeholder="Ask in English or Spanish... / Pregunta en inglés o español..." maxlength="2000">
+      <button type="submit">Send</button>
+    </form>
+  </section>
+</main>
+
+<footer>
+  <p>Read-only explanation assistant. It cannot run commands, control simulations,
+     or modify any file. Evidence source: <code>results/final_run_evidence/</code> and
+     related project result files. See <code>apps/results_chat/README.md</code> for
+     architecture and limitations.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+{
+  "note": "References (path + independently recomputed SHA-256, NOT copies) to the authoritative final20_final_001 evidence files, recomputed at review-bundle creation time. These bytes are NOT duplicated into this bundle -- the originals remain the single source of truth under results/ and models/. See checker_replay_report.json in this same directory for a fresh, independent re-run of scripts/check_final_run.py against these exact files, stored separately from (not overwriting) the original acceptance evidence.",
+  "generated_at_utc": "2026-11-09T00:19:20Z",
+  "run_id": "full20_final_001",
+  "files": [
+    {
+      "path": "results/final_run_evidence/full20_final_001_fingerprints.json",
+      "status": "verified",
+      "sha256": "3807df14c10b15c40255909b15a3a3abd81a9882090580a9e2e3dd781d13e6c1",
+      "bytes": 1606
+    },
+    {
+      "path": "results/final_run_evidence/full20_final_001_check_report.json",
+      "status": "verified",
+      "sha256": "9288ce0954d3ed9a75733ca70d17bc73807056fbcf45ab895be8637211660723",
+      "bytes": 13926
+    },
+    {
+      "path": "results/final_run_evidence/full20_final_001_run_record.json",
+      "status": "verified",
+      "sha256": "68b8eb2e938f6fa4e288de2ea5e376654e9c57f2f0eba644c69b4ddd203ba76a",
+      "bytes": 9592
+    },
+    {
+      "path": "results/final_run_evidence/full20_final_001_raw_log.txt.gz",
+      "status": "verified",
+      "sha256": "868787715e685983a74f77c719fde5d39275a27dfc08f48446b66c26272e688c",
+      "bytes": 5613
+    },
+    {
+      "path": "results/final_run_evidence/full20_final_001_firmware_config.json",
+      "status": "verified",
+      "sha256": "05d08f46c587c47a6d0d7dd19995370695639bde62a60226a546f33ddbebce0f",
+      "bytes": 430
+    },
+    {
+      "path": "results/final_run_evidence/full20_final_001_firmware.elf",
+      "status": "verified",
+      "sha256": "622d18164ee3c80540ca460547340246b989e689aad70ed714d4f59e8d192be5",
+      "bytes": 1205788
+    },
+    {
+      "path": "results/final_run_evidence/native_reference_output.jsonl",
+      "status": "verified",
+      "sha256": "1472c4df9df11857f5563ebc0f59c67730e56897d4675e7a22499744c480ae8e",
+      "bytes": 1315
+    },
+    {
+      "path": "results/final_run_evidence/native_reference_provenance.json",
+      "status": "verified",
+      "sha256": "16b0fb394316b37bdd8d2c3c29377b109dabaeb5462835ae8cf9b3ad2211d9bc",
+      "bytes": 1143
+    },
+    {
+      "path": "results/rtl_comparison.json",
+      "status": "verified",
+      "sha256": "e6f329f4ed240c833001cbd099e602eaac3ea41d152f289676ff3af4fb3b56e1",
+      "bytes": 12821
+    },
+    {
+      "path": "results/comparison_manifest.json",
+      "status": "verified",
+      "sha256": "7daab1d1bd4bc503f14d1b7a68c3dc6bfca0a82f3205628708060fc76a6c6411",
+      "bytes": 85408
+    },
+    {
+      "path": "results/ml_metrics.json",
+      "status": "verified",
+      "sha256": "f35f12b738db56081ab7ea3a6141a22b751c7fd71321af4162ca49226714ee3f",
+      "bytes": 8552
+    },
+    {
+      "path": "results/memory_usage.json",
+      "status": "verified",
+      "sha256": "fd326c28718e19c9e81fe8c8bc2022c92ae76979bb87e496be7df2765476350e",
+      "bytes": 2524
+    },
+    {
+      "path": "results/cpu_verification.json",
+      "status": "verified",
+      "sha256": "7139b6d690864a52d51c9d00b8831ecc3c3636dccb9f6ee717ad7f9e4f0163e2",
+      "bytes": 6580
+    },
+    {
+      "path": "results/training_history_A.json",
+      "status": "verified",
+      "sha256": "24be923ed8c0a78b47bdf3ebe67f3fe36d53a4ccc5e14610411ce2f0d88a806d",
+      "bytes": 1430
+    },
+    {
+      "path": "results/training_history_B.json",
+      "status": "verified",
+      "sha256": "cbe4f80a852ad865bf160a73d24ea965af3147b5877363a6d2dbfba1307f23b5",
+      "bytes": 1422
+    },
+    {
+      "path": "results/rtl_logs/full20_final_001_live.log",
+      "status": "verified",
+      "sha256": "e3c2e4d83755d5ea1286abf704110af0e5780100f5f6715adf3c5a8d7270793e",
+      "bytes": 33350
+    },
+    {
+      "path": "models/model_B_int8.tflite",
+      "status": "verified",
+      "sha256": "7e11c5faea02c99464d6f939c3b10067bd93a6d72d5e650797f6249755ba69ea",
+      "bytes": 67880
+    },
+    {
+      "path": "docs/handoff/claims_evidence.csv",
+      "status": "verified",
+      "sha256": "6ea5b670ddf8b133641cf6ae9aebced634511edaaff97806e9dae999f34b1dfd",
+      "bytes": 11229
+    }
+  ]
+}

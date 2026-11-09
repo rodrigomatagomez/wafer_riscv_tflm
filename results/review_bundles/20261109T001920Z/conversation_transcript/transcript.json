@@ -1,0 +1,148 @@
+[
+  {
+    "label": "greeting",
+    "request": {
+      "message": "Hola",
+      "session_id": "review-bundle-transcript-2",
+      "lang": null
+    },
+    "response": {
+      "answer": "¡Hola! Puedo explicarte los resultados de verificación RISC-V/TFLM de wafer_riscv_tflm (arquitectura, metodología, resultados, limitaciones) y generar gráficas a partir de ellos -- todo basado en la evidencia guardada del proyecto. Pregúntame lo que quieras, por ejemplo: \"¿Está completo el experimento?\" o \"Grafica el F1 por clase.\"",
+      "intent": "social_greeting",
+      "mode": "factual",
+      "lang": "es",
+      "citations": [],
+      "chart": null
+    },
+    "elapsed_seconds": 0.013
+  },
+  {
+    "label": "open_ended_spanish",
+    "request": {
+      "message": "¿Puedes explicarme la metodología de verificación de este proyecto?",
+      "session_id": "review-bundle-transcript-2",
+      "lang": null
+    },
+    "response": {
+      "answer": "¡Por supuesto! La metodología de verificación de este proyecto se basa en dos aspectos principales: la verificación de la arquitectura y la verificación de la implementación en hardware.\n\n1. **Verificación de la arquitectura**: Se han realizado 9 pruebas dirigidas (ALU operaciones, x0, extensión del signo, desplazamientos, comparaciones, saltos, JAL/JALR, carga de bytes/halfword/word con isolación de las wait-states, cargas de memoria con wait-states, extensión completa del M y división por cero/overflow, 4 causas de error-halt distintas, un programa compilado en C) y todas han completado con éxito. Además, se han comparado 1100 instrucciones de un programa con un modelo de referencia independiente (`isa_reference_model.py`) que se utiliza en lugar de Spike, que no está instalada en este servidor. No se han encontrado errores en la implementación.\n\n2. **Verificación de la implementación en hardware**: Se han ejecutado 20 casos de prueba (5 por clase, seleccionados por el orden de el id de prueba dentro del split de prueba, después de que el modelo se frotó) en el procesador simulado RTL y comparados con la implementación en hardware. El resultado final, `full20_final_001`, incluye un exacto match de todos los cuatro puntos de salida y la pred",
+      "intent": "open_ended_llm",
+      "mode": "llm",
+      "lang": "es",
+      "citations": [
+        "docs/decisions.md :: D-015: Social conversation (greetings/thanks/farewells/capability questions) answered without retrieval or citations",
+        "apps/results_chat/backend/knowledge/project_overview.md :: Verification methodology"
+      ],
+      "chart": null
+    },
+    "elapsed_seconds": 26.662
+  },
+  {
+    "label": "followup",
+    "request": {
+      "message": "¿Y cómo se comparó con el oráculo nativo?",
+      "session_id": "review-bundle-transcript-2",
+      "lang": null
+    },
+    "response": {
+      "answer": "La comparación con el oráculo nativo se hizo a través de 20 casos de prueba (5 por clase, seleccionados por el orden de el id de prueba dentro del split de prueba, después de que el modelo se frotó) en el procesador simulado RTL. Se compararon con la implementación en hardware. El resultado final, `full20_final_001`, incluye un exacto match de todos los cuatro puntos de salida y la predicción de la clase para cada caso, con un código de salida de 0.",
+      "intent": "open_ended_llm",
+      "mode": "llm",
+      "lang": "es",
+      "citations": [
+        "apps/results_chat/backend/knowledge/project_overview.md :: Verification methodology",
+        "README.md :: 6. Native TFLM reference oracle",
+        "docs/handoff/claims_evidence.csv :: Claim C018 (measured)"
+      ],
+      "chart": null
+    },
+    "elapsed_seconds": 15.439
+  },
+  {
+    "label": "case_query",
+    "request": {
+      "message": "What about case 16?",
+      "session_id": "review-bundle-transcript-2",
+      "lang": "en"
+    },
+    "response": {
+      "answer": "Case 16 (sample_id 2276) had a ground truth of 'none'. The RTL predicted class 2 with scores [41, 10, 49, 49]. RTL vs native: MATCH. This is a misclassification relative to the ground truth. The RTL scores contain a tie: Scratch, none are both the maximum score (49); both RTL and the native oracle resolve it identically to class index 2, which is why they still agree exactly. Invoke() took 7,031,511 RTL cycles (start cycle 114502321, end cycle 121533832).",
+      "intent": "case_lookup",
+      "mode": "llm",
+      "lang": "en",
+      "citations": [
+        "results/comparison_manifest.json (cases[*].sample_id, class_idx)",
+        "results/final_run_evidence/full20_final_001_check_report.json (rows[*], cases_parsed[*])",
+        "results/rtl_logs/full20_final_001_live.log (MMIO_PREDICTED_CLASS cycle=121534289 case_id=16)"
+      ],
+      "chart": null
+    },
+    "elapsed_seconds": 15.715
+  },
+  {
+    "label": "chart_generation",
+    "request": {
+      "message": "Plot F1 by class.",
+      "session_id": "review-bundle-transcript-2",
+      "lang": "en"
+    },
+    "response": {
+      "answer": "Per-class F1 for model B (int8), test split (macro-F1 = 0.77093).",
+      "intent": "chart",
+      "mode": "factual",
+      "lang": "en",
+      "citations": [
+        "results/ml_metrics.json (results.B.int8_metrics.test.per_class_f1)"
+      ],
+      "chart": {
+        "chart_id": "7dc965cc0475ce287b12",
+        "csv_url": "/api/chart/7dc965cc0475ce287b12.csv",
+        "data_rows": [
+          {
+            "class": "Center",
+            "f1": 0.9271523178807947
+          },
+          {
+            "class": "Edge-Ring",
+            "f1": 0.9897610921501706
+          },
+          {
+            "class": "Scratch",
+            "f1": 0.5893416927899686
+          },
+          {
+            "class": "none",
+            "f1": 0.5774647887323944
+          }
+        ],
+        "kind": "f1_by_class",
+        "png_url": "/api/chart/7dc965cc0475ce287b12.png",
+        "provenance": {
+          "kind": "f1_by_class",
+          "metric_set": "int8",
+          "model_tag": "B",
+          "split": "test"
+        },
+        "svg_url": "/api/chart/7dc965cc0475ce287b12.svg",
+        "title": "F1 by class -- Model B (int8, test split)"
+      }
+    },
+    "elapsed_seconds": 0.006
+  },
+  {
+    "label": "unavailable_measurement",
+    "request": {
+      "message": "What was the chip's physical power consumption?",
+      "session_id": "review-bundle-transcript-2",
+      "lang": "en"
+    },
+    "response": {
+      "answer": "The project's saved evidence does not contain that information. This project is an RTL simulation verification of a RISC-V processor; no synthesis, timing closure, or FPGA/silicon implementation was performed. Physical clock frequency, power consumption, and chip area were not measured -- those figures simply do not exist in this evidence.",
+      "intent": "physical_unsupported",
+      "mode": "factual",
+      "lang": "en",
+      "citations": [],
+      "chart": null
+    },
+    "elapsed_seconds": 0.004
+  }
+]

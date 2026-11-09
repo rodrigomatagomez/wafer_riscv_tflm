@@ -1,0 +1,24 @@
+# Isolated virtualenv for this app; not committed, regenerate via:
+#   python3 -m venv venv && venv/bin/pip install -r requirements.txt
+venv/
+
+# Python bytecode/caches
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local credential files, if anyone uses one instead of shell env vars --
+# never commit LLM API keys. See README.md "Keeping credentials out of Git".
+.env
+.env.*
+*.local.env
+
+# Local LLM runtime: built binaries and model weights. MODEL_PROVENANCE.json
+# (exact source/revision/hash/license) is NOT ignored -- that record is the
+# whole point and must survive even though the weights it describes don't.
+llm_runtime/llama.cpp/
+llm_runtime/models/
+!llm_runtime/MODEL_PROVENANCE.json
+
+# Derived chart cache -- regenerable from evidence, never source material.
+chart_cache/

@@ -1,0 +1,24 @@
+# figure: invoke_cycles_final_run
+# kind: invoke_cycles
+# source: results/final_run_evidence/full20_final_001_check_report.json (cases_parsed[*].invoke_elapsed_cycles)
+case_id,invoke_elapsed_cycles
+0,7031511
+1,7031497
+2,7031504
+3,7031504
+4,7031497
+5,7031511
+6,7031511
+7,7031476
+8,7031483
+9,7031469
+10,7031511
+11,7031511
+12,7031504
+13,7031497
+14,7031511
+15,7031511
+16,7031511
+17,7031511
+18,7031511
+19,7031511

@@ -1,0 +1,13 @@
+# figure: f1_by_class_model_B_int8
+# kind: f1_by_class
+# model_tag: B
+# metric_set: int8
+# split: test
+# quality_target_macro_f1: 0.85
+# source: results/ml_metrics.json (results.B.int8_metrics.test.per_class_f1)
+# source: results/ml_metrics.json (quality_target_macro_f1)
+class,f1,target_macro_f1
+Center,0.9271523178807947,0.85
+Edge-Ring,0.9897610921501706,0.85
+Scratch,0.5893416927899686,0.85
+none,0.5774647887323944,0.85

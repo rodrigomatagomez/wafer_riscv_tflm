@@ -155,3 +155,20 @@ output and used in the final accepted run:
 - `tb/soc_tb.sv`: added a `SIM_BANNER` startup line, a low-frequency
   `HEARTBEAT` progress marker, and an always-on retired-instruction counter
   independent of `+TRACE=`, without changing default simulation behavior.
+
+## Results explainer app (later host-side addition)
+
+`apps/results_chat/` is a separate, read-only web app (dashboard + a
+bilingual EN/ES chat assistant, now backed by a real **local LLM** running
+on this host -- llama.cpp + Qwen2.5-1.5B-Instruct, Apache-2.0, CPU-only)
+that explains the accepted final result above to a human audience,
+answers open-ended questions grounded in the project's documentation, and
+generates charts (confusion matrix, F1 by class, A/B and float/int8
+comparisons, per-case scores, training curves, memory budget, and more)
+from natural-language requests -- every number in every chart and answer
+is read from the saved evidence or computed deterministically from it,
+never invented. It does not run inside the simulation and cannot modify,
+re-run, or control anything -- see `apps/results_chat/README.md` for
+architecture, exact local-LLM setup, measured latency/memory, SSH-
+forwarding, and which modes were actually tested (both were). See
+`docs/decisions.md` D-011 through D-014 for why it was built this way.

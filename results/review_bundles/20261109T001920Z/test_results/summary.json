@@ -1,0 +1,65 @@
+{
+  "generated_at_utc": "2026-11-09T00:19:20Z",
+  "command": "venv/bin/python3 -m pytest tests/ -v",
+  "pytest_exit_code": 0,
+  "local_llm_server": "running and healthy at http://127.0.0.1:8788 during this run (so test_live_llm.py's 11 tests executed for real, not skipped)",
+  "total": {
+    "passed": 217,
+    "failed": 0,
+    "skipped": 0
+  },
+  "per_file": {
+    "test_api.py": {
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0
+    },
+    "test_chart_cache.py": {
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0
+    },
+    "test_chart_engine.py": {
+      "passed": 28,
+      "failed": 0,
+      "skipped": 0
+    },
+    "test_chart_router.py": {
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0
+    },
+    "test_chat_pipeline.py": {
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0
+    },
+    "test_evidence.py": {
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0
+    },
+    "test_knowledge_base.py": {
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0
+    },
+    "test_live_llm.py": {
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0
+    },
+    "test_qa_engine.py": {
+      "passed": 49,
+      "failed": 0,
+      "skipped": 0
+    },
+    "test_social.py": {
+      "passed": 44,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "note": "test_live_llm.py makes genuine HTTP calls to the running llama-server and is designed to SKIP (not fail, not silently pass) if no local server is reachable -- see apps/results_chat/tests/test_live_llm.py's module-level skip marker. In this run the server was up, so all 11 of those tests executed against real inference.",
+  "full_raw_output": "pytest_full_output.txt (same directory)"
+}

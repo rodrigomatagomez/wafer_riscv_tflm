@@ -1,0 +1,10 @@
+# figure: case_16_scores
+# kind: case_scores
+# case_id: 16
+# source: results/rtl_logs/full20_final_001_live.log (MMIO_PREDICTED_CLASS cycle=121534289 case_id=16)
+# source: results/comparison_manifest.json (cases[*].class_idx)
+class,native_score,rtl_score
+Center,41,41
+Edge-Ring,10,10
+Scratch,49,49
+none,49,49

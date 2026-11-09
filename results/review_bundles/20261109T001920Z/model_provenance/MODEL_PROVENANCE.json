@@ -1,0 +1,68 @@
+{
+  "note": "Provenance record for the local LLM runtime added in the chart/open-ended-chat upgrade. This is a later host-side addition and is unrelated to the frozen full20_final_001 RV32IM/TFLM experiment, which this runtime never touches.",
+  "runtime": {
+    "project": "llama.cpp",
+    "source": "https://github.com/ggml-org/llama.cpp",
+    "release_tag": "v0.9.0",
+    "commit": "cd959bae99ff4bed22bef2604f45241c09bbb8c8",
+    "commit_date_utc": "2026-11-04T12:06:26Z",
+    "license": "MIT (llama.cpp project license)",
+    "build_config": {
+      "backend": "CPU only (GGML_CUDA=OFF, GGML_METAL=OFF, GGML_VULKAN=OFF)",
+      "cpu_features_enabled": ["AVX", "AVX2", "AVX512F/CD/VL/DQ/BW", "FMA", "F16C", "BMI2", "SSE4.2"],
+      "cmake_build_type": "Release",
+      "llama_curl": "OFF (model downloaded independently via curl, not llama.cpp's built-in fetcher)"
+    },
+    "binary_path": "apps/results_chat/llm_runtime/llama.cpp/build/bin/llama-server",
+    "built_on_host": "this project's Linux EDA server (Rocky Linux 9.8, glibc 2.34, Intel Xeon Gold 6152)"
+  },
+  "model": {
+    "name": "Qwen2.5-1.5B-Instruct",
+    "publisher": "Qwen (Alibaba Cloud)",
+    "source_repo": "https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF",
+    "repo_revision_sha": "91cad51170dc346986eccefdc2dd33a9da36ead9",
+    "file": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+    "quantization": "Q4_K_M (GGUF, 4-bit k-quant, medium)",
+    "file_bytes": 1117320736,
+    "file_sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+    "license": "Apache-2.0",
+    "license_file_in_repo": "LICENSE (Qwen/Qwen2.5-1.5B-Instruct-GGUF)",
+    "parameters": "1.5B",
+    "multilingual": "Qwen2.5 is documented as supporting 29+ languages including English and Spanish",
+    "chosen_because": [
+      "well under the 3 GiB download cap (1.04 GiB)",
+      "Apache-2.0, unambiguous permissive license",
+      "official quantization published by the model's own publisher (Qwen), not a third party",
+      "small enough for fast CPU-only inference on a shared server with a conservative 4-thread cap",
+      "documented bilingual EN/ES instruction-following capability"
+    ]
+  },
+  "launch_config": {
+    "host": "127.0.0.1",
+    "port": 8788,
+    "threads": 4,
+    "threads_batch": 4,
+    "ctx_size": 4096,
+    "n_gpu_layers": 0,
+    "parallel_slots": 1,
+    "note": "No GPU was detected on this host (nvidia-smi absent); n-gpu-layers=0 is therefore not a restriction but a reflection of actual hardware. Per task instruction, GPU would only be used if allocated/available."
+  },
+  "measured_at_smoke_test": {
+    "date_utc": "2026-11-08T22:44:00Z",
+    "process_rss_mb": 1841,
+    "english_prompt_tokens_per_second": 19.70,
+    "spanish_prompt_tokens_per_second": 21.19,
+    "english_first_response_wall_seconds": 1.33,
+    "spanish_first_response_wall_seconds": 2.31,
+    "note": "First measurement: a single short direct curl request to /v1/chat/completions, not a mocked adapter test."
+  },
+  "measured_during_full_e2e_session": {
+    "date_utc": "2026-11-08T23:15:00Z",
+    "method": "13-turn real HTTP session against the running Flask app (apps/results_chat/tests/test_live_llm.py plus a dedicated end-to-end script), covering open-ended RAG questions, Spanish paraphrases, FAQ rephrasing, and chart requests in the same session",
+    "process_rss_mb_after_session": 2201,
+    "open_ended_rag_llm_call_seconds": [18.40, 24.39, 12.55],
+    "faq_rephrase_llm_call_seconds": [16.82, 5.28],
+    "chart_requests_seconds": "all < 0.21s (deterministic, no LLM call for chart captions)",
+    "note": "RSS grew from ~1.84GB (idle/single short request) to ~2.2GB over a sustained multi-turn session (ctx-size=4096 KV cache), still well within the host's available RAM (94 GiB free at session start). Open-ended RAG latency (~12-24s) is dominated by the long grounding system prompt plus up to 320 generated tokens on a 4-thread CPU budget; the FAQ-rephrase path is faster since its prompt is shorter. See apps/results_chat/README.md 'Measured latency and memory' for the full discussion and the tuning (max_tokens 500->320, retrieved chunks 4->3, history window 8->2 turns for this path) applied after the first, slower measurement."
+  }
+}

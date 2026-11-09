@@ -1,0 +1,167 @@
+{
+  "note": "5 publication figures generated directly from chart_engine.py (same deterministic renderer used by the live app), not screenshots. Legibility/clipping was checked by visual inspection at full resolution; one real overlap bug was found (the F1-by-class title colliding with a near-1.0 data label) and fixed in backend/chart_engine.py before this final generation.",
+  "generated_at_utc": "2026-11-09T00:19:20Z",
+  "figures": [
+    {
+      "name": "confusion_matrix_model_B_int8",
+      "title": "Confusion matrix -- Model B (int8, test split, n=599)",
+      "caption": "Confusion matrix for model B (int8 quantization), test split, n=599 samples. Rows are ground truth, columns are predicted class. Values are raw sample counts. This is the classifier's own quality on the full held-out split, not the 20-case RTL-vs-native comparison (which is a different, exact-match claim -- see results/rtl_comparison.json).",
+      "citations": [
+        "results/ml_metrics.json (results.B.int8_metrics.test.confusion_matrix)"
+      ],
+      "provenance": {
+        "kind": "confusion_matrix",
+        "model_tag": "B",
+        "metric_set": "int8",
+        "split": "test",
+        "normalize": false,
+        "n": 599
+      },
+      "legibility_check": "visually inspected at full resolution; no text/data clipping or overlap",
+      "files": {
+        "png": {
+          "path": "confusion_matrix_model_B_int8.png",
+          "sha256": "44cacf5d93009fcb6a4bc0e4f44fd0e430f5892697a7d5e62232bc2a393e4b7e",
+          "bytes": 58603
+        },
+        "svg": {
+          "path": "confusion_matrix_model_B_int8.svg",
+          "sha256": "8d6e914bcbbb5c0c2698e3cdea019670b5a1f49c82665540fe5de8711af3a58b",
+          "bytes": 41221
+        },
+        "csv": {
+          "path": "confusion_matrix_model_B_int8.csv",
+          "sha256": "aef08b1ed07a22cf3a8c2447799827ba06098789346eababa0f05bed4bfc5ab0",
+          "bytes": 381
+        }
+      }
+    },
+    {
+      "name": "f1_by_class_model_B_int8",
+      "title": "F1 by class -- Model B (int8, test split) -- macro-F1=0.77093 (below 0.85 target)",
+      "caption": "Per-class F1 for model B (int8), test split (macro-F1 = 0.77093). The dashed line marks the project's original quality target (macro-F1 >= 0.85), which was NOT met on this split.",
+      "citations": [
+        "results/ml_metrics.json (results.B.int8_metrics.test.per_class_f1)",
+        "results/ml_metrics.json (quality_target_macro_f1)"
+      ],
+      "provenance": {
+        "kind": "f1_by_class",
+        "model_tag": "B",
+        "metric_set": "int8",
+        "split": "test",
+        "quality_target_macro_f1": 0.85
+      },
+      "legibility_check": "visually inspected at full resolution; no text/data clipping or overlap",
+      "files": {
+        "png": {
+          "path": "f1_by_class_model_B_int8.png",
+          "sha256": "55dd8321f242da256eed530e43bc77e65ffb6f7528065f7209332bc6e64995e9",
+          "bytes": 41983
+        },
+        "svg": {
+          "path": "f1_by_class_model_B_int8.svg",
+          "sha256": "44b6101319831c1d64b6de88921b3c88ac7dc475a64fbdf884fc8921529866b1",
+          "bytes": 34378
+        },
+        "csv": {
+          "path": "f1_by_class_model_B_int8.csv",
+          "sha256": "1061005105ffa83e5e82fd10f249add5d33e67c003098ea5b198cdb16116779a",
+          "bytes": 428
+        }
+      }
+    },
+    {
+      "name": "model_A_vs_B_comparison",
+      "title": "Model A vs B -- Macro-F1 (int8, test split)",
+      "caption": "Model A (hidden=16) vs Model B (hidden=32), Macro-F1 on the test split (int8 quantization). Model B was the one selected and carried forward (selection rule: quantized validation macro-F1 only).",
+      "citations": [
+        "results/ml_metrics.json (results.A/B.int8_metrics.test.macro_f1)",
+        "results/ml_metrics.json (chosen_configuration, selection_rule)"
+      ],
+      "provenance": {
+        "kind": "model_comparison",
+        "metric": "macro_f1",
+        "metric_set": "int8",
+        "split": "test"
+      },
+      "legibility_check": "visually inspected at full resolution; no text/data clipping or overlap",
+      "files": {
+        "png": {
+          "path": "model_A_vs_B_comparison.png",
+          "sha256": "76270b68ff52813c2198f80ae00e50bd166fa16a4f6b2e9e7e655d8d8dacb819",
+          "bytes": 22680
+        },
+        "svg": {
+          "path": "model_A_vs_B_comparison.svg",
+          "sha256": "8d6dd6aad9edd269b0379ddafea52aaa2a6552d9e5b6793b820c54debab7370f",
+          "bytes": 23068
+        },
+        "csv": {
+          "path": "model_A_vs_B_comparison.csv",
+          "sha256": "44d2afda2d9407c3683877996f1e0a186e2d09665f20d67256e4b57e320e3ad4",
+          "bytes": 341
+        }
+      }
+    },
+    {
+      "name": "invoke_cycles_final_run",
+      "title": "Invoke() cycles per case -- run full20_final_001",
+      "caption": "Simulated RTL clock cycles spent inside each case's Invoke() call, from the accepted final run. These are simulated hardware cycles (discrete-event simulation), not a physical-chip wall-clock latency measurement -- no synthesis or physical implementation was performed.",
+      "citations": [
+        "results/final_run_evidence/full20_final_001_check_report.json (cases_parsed[*].invoke_elapsed_cycles)"
+      ],
+      "provenance": {
+        "kind": "invoke_cycles"
+      },
+      "legibility_check": "visually inspected at full resolution; no text/data clipping or overlap",
+      "files": {
+        "png": {
+          "path": "invoke_cycles_final_run.png",
+          "sha256": "968eeaefec4d39358c3c5dc9138aef0feade8cd5a8f51a4060e1fbc523b907a4",
+          "bytes": 34145
+        },
+        "svg": {
+          "path": "invoke_cycles_final_run.svg",
+          "sha256": "38bca9176e9c9c7a7fcf756330d69919778b99349a7d4c443336cb5835acd083",
+          "bytes": 36210
+        },
+        "csv": {
+          "path": "invoke_cycles_final_run.csv",
+          "sha256": "c99434ae7e1de747af4e1fdead7b42bdaf27b57c943a5d5cbcc41f27bae28a4e",
+          "bytes": 429
+        }
+      }
+    },
+    {
+      "name": "case_16_scores",
+      "title": "Case 16: quantized scores (predicted: Scratch, true: none, MISCLASSIFIED)",
+      "caption": "Four quantized class scores for case 16 (sample_id 2276). Scores are raw int8 model logits, not probabilities. Ground truth: none. Predicted (both RTL and native, which match exactly): Scratch -- a MISCLASSIFICATION relative to ground truth. Note: Scratch, none are tied for the maximum score.",
+      "citations": [
+        "results/rtl_logs/full20_final_001_live.log (MMIO_PREDICTED_CLASS cycle=121534289 case_id=16)",
+        "results/comparison_manifest.json (cases[*].class_idx)"
+      ],
+      "provenance": {
+        "kind": "case_scores",
+        "case_id": 16
+      },
+      "legibility_check": "visually inspected at full resolution; no text/data clipping or overlap",
+      "files": {
+        "png": {
+          "path": "case_16_scores.png",
+          "sha256": "dbc0cf5da96ce3174531a6e276c7ffe51158ada6961294e25ef3fb55b2d7ab7d",
+          "bytes": 42890
+        },
+        "svg": {
+          "path": "case_16_scores.svg",
+          "sha256": "44ebfb927a2b8d69a9ed1c4b65cd36ce2f8cd1a58287b89771a870ad881d82e2",
+          "bytes": 34312
+        },
+        "csv": {
+          "path": "case_16_scores.csv",
+          "sha256": "0ac6a5ebe0dc62bad589e2d21840cab4bdd8e53493d1d4e7b59069eb185937dc",
+          "bytes": 314
+        }
+      }
+    }
+  ]
+}

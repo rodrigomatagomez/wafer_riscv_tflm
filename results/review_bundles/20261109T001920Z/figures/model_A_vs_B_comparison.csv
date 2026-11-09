@@ -1,0 +1,10 @@
+# figure: model_A_vs_B_comparison
+# kind: model_comparison
+# metric: macro_f1
+# metric_set: int8
+# split: test
+# source: results/ml_metrics.json (results.A/B.int8_metrics.test.macro_f1)
+# source: results/ml_metrics.json (chosen_configuration, selection_rule)
+model,metric,value
+A,macro_f1,0.7530330557168811
+B,macro_f1,0.7709299728883321

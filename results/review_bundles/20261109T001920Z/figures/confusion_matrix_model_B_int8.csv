@@ -1,0 +1,13 @@
+# figure: confusion_matrix_model_B_int8
+# kind: confusion_matrix
+# model_tag: B
+# metric_set: int8
+# split: test
+# normalize: False
+# n: 599
+# source: results/ml_metrics.json (results.B.int8_metrics.test.confusion_matrix)
+ground_truth,predicted_Center,predicted_Edge-Ring,predicted_Scratch,predicted_none
+Center,140,0,10,6
+Edge-Ring,0,145,2,0
+Scratch,6,0,94,44
+none,0,1,69,82

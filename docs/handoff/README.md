@@ -157,6 +157,54 @@ without an explicit, separate user instruction. Run `git status` in
 `/home/rmata/Documents/git/wafer_riscv_tflm_1` to see the resulting
 modified/untracked file list before deciding whether and how to commit it.
 
+## Later host-side addition (2026-11-08): apps/results_chat/
+
+After the final result above was established, a separate, later addition
+built `apps/results_chat/` -- a read-only web application (Flask backend +
+vanilla-JS frontend) that explains the accepted full20_final_001 result to
+a human audience, bilingually (English/Spanish): a dashboard plus a chat
+assistant, with every answer citing the exact source file/field/log line
+it came from. See `apps/results_chat/README.md` for its own architecture,
+evidence sources, exact startup instructions, SSH-forwarding setup, and
+limitations; `docs/decisions.md` D-011 for the design rationale;
+`docs/development_log.jsonl` event E044 for the implementation record.
+
+This is explicitly **not** part of the frozen full20_final_001 experiment
+pipeline and does not change, re-run, or affect it in any way -- it only
+reads already-saved evidence files, is strictly read-only (no shell exec,
+no file writes, no simulation control), and binds to `127.0.0.1` only. A
+fresh run of `scripts/check_final_run.py` after building this app still
+returns exit code 0 / `ACCEPTED`, confirming the original evidence was
+untouched.
+
+### Further upgrade (2026-11-08, same day): local LLM + chart generation
+
+A still-later addition upgraded this app from fixed-FAQ-only/factual-mode
+to support genuinely open-ended questions (grounded by retrieval over the
+project's documentation) and natural-language chart generation, backed by
+a **real local LLM actually built, downloaded, and run on this host**
+(llama.cpp v0.9.0 + Qwen2.5-1.5B-Instruct, Apache-2.0, CPU-only, 4 threads,
+one generation at a time -- full provenance in
+`apps/results_chat/llm_runtime/MODEL_PROVENANCE.json`). Unlike the first
+addition above, both factual mode AND live local-LLM mode were genuinely
+exercised in this environment, including a dedicated test file
+(`apps/results_chat/tests/test_live_llm.py`) that makes real network calls
+and skips rather than silently passing if no server is reachable. Charts
+(9 kinds: confusion matrix, F1 by class, A/B comparison, float/int8
+comparison, Invoke() cycles, a case's scores, correct/incorrect counts,
+training curves, memory budget) are always rendered by deterministic code
+from a strict, data-free specification -- an LLM can select *which*
+already-computed dataset to plot, never *what* the numbers are. See
+`apps/results_chat/README.md` in full (architecture, exact local-LLM setup
+steps, measured latency/memory, chart-accuracy design, limitations) and
+`docs/decisions.md` D-012 through D-014 for the design rationale;
+`docs/development_log.jsonl` event E045 for the implementation record,
+including several real bugs found and fixed during testing (a Spanish
+clitic-pronoun regex gap, a chart-follow-up routing gap, a mislabeled
+response language, a retrieval false positive). Re-verified again after
+this upgrade: `scripts/check_final_run.py` still returns exit code 0 /
+`ACCEPTED` -- the original full20_final_001 evidence remains untouched.
+
 ## Separation of implementation evidence vs. later writing
 
 Everything under `docs/`, `results/`, `rtl/`, `tb/`, `sw/`, `ml/`,

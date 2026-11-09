@@ -1,0 +1,718 @@
+{
+  "schema": "check_final_run.py strict single-run acceptance report",
+  "log_path": "results/rtl_logs/full20_final_001_live.log",
+  "expected_run_id": "full20_final_001",
+  "firmware_elf_sha256": "622d18164ee3c80540ca460547340246b989e689aad70ed714d4f59e8d192be5",
+  "firmware_config": {
+    "config_tag": "case_full",
+    "case_start": 0,
+    "case_count_requested": "null",
+    "elf_path": "/home/rmata/Documents/git/wafer_riscv_tflm/build/firmware/configs/case_full/firmware.elf",
+    "elf_sha256": "622d18164ee3c80540ca460547340246b989e689aad70ed714d4f59e8d192be5",
+    "hex_path": "/home/rmata/Documents/git/wafer_riscv_tflm/build/firmware/configs/case_full/firmware.hex",
+    "build_timestamp_utc": "2026-11-08T19:13:02Z"
+  },
+  "banner": {
+    "run_id": "full20_final_001",
+    "memfile": "/run/flatpak/doc/d6f0a558/wafer_riscv_tflm/build/firmware/configs/case_full/firmware.hex",
+    "trace": 0,
+    "maxcycles": 250000000,
+    "ram": "lite",
+    "fixedlat": 2,
+    "readywait": 0,
+    "randwait": 0,
+    "heartbeat": 500000
+  },
+  "cases_parsed": [
+    {
+      "case_id": 0,
+      "invoke_start_cycle": 351185,
+      "invoke_end_cycle": 7382696,
+      "invoke_elapsed_cycles": 7031511,
+      "predicted_class": 2,
+      "scores": [
+        47,
+        28,
+        50,
+        14
+      ]
+    },
+    {
+      "case_id": 1,
+      "invoke_start_cycle": 7485645,
+      "invoke_end_cycle": 14517142,
+      "invoke_elapsed_cycles": 7031497,
+      "predicted_class": 0,
+      "scores": [
+        79,
+        -17,
+        44,
+        4
+      ]
+    },
+    {
+      "case_id": 2,
+      "invoke_start_cycle": 14620077,
+      "invoke_end_cycle": 21651581,
+      "invoke_elapsed_cycles": 7031504,
+      "predicted_class": 0,
+      "scores": [
+        82,
+        -23,
+        33,
+        19
+      ]
+    },
+    {
+      "case_id": 3,
+      "invoke_start_cycle": 21754516,
+      "invoke_end_cycle": 28786020,
+      "invoke_elapsed_cycles": 7031504,
+      "predicted_class": 0,
+      "scores": [
+        91,
+        -34,
+        32,
+        19
+      ]
+    },
+    {
+      "case_id": 4,
+      "invoke_start_cycle": 28888955,
+      "invoke_end_cycle": 35920452,
+      "invoke_elapsed_cycles": 7031497,
+      "predicted_class": 0,
+      "scores": [
+        46,
+        19,
+        34,
+        27
+      ]
+    },
+    {
+      "case_id": 5,
+      "invoke_start_cycle": 36023387,
+      "invoke_end_cycle": 43054898,
+      "invoke_elapsed_cycles": 7031511,
+      "predicted_class": 1,
+      "scores": [
+        5,
+        86,
+        34,
+        31
+      ]
+    },
+    {
+      "case_id": 6,
+      "invoke_start_cycle": 43157847,
+      "invoke_end_cycle": 50189358,
+      "invoke_elapsed_cycles": 7031511,
+      "predicted_class": 1,
+      "scores": [
+        10,
+        79,
+        32,
+        34
+      ]
+    },
+    {
+      "case_id": 7,
+      "invoke_start_cycle": 50292307,
+      "invoke_end_cycle": 57323783,
+      "invoke_elapsed_cycles": 7031476,
+      "predicted_class": 1,
+      "scores": [
+        -6,
+        106,
+        32,
+        35
+      ]
+    },
+    {
+      "case_id": 8,
+      "invoke_start_cycle": 57426732,
+      "invoke_end_cycle": 64458215,
+      "invoke_elapsed_cycles": 7031483,
+      "predicted_class": 1,
+      "scores": [
+        1,
+        103,
+        27,
+        27
+      ]
+    },
+    {
+      "case_id": 9,
+      "invoke_start_cycle": 64561164,
+      "invoke_end_cycle": 71592633,
+      "invoke_elapsed_cycles": 7031469,
+      "predicted_class": 1,
+      "scores": [
+        -10,
+        110,
+        24,
+        41
+      ]
+    },
+    {
+      "case_id": 10,
+      "invoke_start_cycle": 71695582,
+      "invoke_end_cycle": 78727093,
+      "invoke_elapsed_cycles": 7031511,
+      "predicted_class": 2,
+      "scores": [
+        29,
+        22,
+        58,
+        51
+      ]
+    },
+    {
+      "case_id": 11,
+      "invoke_start_cycle": 78830042,
+      "invoke_end_cycle": 85861553,
+      "invoke_elapsed_cycles": 7031511,
+      "predicted_class": 0,
+      "scores": [
+        66,
+        -16,
+        45,
+        40
+      ]
+    },
+    {
+      "case_id": 12,
+      "invoke_start_cycle": 85964488,
+      "invoke_end_cycle": 92995992,
+      "invoke_elapsed_cycles": 7031504,
+      "predicted_class": 2,
+      "scores": [
+        23,
+        16,
+        60,
+        58
+      ]
+    },
+    {
+      "case_id": 13,
+      "invoke_start_cycle": 93098941,
+      "invoke_end_cycle": 100130438,
+      "invoke_elapsed_cycles": 7031497,
+      "predicted_class": 2,
+      "scores": [
+        11,
+        46,
+        51,
+        40
+      ]
+    },
+    {
+      "case_id": 14,
+      "invoke_start_cycle": 100233401,
+      "invoke_end_cycle": 107264912,
+      "invoke_elapsed_cycles": 7031511,
+      "predicted_class": 2,
+      "scores": [
+        30,
+        24,
+        48,
+        37
+      ]
+    },
+    {
+      "case_id": 15,
+      "invoke_start_cycle": 107367861,
+      "invoke_end_cycle": 114399372,
+      "invoke_elapsed_cycles": 7031511,
+      "predicted_class": 2,
+      "scores": [
+        39,
+        11,
+        49,
+        43
+      ]
+    },
+    {
+      "case_id": 16,
+      "invoke_start_cycle": 114502321,
+      "invoke_end_cycle": 121533832,
+      "invoke_elapsed_cycles": 7031511,
+      "predicted_class": 2,
+      "scores": [
+        41,
+        10,
+        49,
+        49
+      ]
+    },
+    {
+      "case_id": 17,
+      "invoke_start_cycle": 121636781,
+      "invoke_end_cycle": 128668292,
+      "invoke_elapsed_cycles": 7031511,
+      "predicted_class": 3,
+      "scores": [
+        10,
+        36,
+        47,
+        65
+      ]
+    },
+    {
+      "case_id": 18,
+      "invoke_start_cycle": 128771269,
+      "invoke_end_cycle": 135802780,
+      "invoke_elapsed_cycles": 7031511,
+      "predicted_class": 3,
+      "scores": [
+        19,
+        31,
+        43,
+        63
+      ]
+    },
+    {
+      "case_id": 19,
+      "invoke_start_cycle": 135905757,
+      "invoke_end_cycle": 142937268,
+      "invoke_elapsed_cycles": 7031511,
+      "predicted_class": 3,
+      "scores": [
+        41,
+        -9,
+        63,
+        65
+      ]
+    }
+  ],
+  "status": {
+    "cycle": 142937769,
+    "value": 1
+  },
+  "rows": [
+    {
+      "case_id": 0,
+      "sample_id": 84586,
+      "class_name": "Center",
+      "rtl_scores": [
+        47,
+        28,
+        50,
+        14
+      ],
+      "rtl_predicted_class": 2,
+      "native_scores": [
+        47,
+        28,
+        50,
+        14
+      ],
+      "native_predicted_class": 2,
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 1,
+      "sample_id": 85578,
+      "class_name": "Center",
+      "rtl_scores": [
+        79,
+        -17,
+        44,
+        4
+      ],
+      "rtl_predicted_class": 0,
+      "native_scores": [
+        79,
+        -17,
+        44,
+        4
+      ],
+      "native_predicted_class": 0,
+      "invoke_elapsed_cycles": 7031497,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 2,
+      "sample_id": 86381,
+      "class_name": "Center",
+      "rtl_scores": [
+        82,
+        -23,
+        33,
+        19
+      ],
+      "rtl_predicted_class": 0,
+      "native_scores": [
+        82,
+        -23,
+        33,
+        19
+      ],
+      "native_predicted_class": 0,
+      "invoke_elapsed_cycles": 7031504,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 3,
+      "sample_id": 86452,
+      "class_name": "Center",
+      "rtl_scores": [
+        91,
+        -34,
+        32,
+        19
+      ],
+      "rtl_predicted_class": 0,
+      "native_scores": [
+        91,
+        -34,
+        32,
+        19
+      ],
+      "native_predicted_class": 0,
+      "invoke_elapsed_cycles": 7031504,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 4,
+      "sample_id": 95994,
+      "class_name": "Center",
+      "rtl_scores": [
+        46,
+        19,
+        34,
+        27
+      ],
+      "rtl_predicted_class": 0,
+      "native_scores": [
+        46,
+        19,
+        34,
+        27
+      ],
+      "native_predicted_class": 0,
+      "invoke_elapsed_cycles": 7031497,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 5,
+      "sample_id": 14145,
+      "class_name": "Edge-Ring",
+      "rtl_scores": [
+        5,
+        86,
+        34,
+        31
+      ],
+      "rtl_predicted_class": 1,
+      "native_scores": [
+        5,
+        86,
+        34,
+        31
+      ],
+      "native_predicted_class": 1,
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 6,
+      "sample_id": 14147,
+      "class_name": "Edge-Ring",
+      "rtl_scores": [
+        10,
+        79,
+        32,
+        34
+      ],
+      "rtl_predicted_class": 1,
+      "native_scores": [
+        10,
+        79,
+        32,
+        34
+      ],
+      "native_predicted_class": 1,
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 7,
+      "sample_id": 20644,
+      "class_name": "Edge-Ring",
+      "rtl_scores": [
+        -6,
+        106,
+        32,
+        35
+      ],
+      "rtl_predicted_class": 1,
+      "native_scores": [
+        -6,
+        106,
+        32,
+        35
+      ],
+      "native_predicted_class": 1,
+      "invoke_elapsed_cycles": 7031476,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 8,
+      "sample_id": 20651,
+      "class_name": "Edge-Ring",
+      "rtl_scores": [
+        1,
+        103,
+        27,
+        27
+      ],
+      "rtl_predicted_class": 1,
+      "native_scores": [
+        1,
+        103,
+        27,
+        27
+      ],
+      "native_predicted_class": 1,
+      "invoke_elapsed_cycles": 7031483,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 9,
+      "sample_id": 20659,
+      "class_name": "Edge-Ring",
+      "rtl_scores": [
+        -10,
+        110,
+        24,
+        41
+      ],
+      "rtl_predicted_class": 1,
+      "native_scores": [
+        -10,
+        110,
+        24,
+        41
+      ],
+      "native_predicted_class": 1,
+      "invoke_elapsed_cycles": 7031469,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 10,
+      "sample_id": 3038,
+      "class_name": "Scratch",
+      "rtl_scores": [
+        29,
+        22,
+        58,
+        51
+      ],
+      "rtl_predicted_class": 2,
+      "native_scores": [
+        29,
+        22,
+        58,
+        51
+      ],
+      "native_predicted_class": 2,
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 11,
+      "sample_id": 3940,
+      "class_name": "Scratch",
+      "rtl_scores": [
+        66,
+        -16,
+        45,
+        40
+      ],
+      "rtl_predicted_class": 0,
+      "native_scores": [
+        66,
+        -16,
+        45,
+        40
+      ],
+      "native_predicted_class": 0,
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 12,
+      "sample_id": 6854,
+      "class_name": "Scratch",
+      "rtl_scores": [
+        23,
+        16,
+        60,
+        58
+      ],
+      "rtl_predicted_class": 2,
+      "native_scores": [
+        23,
+        16,
+        60,
+        58
+      ],
+      "native_predicted_class": 2,
+      "invoke_elapsed_cycles": 7031504,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 13,
+      "sample_id": 22456,
+      "class_name": "Scratch",
+      "rtl_scores": [
+        11,
+        46,
+        51,
+        40
+      ],
+      "rtl_predicted_class": 2,
+      "native_scores": [
+        11,
+        46,
+        51,
+        40
+      ],
+      "native_predicted_class": 2,
+      "invoke_elapsed_cycles": 7031497,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 14,
+      "sample_id": 25265,
+      "class_name": "Scratch",
+      "rtl_scores": [
+        30,
+        24,
+        48,
+        37
+      ],
+      "rtl_predicted_class": 2,
+      "native_scores": [
+        30,
+        24,
+        48,
+        37
+      ],
+      "native_predicted_class": 2,
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 15,
+      "sample_id": 56,
+      "class_name": "none",
+      "rtl_scores": [
+        39,
+        11,
+        49,
+        43
+      ],
+      "rtl_predicted_class": 2,
+      "native_scores": [
+        39,
+        11,
+        49,
+        43
+      ],
+      "native_predicted_class": 2,
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 16,
+      "sample_id": 2276,
+      "class_name": "none",
+      "rtl_scores": [
+        41,
+        10,
+        49,
+        49
+      ],
+      "rtl_predicted_class": 2,
+      "native_scores": [
+        41,
+        10,
+        49,
+        49
+      ],
+      "native_predicted_class": 2,
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 17,
+      "sample_id": 3576,
+      "class_name": "none",
+      "rtl_scores": [
+        10,
+        36,
+        47,
+        65
+      ],
+      "rtl_predicted_class": 3,
+      "native_scores": [
+        10,
+        36,
+        47,
+        65
+      ],
+      "native_predicted_class": 3,
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 18,
+      "sample_id": 6274,
+      "class_name": "none",
+      "rtl_scores": [
+        19,
+        31,
+        43,
+        63
+      ],
+      "rtl_predicted_class": 3,
+      "native_scores": [
+        19,
+        31,
+        43,
+        63
+      ],
+      "native_predicted_class": 3,
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
+    },
+    {
+      "case_id": 19,
+      "sample_id": 6282,
+      "class_name": "none",
+      "rtl_scores": [
+        41,
+        -9,
+        63,
+        65
+      ],
+      "rtl_predicted_class": 3,
+      "native_scores": [
+        41,
+        -9,
+        63,
+        65
+      ],
+      "native_predicted_class": 3,
+      "invoke_elapsed_cycles": 7031511,
+      "status": "MATCH"
+    }
+  ],
+  "model_sha256_expected": "7e11c5faea02c99464d6f939c3b10067bd93a6d72d5e650797f6249755ba69ea",
+  "accepted": true,
+  "exit_code": 0,
+  "summary": "ALL 20/20 CASES MATCH (exact scores + predicted class)"
+}
