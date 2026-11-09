@@ -1,0 +1,81 @@
+# Exact commands executed for this review-reply package (2026-11-09, UTC)
+# All via the documented D-009 standalone-Zenith route (bypasses the Animas
+# MCP daemon entirely; chosen specifically because docs/animas_capabilities.md
+# and development_log.jsonl E033 record that the daemon/ui_remote_control
+# mode silently drops the --seed flag -- not safe to use here).
+# Portal path below is this session's grant (see portal_path_note.txt) --
+# NOT guaranteed stable across Animas restarts/host reboots.
+
+## Version/machine identification (Section 1)
+flatpak list --app --columns=application,branch,version,installation | grep -i mifraltech
+flatpak info com.mifraltech.animaseda/x86_64/1.0.2
+flatpak run --branch=1.0.2 --command=zenith com.mifraltech.animaseda --version
+flatpak run --branch=1.0.2 --command=zenith com.mifraltech.animaseda --help   > zenith_help.txt
+cat /etc/os-release
+uname -a
+hostname
+grep -m1 "model name" /proc/cpuinfo
+lscpu | grep -E "Socket|Core|Thread|CPU\(s\)"
+free -h
+taskset -pc $$
+cat /sys/fs/cgroup/cpu.max
+# (full transcript: host_and_version_evidence.txt)
+
+## Portal path discovery (read-only, Section 5)
+mcp__animas__list_projects()
+# -> active_project.root_path = /run/flatpak/doc/d6f0a558/wafer_riscv_tflm
+
+## Section 3 -- RAM-lite re-validation (all new, bounded, short runs)
+P=/run/flatpak/doc/d6f0a558/wafer_riscv_tflm
+
+# Rebuilt test_002 firmware from current (post-SRA-fix) source, deterministically:
+scripts/build_fw.sh test_002_loads_stores tb/directed/test_002_loads_stores.S
+
+# Confirmed build/random_program/random.hex is byte-identical to a fresh
+# regeneration from current scripts/gen_random_program.py (seed=2026):
+python3 scripts/gen_random_program.py 1100 /tmp/.../random_check
+diff /tmp/.../random_check.hex build/random_program/random.hex   # exit 0
+
+# Test A/B: directed test_002, test_002's own historical injected-wait config
+# (+READYWAIT=3 +RANDWAIT=5 +FIXEDLAT=4), ram=full vs ram=lite:
+flatpak run --branch=1.0.2 --command=sh com.mifraltech.animaseda -c \
+  "cd '$P' && zenith rtl/*.sv tb/*.sv -top soc_tb \
+   +MEMFILE=build/test_002_loads_stores/test_002_loads_stores.hex \
+   +MAXCYCLES=200000 +TRACE=1 +RUNID=ramlite_reval_a_full \
+   +READYWAIT=3 +RANDWAIT=5 +FIXEDLAT=4 +HEARTBEAT=0" \
+  > ramlite_reval_a_full.log 2>&1
+
+flatpak run --branch=1.0.2 --command=sh com.mifraltech.animaseda -c \
+  "cd '$P' && zenith rtl/*.sv tb/*.sv -top soc_tb +define+RAM_LITE \
+   +MEMFILE=build/test_002_loads_stores/test_002_loads_stores.hex \
+   +MAXCYCLES=200000 +TRACE=1 +RUNID=ramlite_reval_b_lite \
+   +READYWAIT=3 +RANDWAIT=5 +FIXEDLAT=4 +HEARTBEAT=0" \
+  > ramlite_reval_b_lite.log 2>&1
+
+# Test C/D: 1100-instruction random program (content seed=2026, baked into
+# build/random_program/random.hex), ram_model_lite validation's own
+# historical wait config (FIXEDLAT=3 READYWAIT=2 RANDWAIT=5) + Zenith's own
+# --seed 4242 (a CLI option, NOT a +plusarg -- confirmed via --help; must be
+# passed on the standalone command line, since daemon mode drops it):
+flatpak run --branch=1.0.2 --command=sh com.mifraltech.animaseda -c \
+  "cd '$P' && zenith --seed 4242 rtl/*.sv tb/*.sv -top soc_tb \
+   +MEMFILE=build/random_program/random.hex +MAXCYCLES=200000 +TRACE=1 \
+   +RUNID=ramlite_reval_c_full +FIXEDLAT=3 +READYWAIT=2 +RANDWAIT=5 \
+   +HEARTBEAT=0" > ramlite_reval_c_full.log 2>&1
+
+flatpak run --branch=1.0.2 --command=sh com.mifraltech.animaseda -c \
+  "cd '$P' && zenith --seed 4242 rtl/*.sv tb/*.sv -top soc_tb +define+RAM_LITE \
+   +MEMFILE=build/random_program/random.hex +MAXCYCLES=200000 +TRACE=1 \
+   +RUNID=ramlite_reval_d_lite +FIXEDLAT=3 +READYWAIT=2 +RANDWAIT=5 \
+   +HEARTBEAT=0" > ramlite_reval_d_lite.log 2>&1
+
+# Repeated twice more each (rep2, rep3; identical command, +RUNID= suffixed)
+# for a modest, bounded repeatability/timer check -- NOT a throughput claim.
+
+## Comparison commands (all run against the files above)
+diff <(grep "^RETIRE" ramlite_reval_a_full.log) <(grep "^RETIRE" ramlite_reval_b_lite.log)
+diff <(grep "^RETIRE" ramlite_reval_a_full.log | sed -E 's/cycle=[0-9]+/cycle=X/') \
+     <(grep "^RETIRE" ramlite_reval_b_lite.log | sed -E 's/cycle=[0-9]+/cycle=X/')
+diff <(grep "^RETIRE" ramlite_reval_c_full.log) <(grep "^RETIRE" ramlite_reval_d_lite.log)
+diff <(grep "^RETIRE" ramlite_reval_c_full.log | sed -E 's/cycle=[0-9]+/cycle=X/') \
+     <(grep "^RETIRE" ramlite_reval_d_lite.log | sed -E 's/cycle=[0-9]+/cycle=X/')

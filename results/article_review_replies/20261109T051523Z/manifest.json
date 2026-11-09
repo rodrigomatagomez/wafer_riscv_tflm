@@ -1,0 +1,227 @@
+{
+  "package_id": "article_review_replies_20261109T051523Z",
+  "note": "Raw .log files are excluded by this repo's blanket '*.log' gitignore rule. Each required raw log is distributed as a companion '<name>.log.gz' (not ignored) for publication; the original uncompressed '.log' is preserved locally and listed here too, with both hashes, so integrity can be checked either way.",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "f9ae103ae57ab30ea2ef84e1563982ddefa37f10a2fa9f74ae02b1dbad1e34d5",
+      "size_bytes": 7243,
+      "git_tracked_locally": true
+    },
+    {
+      "path": "answers.json",
+      "sha256": "1fa3b6e1a03c384a4aaa19898cce2aa05e8b937d00ff0d15e8dbc905d05346e0",
+      "size_bytes": 18765,
+      "git_tracked_locally": true
+    },
+    {
+      "path": "checks/commands_used.txt",
+      "sha256": "3b9204c22781aed926013151cc7895655ecd9c034b071601f764bbdd21589720",
+      "size_bytes": 4410,
+      "git_tracked_locally": true
+    },
+    {
+      "path": "checks/host_and_version_evidence.txt",
+      "sha256": "59d823ba526b427e880358673b058dfef8d1f89a9509d84df9b9b88854ebc1df",
+      "size_bytes": 3263,
+      "git_tracked_locally": true
+    },
+    {
+      "path": "checks/ramlite_reval_a_full.log",
+      "sha256": "3ba733415430c10ee0287edd474742001d12adcba30b03e23d446eaaf2532fe6",
+      "size_bytes": 14196,
+      "distributed_as": "checks/ramlite_reval_a_full.log.gz",
+      "distributed_sha256": "61a9260999f5ca7903cc7c787f3056a3e2e28514ec3fe8c5be00e4db8eaac452",
+      "distributed_size_bytes": 2807,
+      "git_tracked_locally": false,
+      "note": "excluded by blanket *.log gitignore; published via distributed_as"
+    },
+    {
+      "path": "checks/ramlite_reval_a_full.log.gz",
+      "sha256": "61a9260999f5ca7903cc7c787f3056a3e2e28514ec3fe8c5be00e4db8eaac452",
+      "size_bytes": 2807,
+      "git_tracked_locally": true,
+      "is_distributed_form_of": "checks/ramlite_reval_a_full.log"
+    },
+    {
+      "path": "checks/ramlite_reval_b_lite.log",
+      "sha256": "523f6e73c3b3dd1e75b350e1ed66ed232e301d2caea3f8f560393f994d7a0e7b",
+      "size_bytes": 14210,
+      "distributed_as": "checks/ramlite_reval_b_lite.log.gz",
+      "distributed_sha256": "be1f4da868fd4a9d9138a37f892e6e3c6aff00fcb1516929c0d78b8745567255",
+      "distributed_size_bytes": 2807,
+      "git_tracked_locally": false,
+      "note": "excluded by blanket *.log gitignore; published via distributed_as"
+    },
+    {
+      "path": "checks/ramlite_reval_b_lite.log.gz",
+      "sha256": "be1f4da868fd4a9d9138a37f892e6e3c6aff00fcb1516929c0d78b8745567255",
+      "size_bytes": 2807,
+      "git_tracked_locally": true,
+      "is_distributed_form_of": "checks/ramlite_reval_b_lite.log"
+    },
+    {
+      "path": "checks/ramlite_reval_c_full.log",
+      "sha256": "18ada03c39f85001227e4b699c3ddc95777982408ff88d44b4d63e96ea2238a1",
+      "size_bytes": 99840,
+      "distributed_as": "checks/ramlite_reval_c_full.log.gz",
+      "distributed_sha256": "62c5eee92e172112424360a1122f5b3bfd967fef6783538c89175e53ca878c2d",
+      "distributed_size_bytes": 15978,
+      "git_tracked_locally": false,
+      "note": "excluded by blanket *.log gitignore; published via distributed_as"
+    },
+    {
+      "path": "checks/ramlite_reval_c_full.log.gz",
+      "sha256": "62c5eee92e172112424360a1122f5b3bfd967fef6783538c89175e53ca878c2d",
+      "size_bytes": 15978,
+      "git_tracked_locally": true,
+      "is_distributed_form_of": "checks/ramlite_reval_c_full.log"
+    },
+    {
+      "path": "checks/ramlite_reval_c_full_rep2.log",
+      "sha256": "25a091a5fb0d2c08e615abd2243f210db6577e2151a81ec77f46c12b30b2cb6c",
+      "size_bytes": 99845,
+      "distributed_as": "checks/ramlite_reval_c_full_rep2.log.gz",
+      "distributed_sha256": "fb2d7200ed197deda4a6f5d165fded92ac69755374092f3619fcedab3bf4adce",
+      "distributed_size_bytes": 15986,
+      "git_tracked_locally": false,
+      "note": "excluded by blanket *.log gitignore; published via distributed_as"
+    },
+    {
+      "path": "checks/ramlite_reval_c_full_rep2.log.gz",
+      "sha256": "fb2d7200ed197deda4a6f5d165fded92ac69755374092f3619fcedab3bf4adce",
+      "size_bytes": 15986,
+      "git_tracked_locally": true,
+      "is_distributed_form_of": "checks/ramlite_reval_c_full_rep2.log"
+    },
+    {
+      "path": "checks/ramlite_reval_c_full_rep3.log",
+      "sha256": "5f4fc0bc5c61105374bc2c1be9021a6a0a8d3215205fddb4155c6d61f43d5201",
+      "size_bytes": 99845,
+      "distributed_as": "checks/ramlite_reval_c_full_rep3.log.gz",
+      "distributed_sha256": "0c075633a5ded199b1299bd7788992fdb51c3d8106818b5ee723b7f6de898c56",
+      "distributed_size_bytes": 15987,
+      "git_tracked_locally": false,
+      "note": "excluded by blanket *.log gitignore; published via distributed_as"
+    },
+    {
+      "path": "checks/ramlite_reval_c_full_rep3.log.gz",
+      "sha256": "0c075633a5ded199b1299bd7788992fdb51c3d8106818b5ee723b7f6de898c56",
+      "size_bytes": 15987,
+      "git_tracked_locally": true,
+      "is_distributed_form_of": "checks/ramlite_reval_c_full_rep3.log"
+    },
+    {
+      "path": "checks/ramlite_reval_d_lite.log",
+      "sha256": "b47faaf45dbbda103e3805c94850fa57d5e015249832bf733a1a55eae54a96ad",
+      "size_bytes": 99858,
+      "distributed_as": "checks/ramlite_reval_d_lite.log.gz",
+      "distributed_sha256": "42fe7ba00a8910a0df46136a86156c1196a8e88f396cc3cab0fbe92a1d7b754c",
+      "distributed_size_bytes": 15999,
+      "git_tracked_locally": false,
+      "note": "excluded by blanket *.log gitignore; published via distributed_as"
+    },
+    {
+      "path": "checks/ramlite_reval_d_lite.log.gz",
+      "sha256": "42fe7ba00a8910a0df46136a86156c1196a8e88f396cc3cab0fbe92a1d7b754c",
+      "size_bytes": 15999,
+      "git_tracked_locally": true,
+      "is_distributed_form_of": "checks/ramlite_reval_d_lite.log"
+    },
+    {
+      "path": "checks/ramlite_reval_d_lite_rep2.log",
+      "sha256": "d67bc83a929ee0bba7973d0c293fcbaadb6a09576f411a94302a494e1d4cfe7c",
+      "size_bytes": 99863,
+      "distributed_as": "checks/ramlite_reval_d_lite_rep2.log.gz",
+      "distributed_sha256": "7a05e12c1996f62d93b822651d4969e3ce8eb399545ca02abea351ea2e48c711",
+      "distributed_size_bytes": 16005,
+      "git_tracked_locally": false,
+      "note": "excluded by blanket *.log gitignore; published via distributed_as"
+    },
+    {
+      "path": "checks/ramlite_reval_d_lite_rep2.log.gz",
+      "sha256": "7a05e12c1996f62d93b822651d4969e3ce8eb399545ca02abea351ea2e48c711",
+      "size_bytes": 16005,
+      "git_tracked_locally": true,
+      "is_distributed_form_of": "checks/ramlite_reval_d_lite_rep2.log"
+    },
+    {
+      "path": "checks/ramlite_reval_d_lite_rep3.log",
+      "sha256": "bf75ff57977a367362fe606a7e4d54efafc7bbdd8ab5dadb5e03edb5941e7049",
+      "size_bytes": 99863,
+      "distributed_as": "checks/ramlite_reval_d_lite_rep3.log.gz",
+      "distributed_sha256": "b7237ceb2767b0102090e4c20fea0bddef06d0b8530d4a590034c5f23e8d40d4",
+      "distributed_size_bytes": 16006,
+      "git_tracked_locally": false,
+      "note": "excluded by blanket *.log gitignore; published via distributed_as"
+    },
+    {
+      "path": "checks/ramlite_reval_d_lite_rep3.log.gz",
+      "sha256": "b7237ceb2767b0102090e4c20fea0bddef06d0b8530d4a590034c5f23e8d40d4",
+      "size_bytes": 16006,
+      "git_tracked_locally": true,
+      "is_distributed_form_of": "checks/ramlite_reval_d_lite_rep3.log"
+    },
+    {
+      "path": "checks/random1100_full_vs_lite_retire_diff.txt",
+      "sha256": "0cfd3f9f923b274e3a8b63dddaac05d911afdb2f01f0f63347090b0f0d119347",
+      "size_bytes": 183632,
+      "git_tracked_locally": true
+    },
+    {
+      "path": "checks/random1100_full_vs_lite_retire_diff_cycle_stripped.txt",
+      "sha256": "5abdeba3666825f380a94d2a96617e228554ce2443396b2068fa65fda55d0173",
+      "size_bytes": 13,
+      "git_tracked_locally": true
+    },
+    {
+      "path": "checks/reproduce_ramlite_revalidation.sh",
+      "sha256": "7feee6a29a34da2f2b94aee4341de51844b3035aff97498b23a4c52220ff10ae",
+      "size_bytes": 3638,
+      "git_tracked_locally": true
+    },
+    {
+      "path": "checks/section2_incident_classification_table.md",
+      "sha256": "79638e097efd4b0808a851e2716bc62dc5f6a622589dc3b71ab32114d45adb20",
+      "size_bytes": 5297,
+      "git_tracked_locally": true
+    },
+    {
+      "path": "checks/section4_sra_history_and_current_warnings.md",
+      "sha256": "c46066bd966d5fb951007edf0bf461fa0aad23990aed920bbe04833266ca3b02",
+      "size_bytes": 3579,
+      "git_tracked_locally": true
+    },
+    {
+      "path": "checks/section5_mcp_tools_and_reproduction.md",
+      "sha256": "b3b24fdda96bd0d9c3c5fbb5f95faeb250b64296f0fe19828614f39c40315845",
+      "size_bytes": 6079,
+      "git_tracked_locally": true
+    },
+    {
+      "path": "checks/section6_open_questions_for_mifral_authors.md",
+      "sha256": "5f28b4440828b0209d1e0c7694fd4058ed12e24ed4352f20293f490e1f697fbf",
+      "size_bytes": 2671,
+      "git_tracked_locally": true
+    },
+    {
+      "path": "checks/test002_full_vs_lite_retire_diff.txt",
+      "sha256": "49bed39be11619a2c24d0b97af77492381f31edabaea1d66bb22e4bc94db7c25",
+      "size_bytes": 9446,
+      "git_tracked_locally": true
+    },
+    {
+      "path": "checks/test002_full_vs_lite_retire_diff_cycle_stripped.txt",
+      "sha256": "5abdeba3666825f380a94d2a96617e228554ce2443396b2068fa65fda55d0173",
+      "size_bytes": 13,
+      "git_tracked_locally": true
+    },
+    {
+      "path": "checks/zenith_help.txt",
+      "sha256": "17f8752dd4b2eb10df3b2748c8f39d7793c418fc993544a833e229cf8d50f093",
+      "size_bytes": 9972,
+      "git_tracked_locally": true
+    }
+  ],
+  "file_count": 30
+}

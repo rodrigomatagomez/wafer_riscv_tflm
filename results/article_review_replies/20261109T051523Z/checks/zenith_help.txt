@@ -1,0 +1,129 @@
+Zenith Simulator v1.0.2
+Copyright (c) 2026 Mifral Tech S.A. de C.V.  All rights reserved.
+
+Usage: zenith [options] <file.sv> ...
+
+Simulation options:
+  --vcd <file>          Write VCD waveform to <file>
+  --zwdb <file>         Write ZWDB waveform database to <file>
+  --zwdb-window <s>:<e> Record the ZWDB only over [s, e] (end inclusive;
+                        units optional, e.g. 4ms:6ms; 's:' = to the end).
+                        Repeatable. Recording starts off.
+  --zwdb-scope <p[:n]>  Record only scope/signal <p>, <n> instance levels
+                        deep (0/omitted = all below). Repeatable.
+  --zwdb-dynamic        Also record class static properties and package variables,
+                        under $class. / $package. (default: the instance tree only)
+  --zwdb-start-off      Start with ZWDB recording off; the testbench turns
+                        it on with $zwdb_on / $zwdb_window.
+  --cov [file]          Enable functional coverage; write .zcov to <file> (default: sim.zcov)
+  --cov-merge <out.zcov> <in.zcov>... [--force]
+                        Merge the coverage databases of several runs into <out.zcov>
+                        (pro tier). A mode of its own: no sources, no simulation.
+                        --force merges inputs whose covergroup declarations differ
+                        (with a warning); without it they are refused
+  --log <file>          Tee all stdout output to <file> (overwritten each run)
+  --end <time>          Simulation end time (runs until $finish if omitted)
+  --stop-on-assert      End the run at the first failing assertion -- immediate,
+                        deferred, concurrent or expect -- with exit code 1
+                        (default: report every failure and run on)
+  --max-delta <n>       Zero-delay loop limit: delta cycles at one simulation time in
+                        which a signal change woke a process (default 50000, 0 = none)
+  --max-handoffs <n>    Cap on ALL delta cycles at one simulation time, process
+                        hand-offs included (default 10000000, 0 = none)
+  --stimulus <file>     Apply a (time, signal, value) deposit list as the
+                        run advances. A recorded interactive session
+                        replays headlessly through this flag.
+
+Compilation options:
+  -f <filelist>         Read source files from <filelist> (one per line)
+  -top <module>         Specify top-level module(s)
+  -sv_lib <lib>         Load a DPI-C shared library (repeatable; .dll/.so optional)
+  --uvm[=<version>]     Compile the Accellera UVM library ahead of the sources:
+                        --uvm is UVM 1.2, --uvm=2020-3.1 is IEEE 1800.2-2020 (beta).
+                        Also adds its include dir and hides its own warnings
+                        (as --library-dir). Pro tier
+  --uvm-home <dir>      UVM tree for --uvm (the folder holding src/uvm_pkg.sv);
+                        default: env ZENITH_UVM_DIR / ZENITH_UVM_2020_DIR, then the
+                        library installed with Zenith
+  --work-lib <name>     Compile the sources into library <name> (33.3), for configs;
+                        select a config as top with -top <name>.<cell>:config
+  --libmap <file>       Read a library map file (33.3: library / include / -incdir);
+                        repeatable, read in order.  A source file a map names goes
+                        into that library, any other into work (or --work-lib)
+  --pulse-r <pct>       Module-path reject limit, % of each delay (30.7.2; default 100;
+  --pulse-e <pct>         error limit likewise).  Also +pulse_r/<pct>, +pulse_e/<pct>
+  --pulse-style onevent|ondetect  Pulse filtering to x on the leading edge's time or at
+                        once, for every path output (30.7.4.1; overrides the specify block)
+  --showcancelled / --noshowcancelled  Show a cancelled (negative) pulse as x (30.7.4.2)
+  -L <lib>              Library search order when no config applies (33.8.1);
+                        repeatable.  Default: the order the map files declare them
+  --dpi-export-stubs <file.c>  Write C stubs for the design's DPI exports and exit
+  --dpi-header <file.h>        Write C prototypes for the design's DPI imports/exports and exit
+  -timescale <ts>       Default timescale (e.g. "1ns/1ps")
+  --ca-inline           Update a continuous assignment inside the statement that
+                        changed its input (the old behaviour; default: as an event)
+  -G <name>=<value>     Set a top-level module's parameter, before elaboration; repeatable,
+                        also -G<name>=<value> and in -f files.  The value is an expression:
+                        -G N=8, -G 'S="big"'.  -G top.u.N=8 reaches a parameter below the
+                        top, as defparam does.  Not for a localparam or a type parameter
+  --allow-use-before-declare  Accept a name used above its declaration (illegal,
+                        LRM 6.5; legacy code other simulators take). Off by default
+  +define+NAME[=VAL]    Define preprocessor macro
+  +incdir+<path>        Add include search directory
+  --                    End of options: every later argument is a source file
+
+Display options:
+  --preprocess-only     Parse/preprocess only, skip elaboration and simulation
+  --no-warnings, -q     Suppress non-error diagnostics (warnings/notes)
+  --library-dir <dir>   Treat <dir> as library sources: hide warnings located in it or
+                        produced by its macros (repeatable; errors are never hidden)
+  --show-library-warnings  Show the warnings --library-dir hides
+  --seed <N>|random     Random seed for $urandom, randomize() and every thread / object RNG
+                        (default 0 -- a seed like any other, so runs repeat; `random` picks
+                        one and prints it).  Unseeded $random follows Annex N regardless
+  --stats               Print event/NBA/CA/fiber counters after simulation
+  --report-fallbacks    Print a line wherever the run silently takes a degraded path
+                        (constraint solver falling back to sampling, ...); also
+                        enabled by the environment variable ZENITH_REPORT_FALLBACKS
+
+Daemon options:
+  --daemon              Run as a persistent TCP daemon (requires --port)
+  --port <N>            TCP port to listen on in daemon mode
+  --socket <path>       Listen on a Unix socket instead of --port
+                        (owner-only; for a --network none sandbox)
+  --untrusted           Treat simulated code as hostile: disable $system
+                        and confine file I/O to the project directory
+
+Licensing (production builds):
+  --license <file>      Path to a license file (key). Also: env
+                        ZENITH_LICENSE_FILE (path) or ZENITH_LICENSE_KEY (key)
+  --machine-id          Print this machine's license fingerprint and exit
+  --license-status      Check the license and print JSON status; exit 0
+
+LSP options:
+  --lsp                 Run as a native LSP server (requires --lsp-port)
+  --lsp-port <N>        TCP port to listen on in LSP mode
+  --lsp-socket <path>   Listen on a Unix socket instead of --lsp-port
+  --apf <file>          Project file (.apf) for project-aware elaboration
+  --version             Print version and exit
+  --help                 Show this help
+
+Examples:
+  zenith counter_tb.sv                                                                       # Basic run, single file, no waveform/log -- runs to $finish
+  zenith dut.sv counter_tb.sv -top counter_tb                                                # Multiple files on the command line, explicit top
+  zenith -f files.f -top counter_tb                                                          # File list (.f) instead of listing files by hand
+  zenith -f files.f +define+DEBUG +define+WIDTH=32 +incdir+./rtl/include -top counter_tb     # Defines + include dirs on the CLI (also valid inside a .f file)
+  zenith -f files.f -top counter_tb --vcd out.vcd                                            # Waveform output -- VCD
+  zenith -f files.f -top counter_tb --zwdb out.zwdb                                          # Waveform output -- ZWDB (Animas native format, needed for MCP/waveform viewer)
+  zenith -f files.f -top counter_tb --vcd out.vcd --zwdb out.zwdb                            # Both waveform formats from the same run
+  zenith -f files.f -top tb --zwdb out.zwdb --zwdb-window 4ms:6ms --zwdb-scope tb.dut.core0  # ZWDB of one block over a 2 ms window
+  zenith -f files.f -top counter_tb --log sim.log                                            # Tee all stdout to a log file (overwritten each run, console still prints too)
+  zenith -f files.f -top counter_tb --end 10000ns                                            # Fixed end time instead of running to $finish
+  zenith -f files.f -top counter_tb --cov                                                    # Functional coverage, written to sim.zcov
+  zenith -f files.f -top counter_tb --cov run1.zcov --seed 1                                 # Coverage of one run into its own file; vary the seed between runs...
+  zenith -f files.f -top counter_tb --cov run2.zcov --seed 2                                 # ...a second run
+  zenith --cov-merge merged.zcov run1.zcov run2.zcov                                         # ...merged into one database (first file = output; no sources, no simulation; pro)
+  zenith --cov-merge merged.zcov old.zcov new.zcov --force                                   # Merge even though the covergroups changed between the runs (warns)
+  zenith -f files.f -top counter_tb --seed 12345                                             # Deterministic random seed for $random/$urandom
+  zenith --uvm uvm_tb.sv -top tb_top +UVM_TESTNAME=my_test                                   # UVM 1.2 testbench (--uvm=2020-3.1 for UVM 2020)
+  zenith -f files.f --preprocess-only                                                        # Preprocess-only -- sanity-check macros/includes without elaborating/simulating

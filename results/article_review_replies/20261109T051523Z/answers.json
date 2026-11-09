@@ -1,0 +1,156 @@
+{
+  "package_id": "article_review_replies_20261109T051523Z",
+  "created_utc": "2026-11-09T05:15:23Z",
+  "scope_note": "Respuesta compacta a las 12 observaciones de revision Animas/Zenith sobre el articulo de congreso. No se reescribio el articulo, no se rejecuto el experimento TFLM largo (20 casos), no se reentrenaron modelos, y no se altero la evidencia aceptada de full20_final_001. El contexto de que el escritorio grafico se accedio via TigerVNC es informacion proporcionada por el autor/usuario, no una conclusion inferida de la inspeccion de procesos de este agente.",
+  "evidence_strength_legend": {
+    "confirmed": "Verificado de forma independiente contra artefactos reales (logs, comandos en vivo, archivos crudos) en esta sesion.",
+    "partially_supported": "Hay evidencia real pero incompleta, circunstancial, o basada en eliminacion/inferencia, no en una traza directa.",
+    "unavailable": "No existe evidencia preservada que resuelva la pregunta; se declara explicitamente, sin inventar ni reconstruir."
+  },
+  "answers": [
+    {
+      "id": 1,
+      "topic": "Identificación de versión (Animas / Zenith) y distinción branch vs. versión de app vs. versión de motor",
+      "status": "confirmed",
+      "answer_es": "La rama (branch) de Flatpak instalada es 1.0.2 (de las tres presentes: 1.0.1, 1.0.2, master; la columna 'Version' de `flatpak list` está vacía para las tres, por lo que el branch es el único identificador tipo-version que Flatpak expone directamente). El commit OSTree de esa rama es b527718946f7d52b00e09ce47ac5d26047dcfaaeb70a45e8f51a5a41e5c5b285 (ref app/com.mifraltech.animaseda/x86_64/1.0.2, exportado 2026-11-07T03:00:29Z). El propio binario Zenith, invocado de forma standalone, se autoidentifica como 'Zenith Simulator v1.0.2' (Copyright Mifral Tech S.A. de C.V.). Estos tres datos -- branch, commit OSTree y version string del motor -- coinciden numéricamente en este caso (1.0.2) pero son conceptualmente distintos y no deben fusionarse en el texto del artículo.",
+      "evidence": [
+        "checks/host_and_version_evidence.txt (comandos: flatpak list, flatpak info, zenith --version)"
+      ],
+      "remaining_questions": [
+        "Si Mifral publica una referencia de versión/documentación citable distinta de la salida del propio binario (ver Sección 6, punto 1)."
+      ]
+    },
+    {
+      "id": 2,
+      "topic": "Identificación de host/CPU/RAM/topología y si full20_final_001 documenta el mismo host",
+      "status": "partially_supported",
+      "answer_es": "El host actual (inspección en vivo, 2026-11-09) es Rocky Linux 9.8, kernel 5.14.0-687.53.1.el9_8.x86_64, hostname eda-mifral4-head, CPU Intel(R) Xeon(R) Gold 6152 @ 2.10GHz, 2 sockets x 22 cores x 2 threads = 88 CPUs lógicos, 124 GiB RAM (48 GiB libres en el momento de la inspección), afinidad completa 0-87, sin cuota de CPU cgroup v2 activa detectada. `docs/findings.md` ya documentaba SO/88 CPUs/RAM (coincide), pero no el modelo de CPU ni la topología exacta ni el hostname -- estos son datos NUEVOS de esta inspección, no estaban registrados antes. Ningún archivo de evidencia de full20_final_001 (`results/final_run_evidence/*.json`) contiene un campo de identidad de host/CPU; por lo tanto, no puede confirmarse documentalmente que la corrida aceptada se ejecutó en este mismo host -- es plausible por continuidad de sesión, pero no está registrado. La carga/afinidad de CPU durante la corrida histórica (2026-11-08T19:18-20:54Z) no fue registrada en ningún log y se marca explícitamente como NO DISPONIBLE, no como 'igual a la medición actual.'",
+      "evidence": [
+        "checks/host_and_version_evidence.txt",
+        "docs/findings.md:7",
+        "results/final_run_evidence/full20_final_001_fingerprints.json (sin campos de host/CPU)"
+      ],
+      "remaining_questions": [
+        "No hay forma de recuperar retroactivamente la carga/afinidad de CPU durante la corrida histórica; permanece no disponible."
+      ]
+    },
+    {
+      "id": 3,
+      "topic": "Alcance del temporizador 'simulated for 01:35:52' (¿incluye compilación/elaboración o solo simulación?)",
+      "status": "unavailable",
+      "answer_es": "Se inspeccionó directamente la salida `--help` del binario Zenith v1.0.2 instalado (texto completo capturado en checks/zenith_help.txt). Esa ayuda documenta banderas de simulación, compilación, visualización y daemon, pero NO contiene ninguna mención de qué cubre la línea de resumen '[zenith] simulated for HH:MM:SS' -- no se documenta si incluye el tiempo de compilación/elaboración o solo el bucle de evento de simulación. Esto es una laguna real en la documentación del propio fabricante, no solo del proyecto. Conclusión: el alcance del temporizador queda explícitamente NO CONFIRMADO. Recomendación de redacción: usar la frase 'tiempo reportado por Zenith' en el artículo, sin afirmar que mide puramente el throughput del bucle de eventos.",
+      "evidence": [
+        "checks/zenith_help.txt (texto completo de --help, sin mención de compile/elaboration/wall-clock)",
+        "results/final_run_evidence/full20_final_001_fingerprints.json (wall_clock_seconds_measured=5754 vs. wall_clock_as_reported_by_zenith=01:35:52=5752s; discrepancia de 2s nunca analizada)"
+      ],
+      "remaining_questions": [
+        "Solo Mifral puede confirmar definitivamente el alcance exacto del temporizador interno."
+      ]
+    },
+    {
+      "id": 4,
+      "topic": "Tabla de clasificación de incidentes por corrida (timeout cliente/MCP, timeout_seconds, cancelación GUI, SIM_TIMEOUT, conectividad, cuota) y reconciliación de las dos lecturas de timeout_seconds",
+      "status": "partially_supported",
+      "answer_es": "Se construyó una tabla de 9 incidentes documentados, cada uno con su clasificación y su evidencia exacta (ver checks/section2_incident_classification_table.md). Resumen: SIM_TIMEOUT es puramente un corte por +MAXCYCLES (ciclos simulados, sin relación con wall-clock) -- confirmado en tb/soc_tb.sv. El error MCP -32602 es un fallo de conectividad/handshake de sesión, nunca vinculado a timeout o cuota. Dos incidentes de cuota de disco están confirmados con causa cierta; dos stalls (cases1_19_attempt_001, case2_diag_001) tienen causa NO ESTABLECIDA explícitamente en la documentación original. El mensaje 'Wall-clock cap (30 min) reached' se atribuye a timeout_seconds SOLO por eliminación (se descartó Zenith vía --help), no por rastreo directo de la cadena de texto hasta un componente específico -- ningún documento del proyecto describe la lectura alternativa del revisor ('timeout_seconds solo acota la espera; un cap de GUI separado cancela el trabajo') de forma verbatim; toda la documentación del proyecto es consistente en describir timeout_seconds como una 'asignación de wall-clock a nivel de trabajo' (job-level allowance), distinta del timeout de 300s del lado del cliente/MCP. No se afirma que la lectura del revisor sea incorrecta -- solo que no está corroborada por ningún artefacto de este proyecto.",
+      "evidence": [
+        "checks/section2_incident_classification_table.md (tabla completa con 9 filas y citas exactas)"
+      ],
+      "remaining_questions": [
+        "El origen exacto del renderizado del mensaje 'Wall-clock cap (30 min) reached' (qué componente lo emite) no está rastreado directamente.",
+        "Requiere confirmación de Mifral sobre la semántica oficial de timeout_seconds (ver Sección 6)."
+      ]
+    },
+    {
+      "id": 5,
+      "topic": "Evidencia RAM-lite preexistente: hallazgo de que varios archivos etiquetados 'lite' en realidad declaran ram=full",
+      "status": "confirmed",
+      "answer_es": "Se reinspeccionaron directamente los archivos crudos almacenados. Confirmado de forma independiente (no solo por el reporte del revisor): ramlite_val_a (ram=full) y ramlite_val_b (ram=lite), ambos con fixedlat=2/readywait=0/randwait=0 (sin espera inyectada), tienen sus 1102 líneas RETIRE idénticas (diff, código de salida 0) -- este par SÍ es una comparación lite/full válida, pero solo bajo temporización por defecto. En cambio, ramlite_val_c, d, e, f y g -- TODOS, incluyendo el archivo 'e' cuyo nombre dice 'lite' -- declaran ram=full en su propio SIM_BANNER, con fixedlat=3/readywait=2/randwait=5 (espera inyectada). No existe en los archivos preservados ningún par full/lite válido bajo espera inyectada. La narrativa de D-007 que afirma una validación exitosa lite/full bajo espera inyectada NO está respaldada por los archivos crudos preservados, independientemente de los nombres de archivo o de lo que narra D-007.",
+      "evidence": [
+        "results/rtl_logs/ramlite_val_a_retires.txt, ramlite_val_b_retires.txt (banners + diff exit 0)",
+        "results/rtl_logs/ramlite_val_c/d/e/f/g_*retires.txt (todos ram=full)",
+        "docs/decisions.md D-007 (narrativa original, pendiente de corrección -- ver más abajo)"
+      ],
+      "remaining_questions": []
+    },
+    {
+      "id": 6,
+      "topic": "Nueva prueba dirigida (test_002, espera inyectada histórica) comparando ram=full vs ram=lite",
+      "status": "confirmed",
+      "answer_es": "Se reconstruyó test_002_loads_stores.hex de forma determinista desde el código fuente actual (ya con el fix de SRA aplicado) y se ejecutó dos veces vía la ruta standalone de Zenith, con la configuración de espera histórica de test_002 (+READYWAIT=3 +RANDWAIT=5 +FIXEDLAT=4): una vez con ram=full y otra con ram=lite, cada una verificada por su propio SIM_BANNER antes de confiar en el resultado. Resultado: la secuencia de PC/instrucción/writeback es IDÉNTICA entre ambos modelos (diff con exit 0 tras normalizar el campo cycle=), y ambas corridas terminan en PASS (ERR_HALT cause=7, la convención de parada limpia por EBREAK). Sin embargo, el conteo de ciclos SÍ difiere ligeramente entre modelos bajo espera inyectada (full: ciclo final 1037; lite: ciclo final 1042; 5 ciclos de diferencia) -- esto es un hallazgo nuevo y más preciso que la afirmación histórica de coincidencia 'exacta incluyendo números de ciclo', la cual no se reprodujo en esta nueva prueba verificada.",
+      "evidence": [
+        "checks/ramlite_reval_a_full.log, checks/ramlite_reval_b_lite.log (logs crudos + comandos exactos en checks/commands_used.txt)",
+        "checks/test002_full_vs_lite_retire_diff.txt (exit 1 con cycle=, exit 0 sin cycle=)"
+      ],
+      "remaining_questions": []
+    },
+    {
+      "id": 7,
+      "topic": "Nueva prueba con programa aleatorio de 1100 instrucciones (semilla de contenido 2026, --seed 4242 de espera) comparando ram=full vs ram=lite, y nota de velocidad",
+      "status": "confirmed",
+      "answer_es": "Se confirmó que build/random_program/random.hex almacenado es byte-idéntico a una regeneración fresca desde scripts/gen_random_program.py (semilla 2026, 1100 instrucciones). Se ejecutó dos veces vía la ruta standalone (obligatoria aquí: se confirmó en E033/animas_capabilities.md que el modo daemon/ui_remote_control descarta silenciosamente la bandera --seed), con la configuración histórica de espera de la validación ram_model_lite (FIXEDLAT=3 READYWAIT=2 RANDWAIT=5, --seed 4242): una con ram=full y otra con ram=lite, cada una verificada por su SIM_BANNER. Resultado: las 1100 líneas RETIRE (PC/instrucción/writeback) son IDÉNTICAS entre modelos tras normalizar el campo cycle=; ambas corridas terminan igual ($finish exit 0). El conteo final de ciclos SÍ difiere (full: 25445; lite: 25583; 138 ciclos de diferencia). Se repitió cada configuración 3 veces: resultado determinista e idéntico en cada repetición. El tiempo reportado por Zenith ('simulated for') fue consistentemente ~2s para full y ~1s para lite en las 3 repeticiones -- dirección consistente con un modelo lite más rápido, pero la granularidad de 1 segundo del temporizador y la escala diminuta de esta prueba acotada NO permiten una afirmación de throughput; no se extrapola a rendimiento de Invoke() completo ni se ejecuta una corrida de 20 casos.",
+      "evidence": [
+        "checks/ramlite_reval_c_full.log, checks/ramlite_reval_d_lite.log (+ rep2/rep3 de cada uno)",
+        "checks/random1100_full_vs_lite_retire_diff.txt (exit 1 con cycle=, exit 0 sin cycle=)",
+        "checks/commands_used.txt (comandos exactos y verificación del hex idéntico)"
+      ],
+      "remaining_questions": []
+    },
+    {
+      "id": 8,
+      "topic": "Historia del bug de SRA (cast 'logic'(...)) y diagnóstico original del compilador",
+      "status": "unavailable",
+      "answer_es": "El bug y su corrección están CONFIRMADOS narrativamente en tres documentos independientes (docs/development_log.jsonl E019, results/cpu_verification.json, docs/handoff/claims_evidence.csv C011): un cast 'logic'(...) por defecto de 1 bit truncaba el resultado del shift aritmético (SRAI(0x80000000,31) producía 1 en vez de 0xFFFFFFFF). Sin embargo, la línea de código original con el bug, el diagnóstico exacto del compilador, y cualquier diff NO están preservados en ningún archivo accesible: output/zsim.log (citado como evidencia por E019) está actualmente vacío (0 bytes); docs/issues.md no contiene ninguna mención de 'SRA'; y el propio puntero de claims_evidence.csv C011 ('ver docs/issues.md for the diff') no resuelve a nada. No existe historial de git en este proyecto para recuperar una revisión anterior. No se reconstruye una línea de código 'original' plausible para presentarla como el diff real -- se declara explícitamente NO DISPONIBLE, con la descripción documental disponible y esta limitación explícita.",
+      "evidence": [
+        "checks/section4_sra_history_and_current_warnings.md",
+        "docs/development_log.jsonl:18 (E019)",
+        "docs/handoff/claims_evidence.csv (C011)"
+      ],
+      "remaining_questions": []
+    },
+    {
+      "id": 9,
+      "topic": "Advertencias actuales del compilador en la línea de ALU_SRA, y su distinción respecto al bug histórico y al bug de E016 (MMIO)",
+      "status": "confirmed",
+      "answer_es": "Capturado en vivo (2026-11-09): la línea actual rtl/rv32im_alu.sv:23 ('ALU_SRA: result = a_s >>> b[4:0];') genera hoy la advertencia [ZEN-2436] 'implicit conversion changes signedness from logic signed[31:0] to logic[31:0]' -- una advertencia de SIGNEDNESS, no de ANCHO/truncamiento. Esta no es la misma categoría de advertencia que produciría el bug original (que habría sido una advertencia de ancho sobre el cast de 1 bit, ya eliminado del código). Esta advertencia actual NO debe leerse como corroboración del bug histórico -- es evidencia únicamente sobre el código de hoy, reportada por separado. E016/E017 (docs/development_log.jsonl) documentan un bug DISTINTO: el campo OFF_STATUS de 5 bits en mmio.sv truncaba un valor de 6 bits, aliasing STATUS sobre TX -- no debe confundirse con el bug de SRA.",
+      "evidence": [
+        "checks/ramlite_reval_a_full.log (compilación fresca, líneas 9-19 del log)",
+        "checks/section4_sra_history_and_current_warnings.md"
+      ],
+      "remaining_questions": []
+    },
+    {
+      "id": 10,
+      "topic": "Herramientas MCP realmente invocadas vs. simplemente documentadas/descubiertas",
+      "status": "confirmed",
+      "answer_es": "Se separaron explícitamente dos conjuntos. CONFIRMADAS CON INVOCACIÓN REAL Y RESULTADO: list_projects, get_project_info, get_zenith_help, run_simulation, get_last_sim_result, get_sim_diagnostics, read_simulation_log, read_source_file, set_sim_options -- cada una con su propio evento/cita en docs/development_log.jsonl o docs/issues.md. SOLO DESCUBIERTAS/REGISTRADAS, SIN CONFIRMACIÓN DE USO REAL: search_simulation_log y summarize_assertion_failures (cita textual: 'were registered but not yet needed'), check_project_paths, get_hierarchy, get_elab_diagnostics, y toda la familia de inspección de formas de onda/señales (nunca necesaria porque este proyecto capturó su evidencia vía marcadores de texto estructurado en el log, no vía waveforms).",
+      "evidence": [
+        "checks/section5_mcp_tools_and_reproduction.md (tabla completa con citas)"
+      ],
+      "remaining_questions": []
+    },
+    {
+      "id": 11,
+      "topic": "Procedimiento final de reproducción standalone y naturaleza de las rutas de portal (session-specific)",
+      "status": "confirmed",
+      "answer_es": "El procedimiento real (D-009) usa `flatpak run --branch=1.0.2 --command=sh com.mifraltech.animaseda -c \"cd '<portal_root_path>' && zenith ...\"`, sin --zwdb, en background, evitando el daemon de Animas por completo (necesario porque el daemon descarta --seed silenciosamente). La ruta de portal (ej. /run/flatpak/doc/d6f0a558/wafer_riscv_tflm) se obtiene en vivo vía list_projects.active_project.root_path y NO está garantizada estable entre sesiones -- es asignada por xdg-document-portal por cada concesión de acceso. Confirmado en vivo (2026-11-09): esa ruta exacta sigue siendo válida en esta sesión, pero NO es visible desde un shell de host ordinario (ls falla con 'No such file or directory') -- solo es resoluble desde dentro del sandbox de Flatpak. Nota separada: `synth_tool: yosys` está configurado en project.apf pero NINGUNA corrida de síntesis está registrada en ningún log del proyecto; no se infiere ningún resultado de síntesis de esta sola configuración.",
+      "evidence": [
+        "checks/section5_mcp_tools_and_reproduction.md",
+        "checks/commands_used.txt",
+        "docs/decisions.md D-009"
+      ],
+      "remaining_questions": []
+    },
+    {
+      "id": 12,
+      "topic": "Elementos que requieren confirmación de los autores de Mifral",
+      "status": "unavailable",
+      "answer_es": "Se identificaron explícitamente: (1) una referencia de documentación/versión de producto públicamente citable, si existe; (2) el nombre de afiliación/compañía preferido para el artículo; (3) aprobación para mencionar LibreLane/FPGA (actualmente SIN respaldo de evidencia, ya que no se ejecutó ninguna síntesis); (4) varios puntos de semántica interna de producto aún no confirmados por Mifral (alcance exacto de timeout_seconds, origen exacto del mensaje de cap de 30 minutos, si el descarte de --seed en modo daemon es comportamiento conocido/esperado, y la estabilidad de las rutas de portal). No se inventa ningún manual público, no se trata ninguna cita de un estándar IEEE como prueba de conformidad completa de la herramienta, y no se ha enviado ningún mensaje a Mifral ni a terceros.",
+      "evidence": [
+        "checks/section6_open_questions_for_mifral_authors.md"
+      ],
+      "remaining_questions": [
+        "Pendiente de decisión y contacto por parte de los autores del artículo, no de este agente."
+      ]
+    }
+  ]
+}
